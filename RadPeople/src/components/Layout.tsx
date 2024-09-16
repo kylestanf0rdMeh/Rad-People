@@ -8,6 +8,7 @@ const StyledLayout = styled.div`
   padding: 20px;
 `;
 
+
 const Header = styled.header`
   display: flex;
   justify-content: space-between;

@@ -54,8 +54,7 @@ export const Text = styled(motion.h1)`
   font-stretch: expanded;
   position: relative;
   z-index: 1001;
-  -webkit-text-stroke: 1px white;
-  text-stroke: 1px white;
+
   white-space: nowrap;
 
   @media (max-width: 768px) {

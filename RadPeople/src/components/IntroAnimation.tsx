@@ -4,10 +4,10 @@ import { AnimatedChar, Text, BlueScreen } from '../styles/IntroAnimationStyles'
 
 // Animation timing (in seconds)
 const DELAY_BEFORE_TEXT_APPEAR = 0.8
-const TYPING_SPEED = 0.05
+const TYPING_SPEED = 0.07
 const DISAPPEAR_SPEED = 0.05
 const DELAY_BEFORE_TEXT_DISAPPEAR = 1.5
-const BLUE_SCREEN_DURATION = 0.7
+const BLUE_SCREEN_DURATION = 0.9
 const DELAY_BEFORE_BLUE_SCREEN = 0.35
 
 export default function IntroAnimation() {

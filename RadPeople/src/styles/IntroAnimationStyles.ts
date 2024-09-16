@@ -1,14 +1,32 @@
-import styled, { keyframes, css, createGlobalStyle } from 'styled-components'
+import styled, { keyframes, css } from 'styled-components'
 import { motion } from 'framer-motion'
 import NFUltraRegular from '../assets/NFUltra-Regular.otf'
 
-// Add this new component to declare the font
-export const GlobalFontStyles = createGlobalStyle`
+
+export const NFUltraText = styled(motion.span)`
   @font-face {
     font-family: 'NF Ultra';
     src: url(${NFUltraRegular}) format('opentype');
     font-weight: normal;
     font-style: normal;
+  }
+
+  font-family: 'NF Ultra', sans-serif;
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  font-stretch: expanded;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 90vw; // Limit width to 90% of viewport width
+  overflow-wrap: break-word;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem; // Reduced font size for mobile
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem; // Further reduced for smaller devices
   }
 `
 
@@ -67,12 +85,23 @@ export const BlueScreen = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: #1404FB;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   overflow: hidden;
+  box-sizing: border-box;
+  padding: 1rem;
+
+  /* Ensure the content doesn't overflow on smaller screens */
+  @media (max-width: 768px) {
+    font-size: 0.8em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.6em;
+  }
 `

@@ -6,12 +6,35 @@ import IntroAnimation from '../components/IntroAnimation';
 
 const Hero = styled.div`
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  padding: 0 20px;
 `;
 
 const ThreeWrapper = styled.div`
-  height: 400px;
-  margin-bottom: 40px;
+  height: 300px;
+  margin-bottom: 20px;
+  
+  @media (min-width: 768px) {
+    height: 400px;
+    margin-bottom: 40px;
+  }
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  margin-bottom: 10px;
+  
+  @media (min-width: 768px) {
+    font-size: 32px;
+  }
+`;
+
+const Subtitle = styled.p`
+  font-size: 16px;
+  
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 const Home: React.FC = () => {
@@ -27,8 +50,8 @@ const Home: React.FC = () => {
       {showIntro && <IntroAnimation />}
       <Layout>
         <Hero>
-          <h1>Welcome to RadPeople</h1>
-          <p>Discover our amazing products and events!</p>
+          <Title>Welcome to RadPeople</Title>
+          <Subtitle>Discover our amazing products and events!</Subtitle>
         </Hero>
         <ThreeWrapper>
           <ThreeDObject />

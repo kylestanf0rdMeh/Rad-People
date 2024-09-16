@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { GlobalFontStyles } from './styles/IntroAnimationStyles'
 import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import Gallery from './pages/Gallery';
@@ -7,8 +6,6 @@ import Events from './pages/Events';
 
 function App() {
   return (
-    <>
-      <GlobalFontStyles/>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -17,7 +14,6 @@ function App() {
           <Route path="/events" element={<Events />} />
         </Routes>
       </Router>
-    </>
   );
 }
 

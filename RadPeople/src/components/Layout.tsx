@@ -56,7 +56,7 @@ const StyledLink = styled(Link)`
   padding: 10px;
   width: calc(50% - 5px);
   text-align: center;
-  background-color: #f0f0f0;
+  background-color: #1404FB;
   border-radius: 5px;
 
   &:hover {

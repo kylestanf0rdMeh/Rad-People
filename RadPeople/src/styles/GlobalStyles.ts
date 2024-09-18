@@ -10,10 +10,18 @@ const GlobalStyles = createGlobalStyle`
     font-display: swap;
   }
 
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     overflow-x: hidden;
     width: 100%;
     box-sizing: border-box;
+    background-color: #1404FB;
+    color: white;
   }
 
   .nf-ultra-text {

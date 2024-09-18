@@ -11,7 +11,7 @@ export const NFUltraText = styled(motion.span)`
   }
 
   font-family: 'NF Ultra', sans-serif;
-  color: white;
+  color: #1404FB;
   font-size: 2rem;
   font-weight: 700;
   font-stretch: expanded;
@@ -113,7 +113,7 @@ export const BlueScreen = styled(motion.div)`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #1404FB;
+  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;

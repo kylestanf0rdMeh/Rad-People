@@ -1,44 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import Layout from '../components/Layout';
 import ThreeDObject from '../components/ThreeDObject';
 import IntroAnimation from '../components/IntroAnimation';
-
-const Hero = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-  padding: 0 20px;
-`;
-
-const ThreeWrapper = styled.div`
-  height: 250px;
-  margin-bottom: 20px;
-  width: 100%;
-  overflow: hidden;
-  
-  @media (min-width: 768px) {
-    height: 400px;
-    margin-bottom: 40px;
-  }
-`;
-
-const Title = styled.h1`
-  font-size: 28px;
-  margin-bottom: 10px;
-  
-  @media (min-width: 768px) {
-    font-size: 32px;
-  }
-`;
-
-const Subtitle = styled.p`
-  font-size: 16px;
-  line-height: 1.5;
-  
-  @media (min-width: 768px) {
-    font-size: 18px;
-  }
-`;
+import { HomeContainer, Hero, ThreeWrapper, Title, Subtitle } from '../styles/HomeStyles';
 
 const Home: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -49,7 +13,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <HomeContainer>
       {showIntro && <IntroAnimation />}
       <Layout>
         <Hero>
@@ -60,7 +24,7 @@ const Home: React.FC = () => {
           <ThreeDObject />
         </ThreeWrapper>
       </Layout>
-    </>
+    </HomeContainer>
   );
 };
 

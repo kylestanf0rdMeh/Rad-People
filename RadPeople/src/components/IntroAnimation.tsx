@@ -5,9 +5,9 @@ import { AnimatedChar, BlueScreen, NFUltraText } from '../styles/IntroAnimationS
 
 // Animation timing (in seconds)
 const DELAY_BEFORE_TEXT_APPEAR = 0.8
-const TYPING_SPEED = 0.07
-const DISAPPEAR_SPEED = 0.05
-const DELAY_BEFORE_TEXT_DISAPPEAR = 1.7
+const TYPING_SPEED = 0.02
+const DISAPPEAR_SPEED = 0.02
+const DELAY_BEFORE_TEXT_DISAPPEAR = 1.6
 const BLUE_SCREEN_DURATION = 0.9
 const DELAY_BEFORE_BLUE_SCREEN = 0.35
 

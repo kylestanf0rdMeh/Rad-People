@@ -11,8 +11,10 @@ const Hero = styled.div`
 `;
 
 const ThreeWrapper = styled.div`
-  height: 300px;
+  height: 250px;
   margin-bottom: 20px;
+  width: 100%;
+  overflow: hidden;
   
   @media (min-width: 768px) {
     height: 400px;
@@ -21,7 +23,7 @@ const ThreeWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 10px;
   
   @media (min-width: 768px) {
@@ -31,6 +33,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: 16px;
+  line-height: 1.5;
   
   @media (min-width: 768px) {
     font-size: 18px;

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 const StyledLayout = styled.div`
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  min-width: 320px;
+  overflow-x: hidden;
 `;
 
 const Header = styled.header`
@@ -25,9 +27,11 @@ const Header = styled.header`
 const Logo = styled.h1`
   font-size: 24px;
   margin-bottom: 10px;
+  text-align: center;
 
   @media (min-width: 768px) {
     margin-bottom: 0;
+    text-align: left;
   }
 `;
 
@@ -36,8 +40,10 @@ const Nav = styled.nav`
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
+  width: 100%;
 
   @media (min-width: 768px) {
+    width: auto;
     gap: 20px;
   }
 `;
@@ -47,14 +53,22 @@ const StyledLink = styled(Link)`
   color: #333;
   font-weight: bold;
   font-size: 14px;
-  padding: 5px 10px;
+  padding: 10px;
+  width: calc(50% - 5px);
+  text-align: center;
+  background-color: #f0f0f0;
+  border-radius: 5px;
 
   &:hover {
     color: #007bff;
+    background-color: #e0e0e0;
   }
 
   @media (min-width: 768px) {
     font-size: 16px;
+    width: auto;
+    background-color: transparent;
+    padding: 5px 10px;
   }
 `;
 

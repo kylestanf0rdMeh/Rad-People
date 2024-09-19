@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.22.11",
+    "@google/model-viewer": "^3.5.0",
     "@react-three/drei": "^9.112.0",
     "@react-three/fiber": "^8.17.7",
     "@shopify/shopify-api": "^7.0.0",
@@ -22,7 +23,7 @@
     "react-router-dom": "^6.26.2",
     "shopify-buy": "^2.22.0",
     "styled-components": "^6.1.13",
-    "three": "^0.168.0"
+    "three": "^0.163.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import NavBar from './NavBar';
 
 const StyledLayout = styled.div`
   max-width: 100%;
@@ -9,6 +9,7 @@ const StyledLayout = styled.div`
   box-sizing: border-box;
   min-width: 320px;
   overflow-x: hidden;
+  padding-bottom: 60px; // Add this line to make room for the NavBar
 `;
 
 const Header = styled.header`
@@ -35,42 +36,6 @@ const Logo = styled.h1`
   }
 `;
 
-const Nav = styled.nav`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    width: auto;
-    gap: 20px;
-  }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-  font-size: 14px;
-  padding: 10px;
-  width: calc(50% - 5px);
-  text-align: center;
-  background-color: #1404FB;
-  border-radius: 5px;
-
-  &:hover {
-    color: #007bff;
-    background-color: #e0e0e0;
-  }
-
-  @media (min-width: 768px) {
-    font-size: 16px;
-    width: auto;
-    background-color: transparent;
-    padding: 5px 10px;
-  }
-`;
 
 const Main = styled.main`
   padding-top: 20px;
@@ -85,14 +50,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <StyledLayout>
       <Header>
         <Logo>RadPeople</Logo>
-        <Nav>
-          <StyledLink to="/">Home</StyledLink>
-          <StyledLink to="/products">Products</StyledLink>
-          <StyledLink to="/gallery">Gallery</StyledLink>
-          <StyledLink to="/events">Events</StyledLink>
-        </Nav>
       </Header>
       <Main>{children}</Main>
+      <NavBar />
     </StyledLayout>
   );
 };

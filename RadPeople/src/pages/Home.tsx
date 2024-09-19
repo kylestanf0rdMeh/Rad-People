@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import ThreeDObject from '../components/ThreeDObject';
 import IntroAnimation from '../components/IntroAnimation';
-import { HomeContainer, Hero, ThreeWrapper, Title, Subtitle } from '../styles/HomeStyles';
+import { HomeContainer, Hero, Title, Subtitle } from '../styles/HomeStyles';
 
 const Home: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -20,9 +19,6 @@ const Home: React.FC = () => {
           <Title>Welcome to RadPeople</Title>
           <Subtitle>Discover our amazing products and events!</Subtitle>
         </Hero>
-        <ThreeWrapper>
-          <ThreeDObject />
-        </ThreeWrapper>
       </Layout>
     </HomeContainer>
   );

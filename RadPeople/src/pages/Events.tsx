@@ -25,21 +25,21 @@ interface Event {
 const Events: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response: any = await contentfulClient.getEntries({
-          content_type: 'event',
-          order: ['fields.date'],
-        });
-        setEvents(response.items as Event[]);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchEvents = async () => {
+  //     try {
+  //       const response: any = await contentfulClient.getEntries({
+  //         content_type: 'event',
+  //         order: ['fields.date'],
+  //       });
+  //       setEvents(response.items as Event[]);
+  //     } catch (error) {
+  //       console.error('Error fetching events:', error);
+  //     }
+  //   };
 
-    fetchEvents();
-  }, []);
+  //   fetchEvents();
+  // }, []);
 
   return (
     <Layout>

@@ -4,17 +4,6 @@ import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import Gallery from './pages/Gallery';
 import Events from './pages/Events';
-// import { createGlobalStyle } from 'styled-components';
-
-// const GlobalStyles = createGlobalStyle`
-//   body {
-//     overflow-x: hidden;
-//     width: 100%;
-//     box-sizing: border-box;
-//   }
-// `;
-
-// Add this component to your App.tsx, just inside the Router component
 
 function App() {
   return (

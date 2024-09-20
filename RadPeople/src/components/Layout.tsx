@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import NavBar from './NavBar';
 
 const StyledLayout = styled.div`
   max-width: 100%;
@@ -9,7 +8,7 @@ const StyledLayout = styled.div`
   box-sizing: border-box;
   min-width: 320px;
   overflow-x: hidden;
-  padding-bottom: 60px; // Add this line to make room for the NavBar
+  padding-bottom: 140px; // Increased to make room for the NavBar
 `;
 
 const Header = styled.header`
@@ -36,7 +35,6 @@ const Logo = styled.h1`
   }
 `;
 
-
 const Main = styled.main`
   padding-top: 20px;
 `;
@@ -52,7 +50,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Logo>RadPeople</Logo>
       </Header>
       <Main>{children}</Main>
-      <NavBar />
     </StyledLayout>
   );
 };

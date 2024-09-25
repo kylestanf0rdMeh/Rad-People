@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '@google/model-viewer';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const NavBarContainer = styled.nav`
   position: fixed;
@@ -14,6 +15,7 @@ const NavBarContainer = styled.nav`
   justify-content: space-between;
   align-items: center;
   height: 120px;
+  overflow: hidden; // Prevent scrolling
 `;
 
 const LeftSection = styled.div`
@@ -24,17 +26,26 @@ const LeftSection = styled.div`
 const LeftText = styled.span`
   font-family: 'Sequel Sans', sans-serif;
   font-weight: bold;
-  font-size: 52px;
+  font-size: 3vw;
   color: white;
   white-space: nowrap;
 `;
 
 const RightSection = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-grow: 1;
   margin-left: 45px;
-  transition: all 0.55s cubic-bezier(0.25, 0.1, 0.25, 1);
+  overflow-x: hidden;
+  overflow: hidden; // Prevent scrolling
+
+`;
+
+const NavButtonsContainer = styled(motion.div)`
+  display: flex;
+  width: 100%;
+  position: relative;
+  height: 80px; // Adjust this value based on your button height
 `;
 
 const ModelViewerWrapper = styled.div<{ $isActive: boolean }>`
@@ -59,53 +70,65 @@ const ModelViewerWrapper = styled.div<{ $isActive: boolean }>`
   `}
 `;
 
-const NavButton = styled(Link)<{ $isActive: boolean }>`
+const NavButton = styled(motion(Link))<{ $isActive: boolean }>`
   font-family: 'Sequel Sans', sans-serif;
   font-weight: bold;
-  font-size: 4vw;
+  font-size: 3vw;
   color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 10px;
+  position: absolute;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  outline: none;
+  width: 25%;
   text-decoration: none;
-  transition: transform 0.9s cubic-bezier(0.1, 0.1, 0.25, 1), 
-              margin 0.55s cubic-bezier(0.25, 0.1, 0.25, 1), 
-              opacity 0.3s ease;
-  white-space: nowrap;
-  position: relative;
-  transform: ${props => props.$isActive ? 'translateX(-2vw)' : 'translateX(0)'};
-  margin-right: ${props => props.$isActive ? '0' : '4vw'};
-  opacity: ${props => props.$isActive ? 0 : 1};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  &:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
 
   &:hover {
-    ${props => !props.$isActive && `
-      color: transparent;
-      
-      ${ModelViewerWrapper} {
-        opacity: 1;
-        width: 200%;
-        height: 200%;
-      }
+    color: transparent;
 
-      model-viewer {
-        opacity: 1 !important;
-      }
-    `}
+    ${ModelViewerWrapper} {
+      opacity: 1;
+    }
   }
 
   &::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: white;
-    transform: scaleX(${props => props.$isActive ? 1 : 0});
-    transition: transform 0.3s ease;
-  }
-
-  &:hover::after {
-    transform: scaleX(1);
+    content: none;
   }
 `;
+
+const buttonVariants = {
+  initial: (custom: number) => ({
+    x: `${custom * 100}%`,
+    opacity: 1
+  }),
+  animate: (custom: number) => ({
+    x: `${custom * 140}%`,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 500,
+      damping: 30
+    }
+  }),
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.2 }
+  }
+};
 
 interface NavItem {
   id: number;
@@ -118,61 +141,93 @@ interface NavBarProps {
   handleNavClick: (clickedId: number) => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ navItems = [], handleNavClick }) => {
+const NavBar: React.FC<NavBarProps> = ({ navItems, handleNavClick }) => {
   const [activeItemId, setActiveItemId] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = 0;
+    }
+  }, [activeItemId]);
+
+  const getOrderedItems = () => {
+    if (activeItemId === null) return navItems;
+    const activeIndex = navItems.findIndex(item => item.id === activeItemId);
+    return [
+      ...navItems.slice(activeIndex + 1),
+      ...navItems.slice(0, activeIndex)
+    ];
+  };
 
   return (
     <NavBarContainer>
       <LeftSection>
         <LeftText>LET'S</LeftText>
-        {activeItemId !== null && (
-          <ModelViewerWrapper $isActive={true}>
-            <model-viewer
-              src={`/3D/${navItems.find(item => item.id === activeItemId)?.label.toLowerCase()}.glb`}
-              alt={`3D ${navItems.find(item => item.id === activeItemId)?.label}`}
-              disable-tap
-              disable-zoom
-              auto-rotate
-              rotation-per-second="36deg"
-              interaction-prompt="none"
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-            />
-          </ModelViewerWrapper>
-        )}
-      </LeftSection>
-      <RightSection>
-        {navItems.map((item) => (
-          <NavButton
-            key={item.id}
-            to={item.to}
-            onClick={() => {
-              handleNavClick(item.id);
-              setActiveItemId(item.id);
-            }}
-            $isActive={item.id === activeItemId}
-          >
-            {item.label}
-            <ModelViewerWrapper $isActive={false}>
+        <AnimatePresence>
+          {activeItemId !== null && (
+            <ModelViewerWrapper $isActive={true}>
               <model-viewer
-                src={`/3D/${item.label.toLowerCase()}.glb`}
-                alt={`3D ${item.label}`}
-                camera-controls={false}
+                src={`/3D/${navItems.find(item => item.id === activeItemId)?.label.toLowerCase()}.glb`}
+                alt={`3D ${navItems.find(item => item.id === activeItemId)?.label}`}
                 disable-tap
                 disable-zoom
-                auto-rotate={false}
+                auto-rotate
+                rotation-per-second="36deg"
                 interaction-prompt="none"
                 style={{
                   width: '100%',
                   height: '100%',
-                  opacity: 0,
                 }}
               />
             </ModelViewerWrapper>
-          </NavButton>
-        ))}
+          )}
+        </AnimatePresence>
+      </LeftSection>
+      <RightSection ref={containerRef}>
+        <NavButtonsContainer>
+          <AnimatePresence initial={false}>
+            {getOrderedItems().map((item, index) => (
+              <NavButton
+              key={item.id}
+              $isActive={item.id === activeItemId}
+              to={item.to}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick(item.id);
+                setActiveItemId(item.id);
+                setTimeout(() => {
+                  navigate(item.to);
+                }, 100); // Adjust this delay as needed
+              }}
+              onMouseDown={(e) => e.preventDefault()}
+              custom={index}
+              variants={buttonVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              {item.label}
+              <ModelViewerWrapper $isActive={false}>
+                <model-viewer
+                  src={`/3D/${item.label.toLowerCase()}.glb`}
+                  alt={`3D ${item.label}`}
+                  camera-controls={false}
+                  disable-tap
+                  disable-zoom
+                  auto-rotate={false}
+                  interaction-prompt="none"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
+              </ModelViewerWrapper>
+            </NavButton>
+            ))}
+          </AnimatePresence>
+        </NavButtonsContainer>
       </RightSection>
     </NavBarContainer>
   );

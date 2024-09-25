@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import IntroAnimation from '../components/IntroAnimation';
-import { HomeContainer, Hero, Title, Subtitle } from '../styles/HomeStyles';
+import { HomeContainer, Hero, CenteredText } from '../styles/HomeStyles';
 
 const Home: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -16,8 +16,12 @@ const Home: React.FC = () => {
       {showIntro && <IntroAnimation />}
       <Layout>
         <Hero>
-          <Title>Welcome to RadPeople</Title>
-          <Subtitle>Discover our amazing products and events!</Subtitle>
+          <CenteredText>
+            <span>Let's Create</span>
+            <span>Something</span>
+            <span>Special</span>
+            <span>Together</span>
+          </CenteredText>
         </Hero>
       </Layout>
     </HomeContainer>

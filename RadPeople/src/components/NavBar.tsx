@@ -63,8 +63,8 @@ const ModelViewerWrapper = styled.div<{ $isActive: boolean }>`
     position: static;
     transform: none;
     opacity: 1;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 100px;
     margin-left: 15px;
     pointer-events: auto;
   `}
@@ -102,6 +102,8 @@ const NavButton = styled(motion(Link))<{ $isActive: boolean }>`
 
     ${ModelViewerWrapper} {
       opacity: 1;
+      width: 12vw;
+      height: 12vw;
     }
   }
 
@@ -116,7 +118,7 @@ const buttonVariants = {
     opacity: 1
   }),
   animate: (custom: number) => ({
-    x: `${custom * 140}%`,
+    x: `${custom * 100}%`,
     opacity: 1,
     transition: {
       type: 'spring',
@@ -126,7 +128,7 @@ const buttonVariants = {
   }),
   exit: {
     opacity: 0,
-    transition: { duration: 0.2 }
+    transition: { duration: 0.4 }
   }
 };
 
@@ -142,7 +144,7 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({ navItems, handleNavClick }) => {
-  const [activeItemId, setActiveItemId] = useState<number | null>(null);
+  const [activeItemId, setActiveItemId] = useState<number>(0);  // Set default to 0 (CREATE)
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -166,23 +168,21 @@ const NavBar: React.FC<NavBarProps> = ({ navItems, handleNavClick }) => {
       <LeftSection>
         <LeftText>LET'S</LeftText>
         <AnimatePresence>
-          {activeItemId !== null && (
-            <ModelViewerWrapper $isActive={true}>
-              <model-viewer
-                src={`/3D/${navItems.find(item => item.id === activeItemId)?.label.toLowerCase()}.glb`}
-                alt={`3D ${navItems.find(item => item.id === activeItemId)?.label}`}
-                disable-tap
-                disable-zoom
-                auto-rotate
-                rotation-per-second="36deg"
-                interaction-prompt="none"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                }}
-              />
-            </ModelViewerWrapper>
-          )}
+          <ModelViewerWrapper $isActive={true}>
+            <model-viewer
+              src={`/3D/${navItems.find(item => item.id === activeItemId)?.label.toLowerCase()}.glb`}
+              alt={`3D ${navItems.find(item => item.id === activeItemId)?.label}`}
+              disable-tap
+              disable-zoom
+              auto-rotate
+              rotation-per-second="36deg"
+              interaction-prompt="none"
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+            />
+          </ModelViewerWrapper>
         </AnimatePresence>
       </LeftSection>
       <RightSection ref={containerRef}>
@@ -190,41 +190,41 @@ const NavBar: React.FC<NavBarProps> = ({ navItems, handleNavClick }) => {
           <AnimatePresence initial={false}>
             {getOrderedItems().map((item, index) => (
               <NavButton
-              key={item.id}
-              $isActive={item.id === activeItemId}
-              to={item.to}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick(item.id);
-                setActiveItemId(item.id);
-                setTimeout(() => {
-                  navigate(item.to);
-                }, 100); // Adjust this delay as needed
-              }}
-              onMouseDown={(e) => e.preventDefault()}
-              custom={index}
-              variants={buttonVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-            >
-              {item.label}
-              <ModelViewerWrapper $isActive={false}>
-                <model-viewer
-                  src={`/3D/${item.label.toLowerCase()}.glb`}
-                  alt={`3D ${item.label}`}
-                  camera-controls={false}
-                  disable-tap
-                  disable-zoom
-                  auto-rotate={false}
-                  interaction-prompt="none"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}
-                />
-              </ModelViewerWrapper>
-            </NavButton>
+                key={item.id}
+                $isActive={item.id === activeItemId}
+                to={item.to}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.id);
+                  setActiveItemId(item.id);
+                  setTimeout(() => {
+                    navigate(item.to);
+                  }, 100); // Adjust this delay as needed
+                }}
+                onMouseDown={(e) => e.preventDefault()}
+                custom={index}
+                variants={buttonVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                {item.label}
+                <ModelViewerWrapper $isActive={false}>
+                  <model-viewer
+                    src={`/3D/${item.label.toLowerCase()}.glb`}
+                    alt={`3D ${item.label}`}
+                    camera-controls={false}
+                    disable-tap
+                    disable-zoom
+                    auto-rotate={false}
+                    interaction-prompt="none"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  />
+                </ModelViewerWrapper>
+              </NavButton>
             ))}
           </AnimatePresence>
         </NavButtonsContainer>

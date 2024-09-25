@@ -9,6 +9,7 @@ import NavBar from './components/NavBar';
 
 function App() {
   const [navItems, setNavItems] = useState([
+    { id: 0, to: "/", label: "CREATE" },
     { id: 1, to: "/events", label: "EVENTS" },
     { id: 2, to: "/gallery", label: "GALLERY" },
     { id: 3, to: "/products", label: "SHOP" },

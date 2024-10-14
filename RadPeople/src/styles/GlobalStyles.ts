@@ -40,6 +40,7 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
     background-color: #1404FB;
     color: white;
+    padding-top: 40px; // Adjust this value based on your navbar height
   }
 
   .nf-ultra-text {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import {FaArrowRight} from 'react-icons/fa'
+import { Link, useNavigate } from 'react-router-dom';
+import {FaArrowRight, FaTimes, FaBars, FaShoppingBag} from 'react-icons/fa'
 import { 
         NavBarContainer, 
         DesktopNav, 
@@ -13,15 +13,20 @@ import {
         MenuIcon,
         CartIcon, 
         MobileMenu, 
-        CloseIcon, 
         MobileMenuLink, 
         MobileMenuLinks 
        } from '../styles/NavBarStyles';
 
-
-
 const NavBar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+
+  const handleMobileNavClick = (path: string) => {
+    setMobileMenuOpen(false);
+    setTimeout(() => navigate(path), 300); // Wait for menu close animation before navigating
+  };
 
   return (
     <NavBarContainer>
@@ -36,23 +41,26 @@ const NavBar: React.FC = () => {
         <CartLink as={NavLink} to="/cart">cart</CartLink>
       </DesktopNav>
       <MobileNav> 
-        <MenuIcon onClick={() => setMobileMenuOpen(true)} />
+        <MenuIcon onClick={toggleMobileMenu} >
+          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </MenuIcon>
         <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
-        <CartIcon to="/cart" />
+        <CartIcon onClick={() => handleMobileNavClick("/cart")}>
+          <FaShoppingBag />
+        </CartIcon>
       </MobileNav>
       <MobileMenu open={mobileMenuOpen}>
-        <CloseIcon onClick={() => setMobileMenuOpen(false)} />
         <MobileMenuLinks>
-          <MobileMenuLink to="/about">
+          <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
             About <FaArrowRight />
           </MobileMenuLink>
-          <MobileMenuLink to="/gallery">
+          <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
             Gallery <FaArrowRight />
           </MobileMenuLink>
-          <MobileMenuLink to="/shop">
+          <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
             Shop <FaArrowRight />
           </MobileMenuLink>
-          <MobileMenuLink to="/agency">
+          <MobileMenuLink onClick={() => handleMobileNavClick("/agency")}>
             Agency <FaArrowRight />
           </MobileMenuLink>
         </MobileMenuLinks>

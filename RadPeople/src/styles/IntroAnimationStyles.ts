@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { motion } from 'framer-motion'
 import NFUltraRegular from '../assets/NFUltra-Regular.otf'
 
@@ -29,64 +29,28 @@ export const NFUltraText = styled(motion.span)`
   }
 `
 
-export const diagonalAppear = keyframes`
-  0% {
-    opacity: 0;
-    transform: translate(-10px, 10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-`
-
-export const diagonalDisappear = keyframes`
-  0% {
-    opacity: 1;
-    transform: translate(0, 0);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-10px, 10px);
-  }
-`
-
-export const AnimatedChar = styled.span<{ $isVisible: boolean; $isDisappearing: boolean }>`
+export const AnimatedChar = styled.span<{ $isVisible: boolean }>`
   display: inline-block;
   opacity: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1404FB; // Change color to blue to match NFUltraText
+  transition: opacity 0.5s, transform 0.5s;
   ${props => props.$isVisible && css`
-    animation: ${diagonalAppear} 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-  `}
-  ${props => props.$isDisappearing && css`
-    animation: ${diagonalDisappear} 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    opacity: 1;
+    transform: translate(0, 0);
   `}
   margin-right: -0.05em;
-`
 
-/**
- export const AnimatedChar = styled.span<{ $isVisible: boolean; $isDisappearing: boolean }>`
-   display: inline-block;
-   opacity: 0;
-   font-size: 2rem;
-   font-weight: 700;
-   color: white;
-   ${props => props.$isVisible && css`
-     animation: ${diagonalAppear} 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-   `}
-   ${props => props.$isDisappearing && css`
-     animation: ${diagonalDisappear} 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-   `}
-   margin-right: -0.05em;
- 
-   @media (max-width: 768px) {
-     font-size: 1.5rem;
-   }
- 
-   @media (max-width: 480px) {
-     font-size: 1.2rem;
-   }
- `
- */
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
+`;
+
 
 export const Text = styled(motion.h1)`
   color: white;

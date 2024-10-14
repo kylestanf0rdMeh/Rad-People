@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import React, { useState, useEffect } from 'react';
 import IntroAnimation from '../components/IntroAnimation';
 import { HomeContainer, Hero, CenteredText } from '../styles/HomeStyles';
 
@@ -7,7 +7,7 @@ const Home: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowIntro(false), 5000); // Adjust time as needed
+    const timer = setTimeout(() => setShowIntro(false), 7000); // Increased from 5000 to 7000
     return () => clearTimeout(timer);
   }, []);
 

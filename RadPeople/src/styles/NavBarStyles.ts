@@ -6,6 +6,7 @@ const BORDER_THICKNESS = '1px';
 const BLUE_COLOR = '#1404FB';
 const SCROLLBAR_WIDTH = '17px'; // Typical scrollbar width
 const NAVBAR_HEIGHT = '40px'; // Reduced from 60px to 40px
+const LIGHT_GRAY_COLOR = '#333333'; // New constant for light gray
 
 
 export const NavBarContainer = styled.nav`
@@ -15,9 +16,12 @@ export const NavBarContainer = styled.nav`
   right: 0;
   background-color: white;
   z-index: 1000;
-  border-bottom: ${BORDER_THICKNESS} solid black;
-  padding-right: ${SCROLLBAR_WIDTH}; // Add padding to account for scrollbar
+  padding-right: ${SCROLLBAR_WIDTH};
   height: ${NAVBAR_HEIGHT};
+  border-bottom: ${BORDER_THICKNESS} solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 `;
 
 export const DesktopNav = styled.div`
@@ -116,9 +120,9 @@ export const MobileNav = styled.div`
   display: none;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
-  height: ${NAVBAR_HEIGHT};
-  background-color: white; // Ensure the background is white
+  padding: 0 0.5rem 0 1rem; // Reduce right padding
+  height: 100%;
+  background-color: white;
 
   @media (max-width: 768px) {
     display: flex;
@@ -128,7 +132,7 @@ export const MobileNav = styled.div`
 export const MenuIcon = styled.div`
   font-size: 1.2rem;
   cursor: pointer;
-  color: black;
+  color: ${LIGHT_GRAY_COLOR}; // Changed to light gray
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,11 +156,12 @@ export const MobileLogo = styled.h1`
 
 export const CartIcon = styled.div`
   font-size: 1.2rem;
-  color: black;
+  color: ${LIGHT_GRAY_COLOR};
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-touch-callout: none;
+  margin-right: -0.5rem; // Negative margin to offset the padding and hug the right border
 `;
 
 export const MobileMenu = styled.div<{ open: boolean }>`
@@ -169,6 +174,8 @@ export const MobileMenu = styled.div<{ open: boolean }>`
   transition: left 0.3s ease-in-out;
   z-index: 1001;
   overflow-y: auto;
+  border-top: ${BORDER_THICKNESS} solid black; // Add the border back
+  box-shadow: 0 1px 0 0 black; // Add a box-shadow to create a more visible line
 `;
 
 export const CloseIcon = styled(FaTimes)`
@@ -177,33 +184,36 @@ export const CloseIcon = styled(FaTimes)`
   right: 1rem;
   font-size: 1.5rem;
   cursor: pointer;
-  color: black; // Set the color to black
-//   color: #1404FB; // Set the color to blue if you prefer
+  color: ${LIGHT_GRAY_COLOR}; // Changed to light gray
 `;
 
 export const MobileMenuLinks = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2rem;
 `;
 
 export const MobileMenuLink = styled.div`
   font-family: 'Helvetica Neue LT Com', sans-serif;
   text-decoration: none;
   color: black;
-  padding: 1rem 0;
-  border-bottom: 1px solid black;
+  padding: 0.75rem 1rem; // Reduced vertical padding and horizontal padding
+  border-bottom: ${BORDER_THICKNESS} solid black;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent; // Disable tap highlight on iOS
-  user-select: none; // Prevent text selection
-  -webkit-touch-callout: none; // Disable callout on long-press (iOS)
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-touch-callout: none;
 
-  // Remove hover and active effects
   &:hover, &:active {
     color: inherit;
     background-color: transparent;
   }
+`;
+
+export const MobileMenuIcon = styled.div`
+  color: ${LIGHT_GRAY_COLOR};
+  margin-left: auto; // Push the icon to the right
+  padding-left: 1rem; // Add some space between text and icon
 `;

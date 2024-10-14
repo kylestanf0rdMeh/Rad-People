@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {FaArrowRight, FaTimes, FaBars, FaShoppingBag} from 'react-icons/fa'
+import { FiChevronRight, FiX, FiMenu, FiShoppingBag } from 'react-icons/fi'
 import { 
         NavBarContainer, 
         DesktopNav, 
@@ -14,7 +14,8 @@ import {
         CartIcon, 
         MobileMenu, 
         MobileMenuLink, 
-        MobileMenuLinks 
+        MobileMenuLinks,
+        MobileMenuIcon
        } from '../styles/NavBarStyles';
 
 const NavBar: React.FC = () => {
@@ -42,27 +43,27 @@ const NavBar: React.FC = () => {
       </DesktopNav>
       <MobileNav> 
         <MenuIcon onClick={toggleMobileMenu} >
-          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          {mobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
         </MenuIcon>
         <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
         <CartIcon onClick={() => handleMobileNavClick("/cart")}>
-          <FaShoppingBag />
+          <FiShoppingBag size={20} />
         </CartIcon>
       </MobileNav>
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
-            About <FaArrowRight />
-          </MobileMenuLink>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
-            Gallery <FaArrowRight />
-          </MobileMenuLink>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
-            Shop <FaArrowRight />
-          </MobileMenuLink>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/agency")}>
-            Agency <FaArrowRight />
-          </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
+          ABOUT <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
+          GALLERY <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
+          SHOP <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/agency")}>
+          AGENCY <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
         </MobileMenuLinks>
       </MobileMenu>
     </NavBarContainer>

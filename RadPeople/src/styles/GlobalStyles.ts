@@ -51,6 +51,27 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'Helvetica Neue LT Com', sans-serif;
     font-weight: bold;
   }
+
+  /* Scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: white;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #A9A9A9;
+    border-radius: 6px;
+    border: 3px solid white;
+  }
+
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #A9A9A9 white;
+  }
 `;
 
 export default GlobalStyles;

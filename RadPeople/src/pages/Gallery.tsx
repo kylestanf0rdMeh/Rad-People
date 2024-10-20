@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GalleryItem } from '../models/Gallery.model';
 import { fetchGalleryImages } from '../middleware/Gallery';
 import { GalleryPageContainer, GalleryContainer, GalleryImage } from '../styles/GalleryStyles';
@@ -10,7 +10,29 @@ const Gallery: React.FC = () => {
   const { currentIndex, goToNext, goToPrevious } = useGalleryNavigation(images.length);
   const isMobile = useIsMobile();
   const [cursor, setCursor] = useState<'w-resize' | 'e-resize'>('e-resize');
-  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [currentImage, setCurrentImage] = useState<{ src: string; fillScreen: boolean } | null>(null);
+
+  const preloadImage = useCallback((src: string) => {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+    });
+  }, []);
+
+  const loadCurrentImage = useCallback(async () => {
+    if (images.length > 0) {
+      const imageSrc = `https:${images[currentIndex].fields.image.fields.file.url}`;
+      try {
+        const img = await preloadImage(imageSrc);
+        const shouldFillScreen = isMobile && img.naturalHeight >= img.naturalWidth;
+        setCurrentImage({ src: imageSrc, fillScreen: shouldFillScreen });
+      } catch (error) {
+        console.error('Error loading image:', error);
+      }
+    }
+  }, [images, currentIndex, isMobile, preloadImage]);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -24,6 +46,10 @@ const Gallery: React.FC = () => {
 
     loadImages();
   }, []);
+
+  useEffect(() => {
+    loadCurrentImage();
+  }, [loadCurrentImage]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, currentTarget } = event;
@@ -46,17 +72,6 @@ const Gallery: React.FC = () => {
     }
   };
 
-  const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const img = event.currentTarget;
-    setImageDimensions({ width: img.naturalWidth, height: img.naturalHeight });
-  };
-
-  const shouldFillScreen = () => {
-    if (!isMobile) return false;
-    // Fill screen if image height is greater than or equal to its width
-    return imageDimensions.height >= imageDimensions.width;
-  };
-
   return (
     <GalleryPageContainer 
       onClick={handleClick} 
@@ -64,12 +79,12 @@ const Gallery: React.FC = () => {
       style={{ cursor: isMobile ? 'default' : cursor }}
     >
       <GalleryContainer>
-        {images.length > 0 && (
+        {currentImage && (
           <GalleryImage
-            src={`https:${images[currentIndex].fields.image.fields.file.url}`}
+            key={currentImage.src}
+            src={currentImage.src}
             alt={images[currentIndex].fields.descriptions || 'Gallery image'}
-            onLoad={handleImageLoad}
-            fillScreen={shouldFillScreen()}
+            fillScreen={currentImage.fillScreen}
           />
         )}
       </GalleryContainer>

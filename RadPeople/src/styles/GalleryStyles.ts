@@ -33,6 +33,11 @@ export const GalleryImage = styled.img<{ fillScreen: boolean }>`
   -webkit-user-select: none;
   -ms-user-select: none;
 
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
   @media (min-width: 769px) {
     height: 100%;
     width: auto;

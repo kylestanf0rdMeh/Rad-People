@@ -37,7 +37,7 @@ const NavBar: React.FC = () => {
           <NavLink to="/about">ABOUT</NavLink>
           <NavLink to="/gallery">GALLERY</NavLink>
           <NavLink to="/shop">SHOP</NavLink>
-          <NavLink to="/agency">AGENCY</NavLink>
+          <NavLink to="/events">EVENTS</NavLink>
         </NavLinks>
         <CartLink as={NavLink} to="/cart">cart</CartLink>
       </DesktopNav>
@@ -61,8 +61,8 @@ const NavBar: React.FC = () => {
         <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
           SHOP <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
         </MobileMenuLink>
-        <MobileMenuLink onClick={() => handleMobileNavClick("/agency")}>
-          AGENCY <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/events")}>
+          EVENTS <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
         </MobileMenuLink>
         </MobileMenuLinks>
       </MobileMenu>

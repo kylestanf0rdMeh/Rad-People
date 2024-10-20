@@ -1,66 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import Layout from '../components/Layout';
-import contentfulClient from '../services/contentful';
+import { GalleryItem } from '../models/Gallery.model';
+import { fetchGalleryImages } from '../middleware/Gallery';
+import { GalleryGrid, GalleryImage } from '../styles/GalleryStyles';
 
-const GalleryGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 20px;
-`;
-
-const GalleryImage = styled.img`
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
-
-interface GalleryItem {
-  fields: {
-    title: string;
-    image: {
-      fields: {
-        file: {
-          url: string;
-        };
-      };
-    };
-  };
-}
 
 const Gallery: React.FC = () => {
   const [images, setImages] = useState<GalleryItem[]>([]);
 
   useEffect(() => {
-    const fetchImages = async () => {
+    const loadImages = async () => {
       try {
-        const response: any = await contentfulClient.getEntries({
-          content_type: 'galleryImage',
-        });
-        setImages(response.items as GalleryItem[]);
+        const fetchedImages = await fetchGalleryImages();
+        setImages(fetchedImages);
       } catch (error) {
-        console.error('Error fetching gallery images:', error);
+        console.error('Error loading gallery images:', error);
       }
     };
 
-    fetchImages();
+    loadImages();
   }, []);
 
   return (
     <Layout>
       <h2>Gallery</h2>
       <GalleryGrid>
-        {images.map((item, index) => (
+        {images.map((item) => (
           <GalleryImage
-            key={index}
-            src={item.fields.image.fields.file.url}
-            alt={item.fields.title}
+            key={item.sys.id}
+            src={`https:${item.fields.image.fields.file.url}`}
+            alt={item.fields.descriptions || 'Gallery image'}
           />
         ))}
       </GalleryGrid>

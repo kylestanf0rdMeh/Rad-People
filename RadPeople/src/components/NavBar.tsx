@@ -1,234 +1,71 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '@google/model-viewer';
-import { motion, AnimatePresence } from 'framer-motion';
+import { FiChevronRight, FiX, FiMenu, FiShoppingBag } from 'react-icons/fi'
+import { 
+        NavBarContainer, 
+        DesktopNav, 
+        NavLink, 
+        Logo, 
+        NavLinks, 
+        CartLink, 
+        MobileNav, 
+        MobileLogo, 
+        MenuIcon,
+        CartIcon, 
+        MobileMenu, 
+        MobileMenuLink, 
+        MobileMenuLinks,
+        MobileMenuIcon
+       } from '../styles/NavBarStyles';
 
-const NavBarContainer = styled.nav`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #1404FB;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 120px;
-  overflow: hidden; // Prevent scrolling
-`;
-
-const LeftSection = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const LeftText = styled.span`
-  font-family: 'Sequel Sans', sans-serif;
-  font-weight: bold;
-  font-size: 3vw;
-  color: white;
-  white-space: nowrap;
-`;
-
-const RightSection = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-grow: 1;
-  margin-left: 45px;
-  overflow-x: hidden;
-  overflow: hidden; // Prevent scrolling
-
-`;
-
-const NavButtonsContainer = styled(motion.div)`
-  display: flex;
-  width: 100%;
-  position: relative;
-  height: 80px; // Adjust this value based on your button height
-`;
-
-const ModelViewerWrapper = styled.div<{ $isActive: boolean }>`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease, width 0.3s ease, height 0.3s ease;
-  pointer-events: none;
-
-  ${props => props.$isActive && `
-    position: static;
-    transform: none;
-    opacity: 1;
-    width: 150px;
-    height: 100px;
-    margin-left: 15px;
-    pointer-events: auto;
-  `}
-`;
-
-const NavButton = styled(motion(Link))<{ $isActive: boolean }>`
-  font-family: 'Sequel Sans', sans-serif;
-  font-weight: bold;
-  font-size: 3vw;
-  color: white;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 10px 10px;
-  position: absolute;
-  transition: color 0.3s ease, opacity 0.3s ease;
-  outline: none;
-  width: 25%;
-  text-decoration: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-  &:focus-visible {
-    outline: 2px solid white;
-    outline-offset: 2px;
-  }
-
-  &:focus:not(:focus-visible) {
-    outline: none;
-  }
-
-  &:hover {
-    color: transparent;
-
-    ${ModelViewerWrapper} {
-      opacity: 1;
-      width: 12vw;
-      height: 12vw;
-    }
-  }
-
-  &::after {
-    content: none;
-  }
-`;
-
-const buttonVariants = {
-  initial: (custom: number) => ({
-    x: `${custom * 100}%`,
-    opacity: 1
-  }),
-  animate: (custom: number) => ({
-    x: `${custom * 100}%`,
-    opacity: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 500,
-      damping: 30
-    }
-  }),
-  exit: {
-    opacity: 0,
-    transition: { duration: 0.4 }
-  }
-};
-
-interface NavItem {
-  id: number;
-  to: string;
-  label: string;
-}
-
-interface NavBarProps {
-  navItems: NavItem[];
-  handleNavClick: (clickedId: number) => void;
-}
-
-const NavBar: React.FC<NavBarProps> = ({ navItems, handleNavClick }) => {
-  const [activeItemId, setActiveItemId] = useState<number>(0);  // Set default to 0 (CREATE)
-  const containerRef = useRef<HTMLDivElement>(null);
+const NavBar: React.FC = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollLeft = 0;
-    }
-  }, [activeItemId]);
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
-  const getOrderedItems = () => {
-    if (activeItemId === null) return navItems;
-    const activeIndex = navItems.findIndex(item => item.id === activeItemId);
-    return [
-      ...navItems.slice(activeIndex + 1),
-      ...navItems.slice(0, activeIndex)
-    ];
+  const handleMobileNavClick = (path: string) => {
+    setMobileMenuOpen(false);
+    setTimeout(() => navigate(path), 300); // Wait for menu close animation before navigating
   };
 
   return (
     <NavBarContainer>
-      <LeftSection>
-        <LeftText>LET'S</LeftText>
-        <AnimatePresence>
-          <ModelViewerWrapper $isActive={true}>
-            <model-viewer
-              src={`/3D/${navItems.find(item => item.id === activeItemId)?.label.toLowerCase()}.glb`}
-              alt={`3D ${navItems.find(item => item.id === activeItemId)?.label}`}
-              disable-tap
-              disable-zoom
-              auto-rotate
-              rotation-per-second="36deg"
-              interaction-prompt="none"
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-            />
-          </ModelViewerWrapper>
-        </AnimatePresence>
-      </LeftSection>
-      <RightSection ref={containerRef}>
-        <NavButtonsContainer>
-          <AnimatePresence initial={false}>
-            {getOrderedItems().map((item, index) => (
-              <NavButton
-                key={item.id}
-                $isActive={item.id === activeItemId}
-                to={item.to}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.id);
-                  setActiveItemId(item.id);
-                  setTimeout(() => {
-                    navigate(item.to);
-                  }, 100); // Adjust this delay as needed
-                }}
-                onMouseDown={(e) => e.preventDefault()}
-                custom={index}
-                variants={buttonVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
-                {item.label}
-                <ModelViewerWrapper $isActive={false}>
-                  <model-viewer
-                    src={`/3D/${item.label.toLowerCase()}.glb`}
-                    alt={`3D ${item.label}`}
-                    camera-controls={false}
-                    disable-tap
-                    disable-zoom
-                    auto-rotate={false}
-                    interaction-prompt="none"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                    }}
-                  />
-                </ModelViewerWrapper>
-              </NavButton>
-            ))}
-          </AnimatePresence>
-        </NavButtonsContainer>
-      </RightSection>
+      <DesktopNav>
+        <Logo to='/'>RADPEOPLE</Logo>
+        <NavLinks>
+          <NavLink to="/about">ABOUT</NavLink>
+          <NavLink to="/gallery">GALLERY</NavLink>
+          <NavLink to="/shop">SHOP</NavLink>
+          <NavLink to="/events">EVENTS</NavLink>
+        </NavLinks>
+        <CartLink as={NavLink} to="/cart">cart</CartLink>
+      </DesktopNav>
+      <MobileNav> 
+        <MenuIcon onClick={toggleMobileMenu} >
+          {mobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+        </MenuIcon>
+        <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
+        <CartIcon onClick={() => handleMobileNavClick("/cart")}>
+          <FiShoppingBag size={20} />
+        </CartIcon>
+      </MobileNav>
+      <MobileMenu open={mobileMenuOpen}>
+        <MobileMenuLinks>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
+          ABOUT <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
+          GALLERY <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
+          SHOP <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        <MobileMenuLink onClick={() => handleMobileNavClick("/events")}>
+          EVENTS <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+        </MobileMenuLink>
+        </MobileMenuLinks>
+      </MobileMenu>
     </NavBarContainer>
   );
 };

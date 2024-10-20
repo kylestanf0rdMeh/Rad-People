@@ -10,6 +10,7 @@ const Gallery: React.FC = () => {
   const { currentIndex, goToNext, goToPrevious } = useGalleryNavigation(images.length);
   const isMobile = useIsMobile();
   const [cursor, setCursor] = useState<'w-resize' | 'e-resize'>('e-resize');
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   useEffect(() => {
     const loadImages = async () => {
@@ -45,6 +46,17 @@ const Gallery: React.FC = () => {
     }
   };
 
+  const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const img = event.currentTarget;
+    setImageDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+  };
+
+  const shouldFillScreen = () => {
+    if (!isMobile) return false;
+    // Fill screen if image height is greater than or equal to its width
+    return imageDimensions.height >= imageDimensions.width;
+  };
+
   return (
     <GalleryPageContainer 
       onClick={handleClick} 
@@ -56,6 +68,8 @@ const Gallery: React.FC = () => {
           <GalleryImage
             src={`https:${images[currentIndex].fields.image.fields.file.url}`}
             alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+            onLoad={handleImageLoad}
+            fillScreen={shouldFillScreen()}
           />
         )}
       </GalleryContainer>

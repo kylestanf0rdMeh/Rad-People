@@ -22,10 +22,10 @@ export const GalleryContainer = styled.div`
   align-items: center;
 `;
 
-export const GalleryImage = styled.img`
+export const GalleryImage = styled.img<{ fillScreen: boolean }>`
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: ${props => props.fillScreen ? 'cover' : 'contain'};
   user-drag: none;
   -webkit-user-drag: none;
   user-select: none;
@@ -40,18 +40,6 @@ export const GalleryImage = styled.img`
 
   @media (max-width: 768px) {
     width: 100%;
-    height: auto;
+    height: ${props => props.fillScreen ? '100%' : 'auto'};
   }
-`;
-
-export const NavigationButton = styled.button<{ side: 'left' | 'right' }>`
-  position: absolute;
-  top: 0;
-  ${({ side }) => side}: 0;
-  width: 50%;
-  height: 100%;
-  background: none;
-  border: none;
-  cursor: ${({ side }) => (side === 'left' ? 'w-resize' : 'e-resize')};
-  z-index: 10;
 `;

@@ -10,7 +10,7 @@ const Gallery: React.FC = () => {
   const { currentIndex, goToNext, goToPrevious } = useGalleryNavigation(images.length);
   const isMobile = useIsMobile();
   const [cursor, setCursor] = useState<'w-resize' | 'e-resize'>('e-resize');
-  const [currentImage, setCurrentImage] = useState<{ src: string; fillScreen: boolean } | null>(null);
+  const [currentImage, setCurrentImage] = useState<{ src: string; fillScreen: boolean; isWide: boolean } | null>(null);
 
   const preloadImage = useCallback((src: string) => {
     return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -26,8 +26,18 @@ const Gallery: React.FC = () => {
       const imageSrc = `https:${images[currentIndex].fields.image.fields.file.url}`;
       try {
         const img = await preloadImage(imageSrc);
-        const shouldFillScreen = isMobile && img.naturalHeight >= img.naturalWidth;
-        setCurrentImage({ src: imageSrc, fillScreen: shouldFillScreen });
+        const aspectRatio = img.naturalWidth / img.naturalHeight;
+        
+        let shouldFillScreen;
+        let isWide = false;
+        
+        if (isMobile) {
+          shouldFillScreen = img.naturalHeight >= img.naturalWidth;
+        } else {
+          isWide = aspectRatio > 1.5; // Adjust this threshold as needed
+          shouldFillScreen = isWide;
+        }
+        setCurrentImage({ src: imageSrc, fillScreen: shouldFillScreen, isWide });
       } catch (error) {
         console.error('Error loading image:', error);
       }
@@ -85,6 +95,7 @@ const Gallery: React.FC = () => {
             src={currentImage.src}
             alt={images[currentIndex].fields.descriptions || 'Gallery image'}
             fillScreen={currentImage.fillScreen}
+            isWide={currentImage.isWide}
           />
         )}
       </GalleryContainer>

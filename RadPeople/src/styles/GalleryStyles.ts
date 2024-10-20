@@ -22,7 +22,7 @@ export const GalleryContainer = styled.div`
   align-items: center;
 `;
 
-export const GalleryImage = styled.img<{ fillScreen: boolean }>`
+export const GalleryImage = styled.img<{ fillScreen: boolean; isWide: boolean }>`
   max-width: 100%;
   max-height: 100%;
   object-fit: ${props => props.fillScreen ? 'cover' : 'contain'};
@@ -39,8 +39,8 @@ export const GalleryImage = styled.img<{ fillScreen: boolean }>`
   }
 
   @media (min-width: 769px) {
+    width: ${props => props.isWide ? '100%' : 'auto'};
     height: 100%;
-    width: auto;
   }
 
   @media (max-width: 768px) {

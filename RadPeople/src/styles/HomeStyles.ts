@@ -6,6 +6,9 @@ export const HomeContainer = styled.div`
   color: white;
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; // Add this line
 `;
 
 export const Hero = styled.div`
@@ -14,6 +17,22 @@ export const Hero = styled.div`
   align-items: center;
   height: 100vh;
   width: 100%;
+`;
+
+export const VideoWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+`;
+
+export const StyledVideo = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: #1404FB; // This will be visible if there's any gap
 `;
 
 export const CenteredText = styled.div`

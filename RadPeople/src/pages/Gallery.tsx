@@ -119,9 +119,7 @@ const Gallery: React.FC = () => {
     </GalleryContainer>
     <ContactRectangle>
       <h3>Contact Us</h3>
-      <p>Email: info@example.com</p>
-      <p>Phone: (123) 456-7890</p>
-      <p>123 Main St, City</p>
+      <p>contact@radpeople.us</p>
     </ContactRectangle>
     <OverlayButton onClick={toggleOverlay}>
       <FiGrid />

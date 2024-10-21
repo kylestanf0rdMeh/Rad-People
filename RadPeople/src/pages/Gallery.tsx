@@ -65,6 +65,9 @@ const Gallery: React.FC = () => {
   }, [loadCurrentImage]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // Ignore clicks when the overlay is open
+    if (isOverlayOpen) return;
+
     const { clientX, currentTarget } = event;
     const { left, width } = currentTarget.getBoundingClientRect();
     const clickPosition = clientX - left;
@@ -77,6 +80,9 @@ const Gallery: React.FC = () => {
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    // Ignore mouse moves when the overlay is open
+    if (isOverlayOpen) return;
+
     if (!isMobile) {
       const { clientX, currentTarget } = event;
       const { left, width } = currentTarget.getBoundingClientRect();
@@ -96,10 +102,10 @@ const Gallery: React.FC = () => {
 
   return (
     <GalleryPageContainer 
-    onClick={handleClick} 
-    onMouseMove={handleMouseMove}
-    style={{ cursor: isMobile ? 'default' : cursor }}
-  >
+      onClick={handleClick} 
+      onMouseMove={handleMouseMove}
+      style={{ cursor: isOverlayOpen ? 'default' : (isMobile ? 'default' : cursor) }}
+    >
     <GalleryContainer>
       {currentImage && (
         <GalleryImage

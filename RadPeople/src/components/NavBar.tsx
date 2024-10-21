@@ -52,18 +52,18 @@ const NavBar: React.FC = () => {
       </MobileNav>
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
-        <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
-          ABOUT <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
-        </MobileMenuLink>
-        <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
-          GALLERY <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
-        </MobileMenuLink>
-        <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
-          SHOP <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
-        </MobileMenuLink>
-        <MobileMenuLink onClick={() => handleMobileNavClick("/events")}>
-          EVENTS <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
-        </MobileMenuLink>
+          <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
+            <span>ABOUT</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+          </MobileMenuLink>
+          <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
+            <span>GALLERY</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+          </MobileMenuLink>
+          <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
+            <span>SHOP</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+          </MobileMenuLink>
+          <MobileMenuLink onClick={() => handleMobileNavClick("/events")}>
+            <span>EVENTS</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+          </MobileMenuLink>
         </MobileMenuLinks>
       </MobileMenu>
     </NavBarContainer>

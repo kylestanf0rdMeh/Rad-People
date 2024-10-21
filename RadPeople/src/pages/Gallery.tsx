@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GalleryItem } from '../models/Gallery.model';
 import { fetchGalleryImages } from '../middleware/Gallery';
-import { GalleryPageContainer, GalleryContainer, GalleryImage } from '../styles/GalleryStyles';
+import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle } from '../styles/GalleryStyles';
 import useGalleryNavigation from '../hooks/useGalleryNavigation';
 import useIsMobile from '../hooks/useIsMobile';
 
@@ -84,22 +84,28 @@ const Gallery: React.FC = () => {
 
   return (
     <GalleryPageContainer 
-      onClick={handleClick} 
-      onMouseMove={handleMouseMove}
-      style={{ cursor: isMobile ? 'default' : cursor }}
-    >
-      <GalleryContainer>
-        {currentImage && (
-          <GalleryImage
-            key={currentImage.src}
-            src={currentImage.src}
-            alt={images[currentIndex].fields.descriptions || 'Gallery image'}
-            fillScreen={currentImage.fillScreen}
-            isWide={currentImage.isWide}
-          />
-        )}
-      </GalleryContainer>
-    </GalleryPageContainer>
+    onClick={handleClick} 
+    onMouseMove={handleMouseMove}
+    style={{ cursor: isMobile ? 'default' : cursor }}
+  >
+    <GalleryContainer>
+      {currentImage && (
+        <GalleryImage
+          key={currentImage.src}
+          src={currentImage.src}
+          alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+          fillScreen={currentImage.fillScreen}
+          isWide={currentImage.isWide}
+        />
+      )}
+    </GalleryContainer>
+    <ContactRectangle>
+      <h3>Contact Us</h3>
+      <p>Email: info@example.com</p>
+      <p>Phone: (123) 456-7890</p>
+      <p>123 Main St, City</p>
+    </ContactRectangle>
+  </GalleryPageContainer>
   );
 };
 

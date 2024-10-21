@@ -196,7 +196,7 @@ export const MobileMenuLink = styled.div`
   font-family: 'Helvetica Neue LT Com', sans-serif;
   text-decoration: none;
   color: black;
-  padding: 0.75rem 1rem; // Reduced vertical padding and horizontal padding
+  padding: 0.75rem 1rem;
   border-bottom: ${BORDER_THICKNESS} solid black;
   display: flex;
   justify-content: space-between;
@@ -206,14 +206,40 @@ export const MobileMenuLink = styled.div`
   user-select: none;
   -webkit-touch-callout: none;
 
+  span {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; // Adjust this value to position the underline
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: ${BLUE_COLOR};
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+  }
+
   &:hover, &:active {
-    color: inherit;
+    color: black;
     background-color: transparent;
+
+    span::after {
+      transform: scaleX(1);
+    }
   }
 `;
 
 export const MobileMenuIcon = styled.div`
   color: ${LIGHT_GRAY_COLOR};
-  margin-left: auto; // Push the icon to the right
-  padding-left: 1rem; // Add some space between text and icon
+  margin-left: auto;
+  padding-left: 1rem;
+  transition: color 0.3s ease;
+
+  ${MobileMenuLink}:hover & {
+    color: ${BLUE_COLOR};
+  }
 `;

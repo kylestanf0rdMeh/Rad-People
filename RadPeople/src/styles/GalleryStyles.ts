@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+
+export const theme = {
+    imageMargin: 5,
+    imageHeight: 120,
+};
+
+
 export const GalleryPageContainer = styled.div`
   width: 100vw;
   height: calc(100vh - 40px);
@@ -84,5 +91,63 @@ export const ContactRectangle = styled.div`
 
   p {
     margin: 5px 0;
+  }
+`;
+
+export const OverlayButton = styled.button`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+  padding: 0;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke: #0000FF;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const CloseButton = styled.button`
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #0000FF;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 0;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  &:focus {
+    outline: none;
   }
 `;

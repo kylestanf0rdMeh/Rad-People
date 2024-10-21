@@ -11,7 +11,7 @@ const useGalleryNavigation = (totalImages: number) => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + totalImages) % totalImages);
   }, [totalImages]);
 
-  return { currentIndex, goToNext, goToPrevious };
+  return { currentIndex, setCurrentIndex, goToNext, goToPrevious };
 };
 
 export default useGalleryNavigation;

@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GalleryItem } from '../models/Gallery.model';
 import { fetchGalleryImages } from '../middleware/Gallery';
-import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle } from '../styles/GalleryStyles';
+import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
 import useGalleryNavigation from '../hooks/useGalleryNavigation';
 import useIsMobile from '../hooks/useIsMobile';
+import GalleryOverlay from '../components/GalleryOverlay';
+import { FiGrid } from 'react-icons/fi';
 
 const Gallery: React.FC = () => {
   const [images, setImages] = useState<GalleryItem[]>([]);
-  const { currentIndex, goToNext, goToPrevious } = useGalleryNavigation(images.length);
+  const { currentIndex, setCurrentIndex, goToNext, goToPrevious } = useGalleryNavigation(images.length);
   const isMobile = useIsMobile();
   const [cursor, setCursor] = useState<'w-resize' | 'e-resize'>('e-resize');
   const [currentImage, setCurrentImage] = useState<{ src: string; fillScreen: boolean; isWide: boolean } | null>(null);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   const preloadImage = useCallback((src: string) => {
     return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -82,6 +85,15 @@ const Gallery: React.FC = () => {
     }
   };
 
+  const toggleOverlay = () => {
+    setIsOverlayOpen(!isOverlayOpen);
+  };
+
+  const handleOverlayImageClick = (index: number) => {
+    setCurrentIndex(index);
+    setIsOverlayOpen(false);
+  };
+
   return (
     <GalleryPageContainer 
     onClick={handleClick} 
@@ -105,6 +117,15 @@ const Gallery: React.FC = () => {
       <p>Phone: (123) 456-7890</p>
       <p>123 Main St, City</p>
     </ContactRectangle>
+    <OverlayButton onClick={toggleOverlay}>
+      <FiGrid />
+    </OverlayButton>
+    <GalleryOverlay
+      isOpen={isOverlayOpen}
+      images={images}
+      onClose={toggleOverlay}
+      onImageClick={handleOverlayImageClick}
+    />
   </GalleryPageContainer>
   );
 };

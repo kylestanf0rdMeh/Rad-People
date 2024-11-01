@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { GalleryItem } from '../models/Gallery.model';
-import { fetchGalleryImages } from '../middleware/Gallery';
-import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
-import useGalleryNavigation from '../hooks/useGalleryNavigation';
-import useIsMobile from '../hooks/useIsMobile';
-import GalleryOverlay from '../components/GalleryOverlay';
 import { FiGrid } from 'react-icons/fi';
+import useIsMobile from '../hooks/useIsMobile';
+import { GalleryItem } from '../models/Gallery.model';
+import GalleryOverlay from '../components/GalleryOverlay';
+import { fetchGalleryImages } from '../middleware/Gallery';
+import React, { useState, useEffect, useCallback } from 'react';
+import useGalleryNavigation from '../hooks/useGalleryNavigation';
+import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
 
 const Gallery: React.FC = () => {
   const [images, setImages] = useState<GalleryItem[]>([]);

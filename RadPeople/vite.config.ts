@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  assetsInclude: ['**/*.otf', '**/*.json'],
+  assetsInclude: ['**/*.otf', '**/*.json', '**/*.png'],
   publicDir: 'public',
 })

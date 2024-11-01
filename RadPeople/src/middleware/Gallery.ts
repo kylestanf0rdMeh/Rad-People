@@ -7,7 +7,6 @@ export const fetchGalleryImages = async (): Promise<GalleryItem[]> => {
       const response: EntryCollection<GalleryItem> = await contentfulClient.getEntries({
         content_type: 'gallery',
       });
-      console.log('Contentful response:', response);
       //   ignore this false error for now,there is nothing wrong with this (has to do with type safety)
       return response.items.map(item => ({
         sys: item.sys,

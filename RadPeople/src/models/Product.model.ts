@@ -30,6 +30,8 @@ export interface ProductItem {
       price: number;
       color: string;
       shipingInWeeks: string;
+      sizeAndFit: string;
+      care: string;
   };
   contentTypeId: string;
 }

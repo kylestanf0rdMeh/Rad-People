@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { ProductItem } from '../models/Product.model';
+import DetailsDropdown from '../components/DetailsDropdown';
 import {
   ProductContainer,
   ImageSection,
@@ -49,7 +50,7 @@ const ProductDetail: React.FC = () => {
   };
 
   const sortSizes = (sizes: string[]) => {
-    const sizeOrder = { 'xxs': 0, 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6 };
+    const sizeOrder: Record<string, number> = { 'xxs': 0, 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6 };
     return sizes.sort((a, b) => sizeOrder[a] - sizeOrder[b]);
   };
 
@@ -78,10 +79,12 @@ const ProductDetail: React.FC = () => {
         
         {/* RIGHT SIDE */}
         <ProductSummary>
+
           <TitleRow>
             <ProductTitle>{product.fields.name}</ProductTitle>
             <ProductPrice>${product.fields.price}</ProductPrice>
           </TitleRow>
+
           <ProductDescription>
             {deriveDescriptionQueues().map((item, index) => (
               <DescriptionItem key={`desc-${index}`}>
@@ -89,6 +92,7 @@ const ProductDetail: React.FC = () => {
               </DescriptionItem>
             ))}
           </ProductDescription>
+
           <ProductColor>Color: {product.fields.color}</ProductColor>
           
           <SizesContainer>
@@ -102,12 +106,25 @@ const ProductDetail: React.FC = () => {
               </SizeButton>
             ))}
           </SizesContainer>
+
           <AddToCartButton>
             Add to cart
           </AddToCartButton>
+
           <ShippingContainer>
             This product will ship in {shippingWeeks} weeks
           </ShippingContainer>
+
+          <DetailsDropdown 
+            title="Size + Fit"
+            content={product.fields.sizeAndFit || 'Size and fit information not available.'}
+          />
+
+          <DetailsDropdown 
+            title="Care"
+            content={product.fields.care || 'Care information not available.'}
+          />
+
         </ProductSummary>
       </ProductContainer>
     </Layout>

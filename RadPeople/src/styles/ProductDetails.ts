@@ -6,7 +6,9 @@ export const ProductContainer = styled.div`
   max-width: 100vw;
   padding: 0 max(5px, calc((100vw - 100%) / 2));
   box-sizing: border-box;
-  overflow: hidden; // Prevent content from spilling out
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
 `;
 
 export const ImageSection = styled.div`
@@ -14,7 +16,13 @@ export const ImageSection = styled.div`
   padding-right: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px; // Space between images
+  gap: 10px;
+  overflow-y: scroll;
+  height: 100vh;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const ProductImage = styled.img`
@@ -27,8 +35,17 @@ export const ProductSummary = styled.div`
   flex: 1;
   padding: 0 15px 0 20px;
   border-left: 1px solid #000000;
-  max-width: 50%; // Ensure it takes up exactly half the container
-  box-sizing: border-box; // Include padding in width calculation
+  max-width: 50%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: auto; // Changed from height: 100vh
+  min-height: 100%;
+  position: sticky;
+  top: 0;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const TitleRow = styled.div`

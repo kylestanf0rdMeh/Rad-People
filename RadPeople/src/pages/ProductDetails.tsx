@@ -27,6 +27,35 @@ interface LocationState {
 const ProductDetail: React.FC = () => {
   const location = useLocation();
   const state = location.state as LocationState;
+  const imageRef = React.useRef<HTMLDivElement>(null);
+  const summaryRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleScroll = (e: Event) => {
+      if (!imageRef.current || !summaryRef.current) return;
+
+      const imageSection = imageRef.current;
+      const summarySection = summaryRef.current;
+      
+      const imageScrollTop = imageSection.scrollTop;
+      const imageScrollHeight = imageSection.scrollHeight - imageSection.clientHeight;
+
+      // Lock summary scroll until images are fully scrolled
+      if (imageScrollTop < imageScrollHeight) {
+        summarySection.scrollTop = 0;
+      }
+    };
+
+    const imageSection = imageRef.current;
+
+    imageSection?.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      imageSection?.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   if (!state?.product) {
     return <Navigate to="/" replace />;
@@ -67,7 +96,7 @@ const ProductDetail: React.FC = () => {
       <ProductContainer>
 
         {/* LEFT SIDE */}
-        <ImageSection>
+        <ImageSection ref={imageRef}>
           {allImages.map((image, index) => (
             <ProductImage
               key={`product-image-${index}`}
@@ -78,7 +107,7 @@ const ProductDetail: React.FC = () => {
         </ImageSection>
         
         {/* RIGHT SIDE */}
-        <ProductSummary>
+        <ProductSummary ref={summaryRef}>
 
           <TitleRow>
             <ProductTitle>{product.fields.name}</ProductTitle>

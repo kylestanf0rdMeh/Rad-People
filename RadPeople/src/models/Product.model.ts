@@ -18,7 +18,18 @@ export interface ProductItem {
           title: string;
         };
       }>;
+      altImages: Array<{
+        fields: {
+          file: {
+            url: string;
+          };
+          title: string;
+        };
+      }>;
+      sizes: string;
       price: number;
+      color: string;
+      shipingInWeeks: string;
   };
   contentTypeId: string;
 }

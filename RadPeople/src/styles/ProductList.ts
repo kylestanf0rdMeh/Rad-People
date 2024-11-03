@@ -159,6 +159,30 @@ export const GridButton = styled.button`
     margin-left: 15px;
   }
 `;
+export const FilterButton = styled.button`
+  width: fit-content;
+  height: 100%;
+  color: black;
+  font-family: 'Sequel Sans Regular', sans-serif;
+  font-size: 11px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 5px;
+  text-transform: uppercase;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 15px;
+  }
+`;
 
 export const Modal = styled.div<{ isOpen: boolean }>`
   display: ${props => props.isOpen ? 'flex' : 'none'};
@@ -181,7 +205,7 @@ export const SortModal = styled(Modal)`
   left: auto;
   border-right: none;
   border-left: 1px solid #000000;
-  width: 200px;
+  width: 300px;
   height: auto;
   flex-direction: column;
   padding: 10px 0;
@@ -200,7 +224,7 @@ export const ModalButton = styled.button<{ isActive?: boolean }>`
   font-family: 'Sequel Sans Regular', sans-serif;
   padding: 5px 15px;
   width: 60px;
-  border: 1px solid ${props => props.isActive ? '#000000' : '#CCCCCC'};
+  border: 1px solid ${props => props.isActive ? '#000000' : '#E5E5E5'};
   background: white;
   cursor: pointer;
   border-radius: 0; 
@@ -223,5 +247,6 @@ export const ModalButton = styled.button<{ isActive?: boolean }>`
 export const SortButton = styled(ModalButton)`
       width: 90%;
       text-align: left;
-      padding: 8px 15px;
+      padding: 8px 10px;
+      font-size: 11px;
 `;

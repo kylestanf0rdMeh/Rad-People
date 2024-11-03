@@ -18,7 +18,8 @@ import {
   Modal,
   ModalButton,
   SortButton,
-  SortModal
+  SortModal,
+  FilterButton
 } from '../styles/ProductList';
 
 
@@ -137,36 +138,36 @@ const ProductList: React.FC = () => {
           
 
           {/* SORT FILTER */}
-          <GridButton 
+          <FilterButton 
             onClick={() => setSortModalOpen(!sortModalOpen)}
             className={width <= 768 ? 'mobile' : ''}
           >
             Sort By
-          </GridButton>
+          </FilterButton>
           <SortModal isOpen={sortModalOpen} className={width <= 768 ? 'mobile' : ''}>
             <SortButton 
               isActive={sortType === 'date-new'} 
               onClick={() => handleSort('date-new')}
             >
-              Date: New to Old
+              Date, New to Old
             </SortButton>
             <SortButton 
               isActive={sortType === 'date-old'} 
               onClick={() => handleSort('date-old')}
             >
-              Date: Old to New
+              Date, Old to New
             </SortButton>
             <SortButton 
               isActive={sortType === 'price-high'} 
               onClick={() => handleSort('price-high')}
             >
-              Price: High to Low
+              Price, High to Low
             </SortButton>
             <SortButton 
               isActive={sortType === 'price-low'} 
               onClick={() => handleSort('price-low')}
             >
-              Price: Low to High
+              Price, Low to High
             </SortButton>
           </SortModal>
         </FilterMenu>

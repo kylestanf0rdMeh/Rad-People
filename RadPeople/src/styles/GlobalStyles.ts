@@ -2,6 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 import NFUltraRegular from '../assets/NFUltra-Regular.otf';
 import HelveticaNeueLTCom77BoldCondensed from '../assets/Helvetica Neue LT Com 77 Bold Condensed.ttf';
 import SequelSans from '../assets/sequel-sans-black-display.ttf'
+import SequelSansLightDisp from '../assets/Sequel Sans Book Body.ttf';
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -24,6 +25,14 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'Sequel Sans';
     src: url(${SequelSans}) format('truetype');
     font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Sequel Sans Regular';
+    src: url(${SequelSansLightDisp}) format('truetype');
+    font-weight: bold;  /* Light weight */
     font-style: normal;
     font-display: swap;
   }

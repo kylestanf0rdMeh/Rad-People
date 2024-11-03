@@ -1,106 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import Layout from '../components/Layout';
 import { ProductItem } from '../models/Product.model';
 import { fetchProducts } from '../middleware/Product';
-
-const ProductListContainer = styled.div`
-  overflow-x: hidden;
-  width: 100%;
-  background-color: #FFFFFF;
-  /* Add height calculation based on content */
-  height: fit-content;
-`;
-
-const ProductGrid = styled.div<{itemCount: number}>`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  gap: 0;
-  background-color: #FFFFFF;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    /* Only cover the height of actual products */
-    height: ${props => `${Math.ceil(props.itemCount / 4) * (100 / (Math.ceil(props.itemCount / 4)))}%`};
-    background-image: 
-      linear-gradient(to right, #000000 1px, transparent 1px),
-      linear-gradient(to bottom, #000000 1px, transparent 1px);
-    background-size: 25% 100%, 100% auto;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    &::after {
-      background-size: 50% 100%, 100% auto;
-      height: ${props => `${Math.ceil(props.itemCount / 2) * (100 / (Math.ceil(props.itemCount / 2)))}%`};
-    }
-  }
-`;
-
-const ProductCard = styled.div`
-  text-align: center;
-  aspect-ratio: 2/3;
-  padding: 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-`;
-
-const ProductDetails = styled.div`
-  height: 15px;
-  border-top: 1px solid #000000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5px;
-  font-size: 12px;
-  background-color: #FFFFFF;
-  z-index: 2;  /* Ensure it appears above the grid lines */
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-`;
-
-const ProductImage = styled.img`
-  width: 100%;
-  height: calc(100% - 15px);  /* Leave space for details */
-  object-fit: cover;
-  display: block;
-`;
-
-const ProductName = styled.span`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const ProductPrice = styled.span`
-  margin-left: 10px;
-`;
-
+import useWindowDimensions from '../hooks/useWindowDimensions'
+import { 
+  ProductCard, 
+  ProductListContainer, 
+  ProductLink, 
+  ProductGrid, 
+  ProductDetails, 
+  ProductImage, 
+  ProductName, 
+  ProductPrice, 
+  ImageWrapper,
+  FilterMenu,
+  GridButton,
+  Modal,
+  ModalButton,
+  SortButton,
+  SortModal
+} from '../styles/ProductList';
 
 
 const ProductList: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const [activeGrid, setActiveGrid] = useState<number>(4); // Default to 4
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [sortedProducts, setSortedProducts] = useState<{
+    default: ProductItem[];
+    oldToNew: ProductItem[];
+    priceLowToHigh: ProductItem[];
+    priceHighToLow: ProductItem[];
+  }>({ default: [], oldToNew: [], priceLowToHigh: [], priceHighToLow: [] });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sortModalOpen, setSortModalOpen] = useState(false);
+  const [sortType, setSortType] = useState('date-new');
+
 
   useEffect(() => {
     const loadProducts = async () => {
       try{
-        const fetchedProducts = await fetchProducts()
-        setProducts(fetchedProducts)
+        const fetchedProducts = await fetchProducts();
+        preComputeProducts(fetchedProducts);
       }catch(e){
         console.error('Error loading products: ', e)
       }
@@ -109,25 +50,153 @@ const ProductList: React.FC = () => {
     loadProducts()
   }, []);
 
+  useEffect(() => {
+    if (width <= 768) { // mobile breakpoint
+      setActiveGrid(2); // or whatever grid size you want for mobile
+    } else if (activeGrid < 4) { // if coming back to desktop
+      setActiveGrid(4); // reset to default desktop view
+    }
+  }, [width]); // dependency on width changes
+
+  const gridClick = (viewSize: number) => {
+    setActiveGrid(viewSize)
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const handleSort = (type: string) => {
+    setSortType(type);
+    setSortModalOpen(false);
+    
+    switch(type) {
+      case 'date-old':
+        setProducts(sortedProducts.oldToNew);
+        break;
+      case 'price-low':
+        setProducts(sortedProducts.priceLowToHigh);
+        break;
+      case 'price-high':
+        setProducts(sortedProducts.priceHighToLow);
+        break;
+      default: // 'date-new' or initial state
+        setProducts(sortedProducts.default);
+    }
+  };
+
+  const preComputeProducts = (fetchedProducts: ProductItem[]) => {
+    const defaultOrder = [...fetchedProducts];
+    // Pre-compute all sort orders
+    const oldToNew = [...defaultOrder].reverse();
+    const priceLowToHigh = [...defaultOrder].sort((a, b) => a.fields.price - b.fields.price);
+    const priceHighToLow = [...defaultOrder].sort((a, b) => b.fields.price - a.fields.price);
+
+    setProducts(defaultOrder);
+        setSortedProducts({
+          default: defaultOrder,
+          oldToNew,
+          priceLowToHigh,
+          priceHighToLow
+    });
+  }
+
   return (
     <Layout>
-    <ProductListContainer>
-      <ProductGrid itemCount={products.length}>
-        {products.map((product) => (
-          <ProductCard key={product.sys.id}>
-            <ProductImage 
-              src={`https:${product.fields.image[0].fields.file.url}` || ''} 
-              alt={product.fields.name} 
-            />
-            <ProductDetails>
-              <ProductName>{product.fields.name}</ProductName>
-              <ProductPrice>${product.fields.price}</ProductPrice>
-            </ProductDetails>
-          </ProductCard>
-        ))}
-      </ProductGrid>
-    </ProductListContainer>
-  </Layout>
+      <ProductListContainer>
+        <FilterMenu>
+          {width > 768 ? ( // Only render on desktop
+          <>
+            <GridButton onClick={() => setIsModalOpen(!isModalOpen)}>
+              View By ({activeGrid})
+            </GridButton>
+
+            {/* VIEW FILTER */}
+            <Modal isOpen={isModalOpen}>
+              <ModalButton 
+                isActive={activeGrid === 2} 
+                onClick={() => gridClick(2)}
+              >
+                2
+              </ModalButton>
+              <ModalButton 
+                isActive={activeGrid === 4} 
+                onClick={() => gridClick(4)}
+              >
+                4
+              </ModalButton>
+              <ModalButton 
+                isActive={activeGrid === 8} 
+                onClick={() => gridClick(8)}
+              >
+                8
+              </ModalButton>
+            </Modal>
+          </>
+
+          ) : (
+            <div></div>
+          )}
+          
+
+          {/* SORT FILTER */}
+          <GridButton 
+            onClick={() => setSortModalOpen(!sortModalOpen)}
+            className={width <= 768 ? 'mobile' : ''}
+          >
+            Sort By
+          </GridButton>
+          <SortModal isOpen={sortModalOpen} className={width <= 768 ? 'mobile' : ''}>
+            <SortButton 
+              isActive={sortType === 'date-new'} 
+              onClick={() => handleSort('date-new')}
+            >
+              Date: New to Old
+            </SortButton>
+            <SortButton 
+              isActive={sortType === 'date-old'} 
+              onClick={() => handleSort('date-old')}
+            >
+              Date: Old to New
+            </SortButton>
+            <SortButton 
+              isActive={sortType === 'price-high'} 
+              onClick={() => handleSort('price-high')}
+            >
+              Price: High to Low
+            </SortButton>
+            <SortButton 
+              isActive={sortType === 'price-low'} 
+              onClick={() => handleSort('price-low')}
+            >
+              Price: Low to High
+            </SortButton>
+          </SortModal>
+        </FilterMenu>
+        <ProductGrid columns={activeGrid}>
+          {products.map((product) => (
+            <ProductLink 
+              key={product.sys.id}
+              to={`/product/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
+              state={{ product }}  // Pass the product data as state
+              columns={activeGrid}
+            >
+              <ProductCard>
+                <ImageWrapper columns = {activeGrid}>
+                  <ProductImage 
+                    src={`https:${product.fields.image[0].fields.file.url}` || ''} 
+                    alt={product.fields.name} 
+                  />
+                </ImageWrapper>
+                {activeGrid !== 8 && (
+                  <ProductDetails>
+                    <ProductName>{product.fields.name}</ProductName>
+                    <ProductPrice>${product.fields.price}</ProductPrice>
+                  </ProductDetails>
+                )}
+              </ProductCard>
+            </ProductLink>
+          ))}
+        </ProductGrid>
+      </ProductListContainer>
+    </Layout>
   );
 };
 

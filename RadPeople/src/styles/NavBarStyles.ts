@@ -28,8 +28,9 @@ export const DesktopNav = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
-  height: 100%; // Set a fixed height for the navbar
+  padding: 0 max(5px, calc((100vw - 100%) / 2)); // Match the FilterMenu padding style
+  height: 100%;
+  width: 100%;
 
   @media (max-width: 768px) {
     display: none;
@@ -94,6 +95,7 @@ export const CartLink = styled(RouterNavLink)`
   font-size: 0.8rem; // Slightly reduced font size
   position: relative;
   transition: color 0.3s ease;
+  
 
   &::after {
     content: '';

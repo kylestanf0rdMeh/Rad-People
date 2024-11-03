@@ -6,6 +6,7 @@ import Gallery from './pages/Gallery';
 import NavBar from './components/NavBar';
 import ProductList from './pages/ProductList';
 import GlobalStyles from './styles/GlobalStyles';
+import ProductDetail from './pages/ProductDetail';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/shop" element={<ProductList />} />
+          <Route path="/product/:id/:name" element={<ProductDetail />} />
           <Route path="/events" element={<Events />} />
           <Route path="/cart" element={<Cart />} />
         </Routes>

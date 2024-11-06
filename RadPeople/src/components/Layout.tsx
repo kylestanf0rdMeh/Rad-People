@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Footer from './Footer';
 
 const StyledLayout = styled.div`
   max-width: 100%;
@@ -7,7 +8,7 @@ const StyledLayout = styled.div`
   box-sizing: border-box;
   min-width: 320px;
   overflow-x: hidden;
-  height: 100%;
+  min-height: 100vh; // Changed from height to min-height
   display: flex;
   flex-direction: column;
   background-color: #FFFFFF;
@@ -28,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <StyledLayout>
       <Main>{children}</Main>
+      <Footer />
     </StyledLayout>
   );
 };

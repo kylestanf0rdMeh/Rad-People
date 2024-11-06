@@ -59,7 +59,7 @@ export const NavLinks = styled.div`
 `;
 
 export const NavLink = styled(RouterNavLink)`
-  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-family: 'MotoyaExCedar', sans-serif;
   text-decoration: none;
   color: black;
   font-size: 0.8rem; // Slightly reduced font size
@@ -89,7 +89,7 @@ export const NavLink = styled(RouterNavLink)`
 `;
 
 export const CartLink = styled(RouterNavLink)`
-  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-family: 'MotoyaExCedar', sans-serif;
   text-decoration: none;
   color: black;
   font-size: 0.8rem; // Slightly reduced font size
@@ -122,7 +122,7 @@ export const MobileNav = styled.div`
   display: none;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0.5rem 0 1rem; // Reduce right padding
+  padding: 0 10px; // Updated to consistent 10px padding
   height: 100%;
   background-color: white;
 
@@ -132,15 +132,24 @@ export const MobileNav = styled.div`
 `;
 
 export const MenuIcon = styled.div`
-  font-size: 1.2rem;
   cursor: pointer;
-  color: ${LIGHT_GRAY_COLOR}; // Changed to light gray
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 15px;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-touch-callout: none;
+  margin: 0;
+  padding: 0;
+
+  span {
+    display: block;
+    width: 20px;
+    height: 1px;
+    background-color: #000000;
+    transition: all 0.3s ease;
+  }
 `;
 
 export const MobileLogo = styled.h1`
@@ -158,12 +167,12 @@ export const MobileLogo = styled.h1`
 
 export const CartIcon = styled.div`
   font-size: 1.2rem;
-  color: ${LIGHT_GRAY_COLOR};
+  color: #000000; // Changed to black
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-touch-callout: none;
-  margin-right: -0.5rem; // Negative margin to offset the padding and hug the right border
+  margin-right: -18px; // Negative margin to offset the padding and hug the right border
 `;
 
 export const MobileMenu = styled.div<{ open: boolean }>`

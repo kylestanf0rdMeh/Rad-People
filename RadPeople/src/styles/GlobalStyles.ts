@@ -3,6 +3,7 @@ import NFUltraRegular from '../assets/NFUltra-Regular.otf';
 import HelveticaNeueLTCom77BoldCondensed from '../assets/Helvetica Neue LT Com 77 Bold Condensed.ttf';
 import SequelSans from '../assets/sequel-sans-black-display.ttf'
 import SequelSansLightDisp from '../assets/Sequel Sans Book Body.ttf';
+import MotoyaExCedar from '../assets/MotoyaExCedar W55 W7 KP.ttf'
 
 const GlobalStyles = createGlobalStyle`
   @font-face {
@@ -16,6 +17,14 @@ const GlobalStyles = createGlobalStyle`
   @font-face {
     font-family: 'Helvetica Neue LT Com';
     src: url(${HelveticaNeueLTCom77BoldCondensed}) format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'MotoyaExCedar';
+    src: url(${MotoyaExCedar}) format('truetype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -80,6 +89,33 @@ const GlobalStyles = createGlobalStyle`
   * {
     scrollbar-width: thin;
     scrollbar-color: #A9A9A9 white;
+  }
+
+
+  /* Hide scrollbars for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbars for Firefox */
+  * {
+    scrollbar-width: none;
+  }
+
+  /* Hide scrollbars for IE and Edge */
+  * {
+    -ms-overflow-style: none;
+  }
+
+  /* Ensure body and html can still scroll */
+  html, body {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
   }
 `;
 

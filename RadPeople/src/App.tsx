@@ -4,9 +4,9 @@ import About from './pages/About';
 import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import NavBar from './components/NavBar';
-import ProductList from './pages/ProductList';
+import ProductList from './pages/Products/ProductList';
 import GlobalStyles from './styles/GlobalStyles';
-import ProductDetail from './pages/ProductDetails';
+import ProductDetail from './pages/Products/ProductDetails';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {

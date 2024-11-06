@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiChevronRight, FiX, FiMenu, FiShoppingBag } from 'react-icons/fi'
+import { NavLink } from 'react-router-dom';
+import { FiChevronRight, FiShoppingBag } from 'react-icons/fi'
 import { 
         NavBarContainer, 
         DesktopNav, 
-        NavLink, 
+        NavLink as StyledNavLink, 
         Logo, 
         NavLinks, 
         CartLink, 
@@ -20,48 +20,85 @@ import {
 
 const NavBar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
-  const handleMobileNavClick = (path: string) => {
+  const closeMobileMenu = () => {
     setMobileMenuOpen(false);
-    setTimeout(() => navigate(path), 300); // Wait for menu close animation before navigating
   };
 
   return (
     <NavBarContainer>
+
+
       <DesktopNav>
-        <Logo to='/'>RADPEOPLE</Logo>
+        <Logo to='/' as={NavLink}>RADPEOPLE</Logo>
+
         <NavLinks>
-          <NavLink to="/about">ABOUT</NavLink>
-          <NavLink to="/gallery">GALLERY</NavLink>
-          <NavLink to="/shop">SHOP</NavLink>
-          <NavLink to="/events">EVENTS</NavLink>
+          <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
+          <StyledNavLink to="/gallery" as={NavLink}>GALLERY</StyledNavLink>
+          <StyledNavLink to="/shop" as={NavLink}>SHOP</StyledNavLink>
+          <StyledNavLink to="/events" as={NavLink}>EVENTS</StyledNavLink>
         </NavLinks>
-        <CartLink as={NavLink} to="/cart">cart</CartLink>
+
+        <CartLink to="/cart" as={NavLink}>cart</CartLink>
       </DesktopNav>
+
+
       <MobileNav> 
-        <MenuIcon onClick={toggleMobileMenu} >
-          {mobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+        <MenuIcon onClick={toggleMobileMenu}>
+        {mobileMenuOpen ? (
+            // X icon
+            <div style={{ 
+              position: 'relative', 
+              width: '20px', 
+              height: '20px' 
+            }}>
+              <span style={{ 
+                position: 'absolute',
+                top: '50%',
+                left: '0',
+                transform: 'rotate(45deg)',
+                transformOrigin: 'center'
+              }}/>
+              <span style={{ 
+                position: 'absolute',
+                top: '50%',
+                left: '0',
+                transform: 'rotate(-45deg)',
+                transformOrigin: 'center'
+              }}/>
+            </div>
+          ) : (
+            // Hamburger icon
+            <>
+              <span />
+              <span />
+              <span />
+            </>
+          )}
         </MenuIcon>
-        <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
-        <CartIcon onClick={() => handleMobileNavClick("/cart")}>
-          <FiShoppingBag size={20} />
+
+        <MobileLogo as={NavLink} to='/'>RADPEOPLE</MobileLogo>
+        
+        <CartIcon as={NavLink} to="/cart">
+          <FiShoppingBag size={20} strokeWidth={1} />
         </CartIcon>
       </MobileNav>
+
+
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/about")}>
+          <MobileMenuLink as={NavLink} to="/about" onClick={closeMobileMenu}>
             <span>ABOUT</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
           </MobileMenuLink>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/gallery")}>
+          <MobileMenuLink as={NavLink} to="/gallery" onClick={closeMobileMenu}>
             <span>GALLERY</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
           </MobileMenuLink>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/shop")}>
+          <MobileMenuLink as={NavLink} to="/shop" onClick={closeMobileMenu}>
             <span>SHOP</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
           </MobileMenuLink>
-          <MobileMenuLink onClick={() => handleMobileNavClick("/events")}>
+          <MobileMenuLink as={NavLink} to="/events" onClick={closeMobileMenu}>
             <span>EVENTS</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
           </MobileMenuLink>
         </MobileMenuLinks>

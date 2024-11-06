@@ -4,7 +4,16 @@ import { FiPlus, FiMinus } from 'react-icons/fi';
 
 const DropdownContainer = styled.div`
   width: calc(100% - 30px);
-  margin: 20px 15px 15px 0; // Added top margin
+  margin: 20px 15px 15px 0;
+  -webkit-tap-highlight-color: transparent;
+  border-top: 2px solid #e7e9eb;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    margin: 20px 0 15px 0;
+    padding: 0 10px; // Added padding instead of margin
+    box-sizing: border-box; // Ensure padding is included in width calculation
+  }
 `;
 
 const DropdownHeader = styled.button`
@@ -15,7 +24,6 @@ const DropdownHeader = styled.button`
   padding: 10px 0;
   background: none;
   border: none;
-  border-top: 1px solid #D3D3D3;
   cursor: pointer;
   font-family: 'Sequel Sans Regular', sans-serif;
   font-size: 12px;
@@ -27,10 +35,12 @@ const DropdownHeader = styled.button`
   margin: 0;
   text-transform: none;
   border-radius: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 
   &:hover {
     background: none;
-    border-top: 1px solid #D3D3D3;
+    border-top: none;
     color: black;
   }
 
@@ -40,6 +50,10 @@ const DropdownHeader = styled.button`
 
   &::-moz-focus-inner {
     border: 0;
+  }
+
+  &:active {
+    background: none;
   }
 `;
 
@@ -54,6 +68,8 @@ const DropdownContent = styled.div<{ isOpen: boolean }>`
   margin: 0;
   color: black;
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
+  -webkit-tap-highlight-color: transparent;
+  user-select: text;
 `;
 
 interface DetailsDropdownProps {

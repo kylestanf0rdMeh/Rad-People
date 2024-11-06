@@ -8,9 +8,10 @@ export const OverlayContainer = styled.div<{ isOpen: boolean }>`
   right: 0;
   bottom: 0;
   background-color: white;
-  z-index: 1000;
+  z-index: 999; // Reduced z-index to be below navbar
   overflow-y: auto;
   display: ${props => props.isOpen ? 'block' : 'none'};
+  border-top: 1px solid #000000; // Added border to match navbar
 `;
 
 export const ImageGrid = styled.div`
@@ -42,12 +43,13 @@ export const Image = styled.img`
   height: 100%;
   width: auto;
   object-fit: contain;
+  border: 1px solid #000000; // Added border to match navbar
 `;
 
 export const CloseButton = styled(OverlayButton)`
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  bottom: 8px;
+  left: 8px;
   z-index: 1001;
   background-color: #0000FF;
 

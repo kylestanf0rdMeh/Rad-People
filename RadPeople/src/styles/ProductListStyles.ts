@@ -97,8 +97,8 @@ export const ProductImage = styled.img`
 
 export const ImageWrapper = styled.div<{columns: number}>`
   width: 100%;
-  margin-top: ${props => props.columns === 8 ? '12px' : '0px'};
-  height: calc(100% - 24px);  // Updated to match new ProductDetails height
+  margin-top: ${props => props.columns === 8 ? 'px' : '0px'};
+  height: ${props => props.columns === 8 ? '100%' : 'calc(100% - 24px)'};
   overflow: hidden;
 `;
 

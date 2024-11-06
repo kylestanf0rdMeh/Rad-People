@@ -47,7 +47,7 @@ const NavBar: React.FC = () => {
 
       <MobileNav> 
         <MenuIcon onClick={toggleMobileMenu}>
-        {mobileMenuOpen ? (
+          {mobileMenuOpen ? (
             // X icon
             <div style={{ 
               position: 'relative', 
@@ -90,16 +90,16 @@ const NavBar: React.FC = () => {
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
           <MobileMenuLink as={NavLink} to="/about" onClick={closeMobileMenu}>
-            <span>ABOUT</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+            <span>ABOUT</span> <MobileMenuIcon/>
           </MobileMenuLink>
           <MobileMenuLink as={NavLink} to="/gallery" onClick={closeMobileMenu}>
-            <span>GALLERY</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+            <span>GALLERY</span> <MobileMenuIcon/>
           </MobileMenuLink>
           <MobileMenuLink as={NavLink} to="/shop" onClick={closeMobileMenu}>
-            <span>SHOP</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+            <span>SHOP</span> <MobileMenuIcon/>
           </MobileMenuLink>
           <MobileMenuLink as={NavLink} to="/events" onClick={closeMobileMenu}>
-            <span>EVENTS</span> <MobileMenuIcon><FiChevronRight size={20} /></MobileMenuIcon>
+            <span>EVENTS</span> <MobileMenuIcon/>
           </MobileMenuLink>
         </MobileMenuLinks>
       </MobileMenu>

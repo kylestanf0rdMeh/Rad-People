@@ -117,13 +117,16 @@ const Gallery: React.FC = () => {
         />
       )}
     </GalleryContainer>
+
     <ContactRectangle>
       <h3>Contact Us</h3>
       <p>contact@radpeople.us</p>
     </ContactRectangle>
+
     <OverlayButton onClick={toggleOverlay}>
       <FiGrid />
     </OverlayButton>
+    
     <GalleryOverlay
       isOpen={isOverlayOpen}
       images={images}

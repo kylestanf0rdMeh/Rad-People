@@ -204,10 +204,11 @@ export const MobileMenuLinks = styled.div`
 `;
 
 export const MobileMenuLink = styled.div`
-  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-family: 'MotoyaExCedar', sans-serif;
+  font-size: 12px;
   text-decoration: none;
   color: black;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 10px; // Changed to 10px horizontal padding
   border-bottom: ${BORDER_THICKNESS} solid black;
   display: flex;
   justify-content: space-between;
@@ -245,12 +246,34 @@ export const MobileMenuLink = styled.div`
 `;
 
 export const MobileMenuIcon = styled.div`
-  color: ${LIGHT_GRAY_COLOR};
-  margin-left: auto;
-  padding-left: 1rem;
-  transition: color 0.3s ease;
+  position: relative;
+  width: 8px;
+  height: 12px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 1px;
+    background-color: #000000;
+    transform: rotate(45deg);
+    transform-origin: left center;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 1px;
+    background-color: #000000;
+    transform: rotate(-45deg);
+    transform-origin: left center;
+    bottom: 0px;
+  }
 
   ${MobileMenuLink}:hover & {
-    color: ${BLUE_COLOR};
+    &::before, &::after {
+      background-color: ${BLUE_COLOR};
+    }
   }
 `;

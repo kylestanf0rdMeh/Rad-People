@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { fetchEvents } from '../middleware/Events';
 import { EventItem } from '../models/Event.model';
+import useWindowDimensions from '../hooks/useWindowDimensions';
 import defaultVideo from '../assets/radpeople-landingPage.mp4';
 
 
@@ -18,8 +19,8 @@ const EventCard = styled.div`
   color: black;
 `;
 
-const EventsContainer = styled.div`
-  height: 80vh;
+const EventsContainer = styled.div<{ screenWidth: number }>`
+  height: ${props => Math.min(props.screenWidth * 0.5, 1000)}px; // 50% of width, max 1000px
   position: relative;
   margin-bottom: 2rem;
 `;
@@ -33,12 +34,12 @@ const EventBackground = styled.div<{ imageUrl: string }>`
   transition: all 0.5s ease-in-out;
 `;
 
-const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean }>`
+const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean; screenWidth: number }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: ${props => Math.min(props.screenWidth * 0.5, 1000)}px;
   background-image: url(${props => props.imageUrl});
   background-size: cover;
   background-position: center;
@@ -84,12 +85,12 @@ const BackgroundVideo = styled.video`
   }
 `;
 
-const VideoWrapper = styled.div`
+const VideoWrapper = styled.div<{ screenWidth: number }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: ${props => Math.min(props.screenWidth * 0.55, 820)}px;
 
   &::after {
     content: '';
@@ -107,16 +108,16 @@ const VideoWrapper = styled.div`
   }
 `;
 
-const EventNamesContainer = styled.div`
+const EventNamesContainer = styled.div<{ screenWidth: number }>`
   position: absolute;
-  top: 20rem;
+  top: ${props => Math.min(props.screenWidth * 0.27, 800)}px; // Increased multiplier from 0.2 to 0.4
   left: 0;
-  width: 100%; // Subtract total horizontal padding
-  margin: 0 0rem; // Center the container
-  padding: 2rem 3rem; // Remove horizontal padding since we're using margin
+  width: 100%;
+  margin: 0;
+  padding: ${props => Math.min(props.screenWidth * 0.02, 70)}px ${props => Math.min(props.screenWidth * 0.03, 48)}px; // Adjusted padding
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  gap: ${props => Math.min(props.screenWidth * 0.01, 16)}px;
 `;
 
 
@@ -142,12 +143,12 @@ const EventContentWrapper = styled.div`
   height: 100%;
 `;
 
-const EventItemContainer = styled.div<{ isActive: boolean }>`
+const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
   max-width: 250px;
   opacity: ${props => props.isActive ? 1 : 0.6};
   transition: opacity 0.7s ease;
-  margin-top: 1rem; // Consistent top margin
-
+  margin-top: ${props => Math.min(props.screenWidth * 0.01, 24)}px; // Dynamic margin-top
+  
   &:hover {
     opacity: 1;
   }
@@ -235,6 +236,7 @@ const EventDescription = styled.p`
 `;
 
 const Events: React.FC = () => {
+  const { width: screenWidth } = useWindowDimensions();
   const [pastEvents, setPastEvents] = useState<EventItem[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);
   const [activeEventImage, setActiveEventImage] = useState<string>('');
@@ -322,10 +324,10 @@ const Events: React.FC = () => {
     <Layout>
       {upcomingEvents.length > 0 && (
       <>
-        <EventsContainer>
-          <EventBackground imageUrl={activeEventImage || upcomingEvents[0].fields.thumbnail[0].fields.file.url}>
+        <EventsContainer screenWidth={screenWidth}>
+        <EventBackground imageUrl={activeEventImage || upcomingEvents[0].fields.thumbnail[0].fields.file.url}>
             {activeEventImage === upcomingEvents[0].fields.thumbnail[0].fields.file.url ? (
-              <VideoWrapper>
+              <VideoWrapper screenWidth={screenWidth}>
                 <BackgroundVideo autoPlay loop muted playsInline>
                   <source src={defaultVideo} type="video/mp4" />
                 </BackgroundVideo>
@@ -334,6 +336,7 @@ const Events: React.FC = () => {
               <BackgroundImage 
                 imageUrl={activeEventImage || upcomingEvents[0].fields.thumbnail[0].fields.file.url}
                 isActive={true}
+                screenWidth={screenWidth}
               />
             )}
           </EventBackground>
@@ -343,13 +346,14 @@ const Events: React.FC = () => {
             <EventTitleText>CALENDAR</EventTitleText>
           </EventTitle>
 
-          <EventNamesContainer>
+          <EventNamesContainer screenWidth={screenWidth}>
             {[...Array(4)].map((_, i) => {
               const event = upcomingEvents[i];
               return event ? (
                 <EventItemContainer
                   key={`upcoming-${event.sys.id}`}
                   isActive={activeEventId === event.sys.id}
+                  screenWidth={screenWidth}
                   onMouseEnter={() => {
                     setActiveEventImage(event.fields.thumbnail[0].fields.file.url);
                     setActiveEventId(event.sys.id);
@@ -376,7 +380,11 @@ const Events: React.FC = () => {
                   </EventLink>
                 </EventItemContainer>
               ) : (
-                <EventItemContainer key={`empty-${i}`} isActive={false} />
+                <EventItemContainer 
+                  key={`empty-${i}`} 
+                  isActive={false} 
+                  screenWidth={screenWidth}
+                />
               );
             })}
           </EventNamesContainer>

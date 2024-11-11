@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 const BLUE_COLOR = '#1404FB';
 
 export const FooterContainer = styled.footer`
-  margin-top: 1px;
   border-top: 1px solid #000000;
   background-color: ${BLUE_COLOR};
   padding: 0 max(5px, calc((100vw - 100%) / 2));

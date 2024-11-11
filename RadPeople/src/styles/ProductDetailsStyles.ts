@@ -41,6 +41,8 @@ export const MobileImageWrapper = styled.div`
     width: 100vw;
     border-bottom: 1px solid black;
     background-color: #edeff1;
+    overflow: hidden; // Prevent scrollbar from showing
+    overscroll-behavior-x: contain; // Prevent page overscroll
   }
 `;
 
@@ -92,14 +94,19 @@ export const ImageSection = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 100vw; // Full viewport width
+    flex-direction: row;
+    width: auto;
     height: auto;
-    overflow: visible;
-    margin: 0;
-    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain; // Prevent overscroll
+    scroll-behavior: smooth; // Smooth scrolling between snaps
 
-    /* Show only first image on mobile */
-    & > img:not(:first-child) {
+    /* Remove bounce effect on iOS */
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
       display: none;
     }
   }
@@ -119,6 +126,12 @@ export const ProductImage = styled.img`
   width: 100%;
   height: auto;
   display: block;
+
+  @media (max-width: 768px) {
+    width: 100vw; // Each image takes full viewport width
+    flex-shrink: 0; // Prevent images from shrinking
+    scroll-snap-align: start; // Snap points for each image
+  }
 `;
 
 export const ProductSummary = styled.div`
@@ -287,7 +300,7 @@ export const SizeButton = styled.button<{ isSelected: boolean }>`
 export const AddToCartButton = styled.button`
   width: calc(100% - 30px);
   padding: 15px 0;
-  background-color: #000000;
+  background-color: #1404FB; // Change color to blue
   color: #FFFFFF;
   border: 1px solid #000000;
   font-family: 'Sequel Sans Regular', sans-serif;
@@ -318,7 +331,7 @@ export const AddToCartButton = styled.button`
     &:hover {
       background-color: #FFFFFF;
       color: #000000;
-      border-color: #000000;
+      border-color: 1404FB; // Change color to blue to match NFUltraText;
     }
   }
 

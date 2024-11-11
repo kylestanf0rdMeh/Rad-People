@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiChevronRight, FiShoppingBag } from 'react-icons/fi'
+import { FiShoppingBag } from 'react-icons/fi'
 import { 
         NavBarContainer, 
         DesktopNav, 

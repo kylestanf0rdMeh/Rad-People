@@ -56,6 +56,12 @@ export const ProductGrid = styled.div<{ columns: number }>`
   gap: 0;
   background-color: #FFFFFF;
   margin-top: 30px; // Add margin to account for FilterMenu height
+
+  padding-bottom: calc(100vw / ${props => props.columns} * (22/19)); // Calculate padding based on aspect ratio and columns
+  
+  @media (max-width: 768px) {
+    padding-bottom: calc(100vw / 2 * (22/17)); // For mobile (2 columns)
+  }
 `;
 
 export const ProductCard = styled.div`

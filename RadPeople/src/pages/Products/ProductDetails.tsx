@@ -121,10 +121,13 @@ const ProductDetail: React.FC = () => {
         {isMobile ? (
           <MobileImageWrapper>
             <ImageSection ref={imageRef}>
-              <ProductImage
-                src={`https:${allImages[0].fields.file.url}`}
-                alt={allImages[0].fields.title || product.fields.name}
-              />
+              {allImages.map((image, index) => (
+                <ProductImage
+                  key={`product-image-${index}`}
+                  src={`https:${image.fields.file.url}`}
+                  alt={image.fields.title || product.fields.name}
+                />
+              ))}
             </ImageSection>
           </MobileImageWrapper>
         ) : (

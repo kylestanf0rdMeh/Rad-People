@@ -7,12 +7,12 @@ export const fetchGalleryImages = async (): Promise<GalleryItem[]> => {
       const response: EntryCollection<GalleryItem> = await contentfulClient.getEntries({
         content_type: 'gallery',
       });
-      //   ignore this false error for now,there is nothing wrong with this (has to do with type safety)
+      //   ignore this false error for now,there is nothing wrong with this (has to do with type safety) 
       return response.items.map(item => ({
         sys: item.sys,
         fields: item.fields,
         contentTypeId: item.sys.contentType.sys.id
-      }));
+      })) as GalleryItem[];
     } catch (error) {
       console.error('Error fetching gallery images:', error);
       throw error;

@@ -100,7 +100,7 @@ export const OverlayButton = styled.button`
   position: absolute;
   bottom: 15px;
   left: 15px;
-  background-color: #edeff1;;
+  background-color: white;
   border: 1px solid #000000;
   border-radius: 0; // Remove border radius for square shape
   width: 40px;

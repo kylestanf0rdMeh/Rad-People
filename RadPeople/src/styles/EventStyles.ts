@@ -30,7 +30,7 @@ export const EventCard = styled.div`
 `;
 
 export const EventsContainer = styled.div<{ screenWidth: number; screenHeight: number }>`
-  height: ${props => Math.min(props.screenWidth * 0.5, props.screenHeight * 0.9, 1000)}px;
+  height: ${props => Math.min(props.screenWidth * 0.5, props.screenHeight * 0.95, 1000)}px;
   position: relative;
   margin-bottom: 2rem;
 `;
@@ -67,7 +67,7 @@ export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean;
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.3),
-      rgba(0, 0, 0, 0.7)
+      rgba(0, 0, 0, 1.5)
     );
   }
 `;
@@ -172,6 +172,8 @@ export const EventTitle = styled.div`
   top: 2rem;
   left: 1rem;
   color: white;
+  margin-left: 20px;
+
 `;
 
 export const EventTitleText = styled.h2`
@@ -191,7 +193,7 @@ export const EventContentWrapper = styled.div`
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
   max-width: ${props => Math.min(props.screenWidth * 0.2, 350)}px;
-  opacity: ${props => props.isActive ? 1 : 0.6};
+  opacity: ${props => props.isActive ? 1 : 0.4};
   transition: opacity 0.7s ease;
   margin-top: ${props => Math.min(props.screenWidth * 0.01, 24)}px;
   
@@ -213,8 +215,16 @@ export const EventDate = styled.p`
   ${fluidTypography(0.7, 0.9, 320, 1500)}
 `;
 
+export const EventDetailsWrapper = styled.div`
+  border: 1px solid white;
+  padding-top: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+`
+
 export const EventName = styled.h3`
   font-family: 'Sequel Sans Regular';
+  padding-left: 6px;
   color: white;
   cursor: pointer;
   margin: 0;

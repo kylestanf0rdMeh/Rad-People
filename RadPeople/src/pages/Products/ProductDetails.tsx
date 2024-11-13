@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
+import PageWrapper from '../../components/PageWrapper';
 import { ProductItem } from '../../models/Product.model';
 import DetailsDropdown from '../../components/DetailsDropdown';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
@@ -107,19 +108,31 @@ const ProductDetail: React.FC = () => {
 
 
   return (
-    <Layout>
-      <BreadcrumbContainer>
-        <BreadcrumbLink to="/shop">Product List</BreadcrumbLink>
-        <BreadcrumbArrow>→</BreadcrumbArrow>
-        <BreadcrumbCurrent>{product.fields.name}</BreadcrumbCurrent>
-      </BreadcrumbContainer>
+    <PageWrapper>
+      <Layout>
+        <BreadcrumbContainer>
+          <BreadcrumbLink to="/shop">Product List</BreadcrumbLink>
+          <BreadcrumbArrow>→</BreadcrumbArrow>
+          <BreadcrumbCurrent>{product.fields.name}</BreadcrumbCurrent>
+        </BreadcrumbContainer>
 
 
-      <ProductContainer>
+        <ProductContainer>
 
-        {/* LEFT SIDE */}
-        {isMobile ? (
-          <MobileImageWrapper>
+          {/* LEFT SIDE */}
+          {isMobile ? (
+            <MobileImageWrapper>
+              <ImageSection ref={imageRef}>
+                {allImages.map((image, index) => (
+                  <ProductImage
+                    key={`product-image-${index}`}
+                    src={`https:${image.fields.file.url}`}
+                    alt={image.fields.title || product.fields.name}
+                  />
+                ))}
+              </ImageSection>
+            </MobileImageWrapper>
+          ) : (
             <ImageSection ref={imageRef}>
               {allImages.map((image, index) => (
                 <ProductImage
@@ -129,95 +142,85 @@ const ProductDetail: React.FC = () => {
                 />
               ))}
             </ImageSection>
-          </MobileImageWrapper>
-        ) : (
-          <ImageSection ref={imageRef}>
-            {allImages.map((image, index) => (
-              <ProductImage
-                key={`product-image-${index}`}
-                src={`https:${image.fields.file.url}`}
-                alt={image.fields.title || product.fields.name}
+          )}
+          
+          {/* RIGHT SIDE */}
+          <ProductSummary ref={summaryRef}>
+
+            <TitleRow>
+              <ProductTitle>{product.fields.name}</ProductTitle>
+              <ProductPrice>${product.fields.price}</ProductPrice>
+            </TitleRow>
+
+
+            {/* DESKTOP ORDER */}
+            <DesktopDescription>
+              <ProductDescription>
+
+                {deriveDescriptionQueues().map((item, index) => (
+                  <DescriptionItem key={`desc-${index}`}>
+                    {item}
+                  </DescriptionItem>
+                ))}
+
+              </ProductDescription>
+
+            </DesktopDescription>
+
+            <ProductOptions>
+              <ProductColor>Color: {product.fields.color}</ProductColor>
+              
+              <SizesContainer>
+
+                {sizeOptions.map((size, index) => (
+                  <SizeButton 
+                    key={`size-${index}`}
+                    isSelected={selectedSize === size}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </SizeButton>
+                ))}
+
+              </SizesContainer>
+
+              <AddToCartButton>
+                Add to cart
+              </AddToCartButton>
+
+              <ShippingContainer>
+                This product will ship in {shippingWeeks} weeks
+              </ShippingContainer>
+            </ProductOptions>
+
+
+            {/* MOBILE ORDER */}
+            <MobileOrderWrapper>
+
+              <ProductDescription>
+                {deriveDescriptionQueues().map((item, index) => (
+                  <DescriptionItem key={`desc-${index}`}>
+                    {item}
+                  </DescriptionItem>
+                ))}
+              </ProductDescription>
+            </MobileOrderWrapper>
+
+            <DropdownsWrapper>
+              <DetailsDropdown 
+                title="Size + Fit"
+                content={product.fields.sizeAndFit || 'Size and fit information not available.'}
               />
-            ))}
-          </ImageSection>
-        )}
-        
-        {/* RIGHT SIDE */}
-        <ProductSummary ref={summaryRef}>
 
-          <TitleRow>
-            <ProductTitle>{product.fields.name}</ProductTitle>
-            <ProductPrice>${product.fields.price}</ProductPrice>
-          </TitleRow>
-
-
-          {/* DESKTOP ORDER */}
-          <DesktopDescription>
-            <ProductDescription>
-
-              {deriveDescriptionQueues().map((item, index) => (
-                <DescriptionItem key={`desc-${index}`}>
-                  {item}
-                </DescriptionItem>
-              ))}
-
-            </ProductDescription>
-
-          </DesktopDescription>
-
-          <ProductOptions>
-            <ProductColor>Color: {product.fields.color}</ProductColor>
-            
-            <SizesContainer>
-
-              {sizeOptions.map((size, index) => (
-                <SizeButton 
-                  key={`size-${index}`}
-                  isSelected={selectedSize === size}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </SizeButton>
-              ))}
-
-            </SizesContainer>
-
-            <AddToCartButton>
-              Add to cart
-            </AddToCartButton>
-
-            <ShippingContainer>
-              This product will ship in {shippingWeeks} weeks
-            </ShippingContainer>
-          </ProductOptions>
-
-
-          {/* MOBILE ORDER */}
-          <MobileOrderWrapper>
-
-            <ProductDescription>
-              {deriveDescriptionQueues().map((item, index) => (
-                <DescriptionItem key={`desc-${index}`}>
-                  {item}
-                </DescriptionItem>
-              ))}
-            </ProductDescription>
-          </MobileOrderWrapper>
-
-          <DropdownsWrapper>
-            <DetailsDropdown 
-              title="Size + Fit"
-              content={product.fields.sizeAndFit || 'Size and fit information not available.'}
-            />
-
-            <DetailsDropdown 
-              title="Care"
-              content={product.fields.care || 'Care information not available.'}
-            />
-          </DropdownsWrapper>
-        </ProductSummary>
-      </ProductContainer>
-    </Layout>
+              <DetailsDropdown 
+                title="Care"
+                content={product.fields.care || 'Care information not available.'}
+              />
+            </DropdownsWrapper>
+          </ProductSummary>
+        </ProductContainer>
+      </Layout>
+    </PageWrapper>
   );
 };
 

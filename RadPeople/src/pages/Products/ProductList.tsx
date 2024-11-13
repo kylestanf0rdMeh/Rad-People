@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import { ProductItem } from '../../models/Product.model';
 import { fetchProducts } from '../../middleware/Product';
+import PageWrapper from '../../components/PageWrapper';
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { 
   ProductCard, 
@@ -100,106 +101,108 @@ const ProductList: React.FC = () => {
   }
 
   return (
-    <Layout>
-      <ProductListContainer>
-        <FilterMenu>
-          {width > 768 ? ( // Only render on desktop
-          <>
-            <GridButton onClick={() => setIsModalOpen(!isModalOpen)}>
-              View By ({activeGrid})
-            </GridButton>
+    <PageWrapper>
+      <Layout>
+        <ProductListContainer>
+          <FilterMenu>
+            {width > 768 ? ( // Only render on desktop
+            <>
+              <GridButton onClick={() => setIsModalOpen(!isModalOpen)}>
+                View By ({activeGrid})
+              </GridButton>
 
-            {/* VIEW FILTER */}
-            <Modal isOpen={isModalOpen}>
-              <ModalButton 
-                isActive={activeGrid === 2} 
-                onClick={() => gridClick(2)}
+              {/* VIEW FILTER */}
+              <Modal isOpen={isModalOpen}>
+                <ModalButton 
+                  isActive={activeGrid === 2} 
+                  onClick={() => gridClick(2)}
+                >
+                  2
+                </ModalButton>
+                <ModalButton 
+                  isActive={activeGrid === 4} 
+                  onClick={() => gridClick(4)}
+                >
+                  4
+                </ModalButton>
+                <ModalButton 
+                  isActive={activeGrid === 8} 
+                  onClick={() => gridClick(8)}
+                >
+                  8
+                </ModalButton>
+              </Modal>
+            </>
+
+            ) : (
+              <div></div>
+            )}
+            
+
+            {/* SORT FILTER */}
+            <FilterButton 
+              onClick={() => setSortModalOpen(!sortModalOpen)}
+              className={width <= 768 ? 'mobile' : ''}
+            >
+              Sort By
+            </FilterButton>
+            <SortModal isOpen={sortModalOpen} className={width <= 768 ? 'mobile' : ''}>
+              <SortButton 
+                isActive={sortType === 'date-new'} 
+                onClick={() => handleSort('date-new')}
               >
-                2
-              </ModalButton>
-              <ModalButton 
-                isActive={activeGrid === 4} 
-                onClick={() => gridClick(4)}
+                Date, New to Old
+              </SortButton>
+              <SortButton 
+                isActive={sortType === 'date-old'} 
+                onClick={() => handleSort('date-old')}
               >
-                4
-              </ModalButton>
-              <ModalButton 
-                isActive={activeGrid === 8} 
-                onClick={() => gridClick(8)}
+                Date, Old to New
+              </SortButton>
+              <SortButton 
+                isActive={sortType === 'price-high'} 
+                onClick={() => handleSort('price-high')}
               >
-                8
-              </ModalButton>
-            </Modal>
-          </>
+                Price, High to Low
+              </SortButton>
+              <SortButton 
+                isActive={sortType === 'price-low'} 
+                onClick={() => handleSort('price-low')}
+              >
+                Price, Low to High
+              </SortButton>
+            </SortModal>
+          </FilterMenu>
 
-          ) : (
-            <div></div>
-          )}
-          
-
-          {/* SORT FILTER */}
-          <FilterButton 
-            onClick={() => setSortModalOpen(!sortModalOpen)}
-            className={width <= 768 ? 'mobile' : ''}
-          >
-            Sort By
-          </FilterButton>
-          <SortModal isOpen={sortModalOpen} className={width <= 768 ? 'mobile' : ''}>
-            <SortButton 
-              isActive={sortType === 'date-new'} 
-              onClick={() => handleSort('date-new')}
-            >
-              Date, New to Old
-            </SortButton>
-            <SortButton 
-              isActive={sortType === 'date-old'} 
-              onClick={() => handleSort('date-old')}
-            >
-              Date, Old to New
-            </SortButton>
-            <SortButton 
-              isActive={sortType === 'price-high'} 
-              onClick={() => handleSort('price-high')}
-            >
-              Price, High to Low
-            </SortButton>
-            <SortButton 
-              isActive={sortType === 'price-low'} 
-              onClick={() => handleSort('price-low')}
-            >
-              Price, Low to High
-            </SortButton>
-          </SortModal>
-        </FilterMenu>
-
-        {/* PRODUCTS ARE LISTED IN THIS SECTION */}
-        <ProductGrid columns={activeGrid}>
-          {products.map((product) => (
-            <ProductLink 
-              key={product.sys.id}
-              to={`/product/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
-              state={{ product }}  // Pass the product data as state
-              columns={activeGrid}
-            >
-              <ProductCard>
-                <ImageWrapper columns = {activeGrid}>
-                  <ProductImage 
-                    src={`https:${product.fields.image[0].fields.file.url}` || ''} 
-                    alt={product.fields.name} 
-                  />
-                </ImageWrapper>
-                {activeGrid !== 8 && (
-                  <ProductDetails>
-                    <ProductName>{product.fields.name}</ProductName>
-                    <ProductPrice>${product.fields.price}</ProductPrice>
-                  </ProductDetails>
-                )}
-              </ProductCard>
-            </ProductLink>
-          ))}
-        </ProductGrid>
-      </ProductListContainer>
-    </Layout>
+          {/* PRODUCTS ARE LISTED IN THIS SECTION */}
+          <ProductGrid columns={activeGrid}>
+            {products.map((product) => (
+              <ProductLink 
+                key={product.sys.id}
+                to={`/product/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
+                state={{ product }}  // Pass the product data as state
+                columns={activeGrid}
+              >
+                <ProductCard>
+                  <ImageWrapper columns = {activeGrid}>
+                    <ProductImage 
+                      src={`https:${product.fields.image[0].fields.file.url}` || ''} 
+                      alt={product.fields.name} 
+                    />
+                  </ImageWrapper>
+                  {activeGrid !== 8 && (
+                    <ProductDetails>
+                      <ProductName>{product.fields.name}</ProductName>
+                      <ProductPrice>${product.fields.price}</ProductPrice>
+                    </ProductDetails>
+                  )}
+                </ProductCard>
+              </ProductLink>
+            ))}
+          </ProductGrid>
+        </ProductListContainer>
+      </Layout>
+    </PageWrapper>
   );
 };
 

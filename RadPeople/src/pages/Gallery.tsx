@@ -1,5 +1,6 @@
 import { FiGrid } from 'react-icons/fi';
 import useIsMobile from '../hooks/useIsMobile';
+import PageWrapper from '../components/PageWrapper';
 import { GalleryItem } from '../models/Gallery.model';
 import GalleryOverlay from '../components/GalleryOverlay';
 import { fetchGalleryImages } from '../middleware/Gallery';
@@ -101,39 +102,41 @@ const Gallery: React.FC = () => {
   };
 
   return (
-    <GalleryPageContainer 
+    <PageWrapper>
+      <GalleryPageContainer 
       onClick={handleClick} 
       onMouseMove={handleMouseMove}
       style={{ cursor: isOverlayOpen ? 'default' : (isMobile ? 'default' : cursor) }}
-    >
-    <GalleryContainer>
-      {currentImage && (
-        <GalleryImage
-          key={currentImage.src}
-          src={currentImage.src}
-          alt={images[currentIndex].fields.descriptions || 'Gallery image'}
-          fillScreen={currentImage.fillScreen}
-          isWide={currentImage.isWide}
+      >
+        <GalleryContainer>
+          {currentImage && (
+            <GalleryImage
+              key={currentImage.src}
+              src={currentImage.src}
+              alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+              fillScreen={currentImage.fillScreen}
+              isWide={currentImage.isWide}
+            />
+          )}
+        </GalleryContainer>
+
+        <ContactRectangle>
+          <h3>Contact Us</h3>
+          <p>contact@radpeople.us</p>
+        </ContactRectangle>
+
+        <OverlayButton onClick={toggleOverlay}>
+          <FiGrid />
+        </OverlayButton>
+        
+        <GalleryOverlay
+          isOpen={isOverlayOpen}
+          images={images}
+          onClose={toggleOverlay}
+          onImageClick={handleOverlayImageClick}
         />
-      )}
-    </GalleryContainer>
-
-    <ContactRectangle>
-      <h3>Contact Us</h3>
-      <p>contact@radpeople.us</p>
-    </ContactRectangle>
-
-    <OverlayButton onClick={toggleOverlay}>
-      <FiGrid />
-    </OverlayButton>
-    
-    <GalleryOverlay
-      isOpen={isOverlayOpen}
-      images={images}
-      onClose={toggleOverlay}
-      onImageClick={handleOverlayImageClick}
-    />
-  </GalleryPageContainer>
+      </GalleryPageContainer>
+    </PageWrapper>
   );
 };
 

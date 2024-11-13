@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from '../components/Layout';
-import { fetchEvents } from '../middleware/Events';
 import { EventItem } from '../models/Event.model';
+import { fetchEvents } from '../middleware/Events';
+import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription } from '../styles/EventStyles';
 
@@ -82,7 +83,6 @@ const Events: React.FC = () => {
     const getEvents = async () => {
       try {
         const fetchedEvents = await fetchEvents();
-        // console.log('FETCHED EVENTS: ', fetchedEvents);
         const { past, upcoming } = categorizeEvents(fetchedEvents);
         const sortedUpcoming = sortEventsByDate(upcoming);
     
@@ -95,24 +95,17 @@ const Events: React.FC = () => {
           const media = getEventMedia(firstEvent);
           setActiveEventId(firstEvent.sys.id);
           setActiveEventImage(media.url);
+          if (media.isVideo && media.videoId) {
+            setCurrentVideo(media.videoId);
+          }
         }
       } catch (error) {
         console.error('Error fetching events:', error);
       }
     };
-
+  
     getEvents();
-  }, []);
-
-  // Set initial active event
-  useEffect(() => {
-    if (upcomingEvents.length > 0) {
-      const firstEvent = upcomingEvents[0];
-      const media = getEventMedia(firstEvent);
-      setActiveEventId(firstEvent.sys.id);
-      setActiveEventImage(media.url);
-    }
-  }, [upcomingEvents]);
+  }, []); // Only run once on component mount
 
   const handleEventHover = (event: EventItem) => {
     const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
@@ -122,28 +115,56 @@ const Events: React.FC = () => {
     }
 
     if (videoId) {
+      // Store the current video as previous before setting new one
       setPreviousVideo(currentVideo);
       setCurrentVideo(videoId);
+    } else {
+      // If no video, clear both video states
+      setPreviousVideo(null);
+      setCurrentVideo(null);
     }
 
     setActiveEventId(event.sys.id);
     setActiveEventImage(event.fields.thumbnailImage?.[0]?.fields?.file?.url || '');
   };
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
 
   return (
-    <Layout>
-      {upcomingEvents.length > 0 && (
-      <>
-        <EventsContainer screenWidth={screenWidth} screenHeight={screenHeight}>
-          <EventBackground imageUrl={activeEventImage}>
-            {currentVideo && (
-              <>
-                {previousVideo && (
-                  <VideoWrapper screenWidth={screenWidth}>
+    <PageWrapper>
+
+      <Layout>
+        {upcomingEvents.length > 0 && (
+        <>
+          <EventsContainer screenWidth={screenWidth} screenHeight={screenHeight}>
+            <EventBackground imageUrl={activeEventImage}>
+              {currentVideo && (
+                <>
+                  {previousVideo && (
+                    <VideoWrapper screenWidth={screenWidth}>
+                      <div className="video-container">
+                        <iframe 
+                          src={`https://fast.wistia.net/embed/iframe/${previousVideo}?autoPlay=1&loop=true&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain&endVideoBehavior=loop`}
+                          allowTransparency={true}
+                          className="wistia_embed"
+                          name="wistia_embed"
+                          allow="autoplay; fullscreen"
+                          style={{ backgroundColor: 'black' }}
+                        />
+                      </div>
+                    </VideoWrapper>
+                  )}
+                  <VideoWrapper screenWidth={screenWidth} className="active">
                     <div className="video-container">
                       <iframe 
-                        src={`https://fast.wistia.net/embed/iframe/${previousVideo}?autoPlay=1&loop=1&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain`}
+                        src={`https://fast.wistia.net/embed/iframe/${currentVideo}?autoPlay=1&loop=true&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain&endVideoBehavior=loop`}
                         allowTransparency={true}
                         className="wistia_embed"
                         name="wistia_embed"
@@ -152,100 +173,89 @@ const Events: React.FC = () => {
                       />
                     </div>
                   </VideoWrapper>
-                )}
-                <VideoWrapper screenWidth={screenWidth} className="active">
-                  <div className="video-container">
-                    <iframe 
-                      src={`https://fast.wistia.net/embed/iframe/${currentVideo}?autoPlay=1&loop=1&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain`}
-                      allowTransparency={true}
-                      className="wistia_embed"
-                      name="wistia_embed"
-                      allow="autoplay; fullscreen"
-                      style={{ backgroundColor: 'black' }}
+                </>
+              )}
+              {!currentVideo && (
+                <BackgroundImage 
+                  imageUrl={activeEventImage}
+                  isActive={true}
+                  screenWidth={screenWidth}
+                />
+              )}
+            </EventBackground>
+
+              <EventTitle>
+                <EventTitleText>EVENT</EventTitleText>
+                <EventTitleText>CALENDAR</EventTitleText>
+              </EventTitle>
+
+              <EventNamesContainer screenWidth={screenWidth} screenHeight={screenHeight}>
+                {[...Array(4)].map((_, i) => {
+                  const event = upcomingEvents[i];
+                  return event ? (
+                    <EventItemContainer
+                      key={event.sys.id}
+                      isActive={activeEventId === event.sys.id}
+                      screenWidth={screenWidth}
+                      onMouseEnter={() => handleEventHover(event)}
+                    >
+                      <EventLink to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}>
+                        <EventContentWrapper>
+                          <EventDate>
+                            {new Date(event.fields.date).toLocaleDateString('en-US', {
+                              month: '2-digit',
+                              day: '2-digit',
+                              year: '2-digit'
+                            }).replace(/\//g, '.')}
+                          </EventDate>
+
+                          <EventName>{event.fields.name}</EventName>
+                          <EventLocation>
+                            <LocationIcon />
+                            {splitIntoLines(event.fields.location || '').map((line, i) => (
+                              i === 0 ? (
+                                <LocationFirstLine key="first">{line}</LocationFirstLine>
+                              ) : (
+                                <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                              )
+                            ))}
+                          </EventLocation>
+                          <EventDescription>
+                            {event.fields.description?.split('\n')[0] || ''}
+                          </EventDescription>
+                        </EventContentWrapper>
+                      </EventLink>
+                    </EventItemContainer>
+                  ) : (
+                    <EventItemContainer 
+                      key={`empty-${i}`} 
+                      isActive={false} 
+                      screenWidth={screenWidth}
                     />
-                  </div>
-                </VideoWrapper>
-              </>
-            )}
-            {!currentVideo && (
-              <BackgroundImage 
-                imageUrl={activeEventImage}
-                isActive={true}
-                screenWidth={screenWidth}
+                  );
+                })}
+              </EventNamesContainer>
+            </EventsContainer>
+        </>
+        )}
+
+      <PastEventsTitle>Past Events</PastEventsTitle>
+        <PastEventsList>
+          {pastEvents.map((event) => (
+            <PastEventCard key={event.sys.id}>
+              <img 
+                src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
+                alt={event.fields.name}
               />
-            )}
-          </EventBackground>
-
-            <EventTitle>
-              <EventTitleText>EVENT</EventTitleText>
-              <EventTitleText>CALENDAR</EventTitleText>
-            </EventTitle>
-
-            <EventNamesContainer screenWidth={screenWidth} screenHeight={screenHeight}>
-              {[...Array(4)].map((_, i) => {
-                const event = upcomingEvents[i];
-                return event ? (
-                  <EventItemContainer
-                    key={event.sys.id}
-                    isActive={activeEventId === event.sys.id}
-                    screenWidth={screenWidth}
-                    onMouseEnter={() => handleEventHover(event)}
-                  >
-                    <EventLink to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}>
-                      <EventContentWrapper>
-                        <EventDate>
-                          {new Date(event.fields.date).toLocaleDateString('en-US', {
-                            month: '2-digit',
-                            day: '2-digit',
-                            year: '2-digit'
-                          }).replace(/\//g, '.')}
-                        </EventDate>
-                        <EventName>{event.fields.name}</EventName>
-                        <EventLocation>
-                          <LocationIcon />
-                          {splitIntoLines(event.fields.location || '').map((line, i) => (
-                            i === 0 ? (
-                              <LocationFirstLine key="first">{line}</LocationFirstLine>
-                            ) : (
-                              <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                            )
-                          ))}
-                        </EventLocation>
-                        <EventDescription>
-                          {event.fields.description?.split('\n')[0] || ''}
-                        </EventDescription>
-                      </EventContentWrapper>
-                    </EventLink>
-                  </EventItemContainer>
-                ) : (
-                  <EventItemContainer 
-                    key={`empty-${i}`} 
-                    isActive={false} 
-                    screenWidth={screenWidth}
-                  />
-                );
-              })}
-            </EventNamesContainer>
-          </EventsContainer>
-      </>
-      )}
-
-    <PastEventsTitle>Past Events</PastEventsTitle>
-      <PastEventsList>
-        {pastEvents.map((event) => (
-          <PastEventCard key={event.sys.id}>
-            <img 
-              src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
-              alt={event.fields.name}
-            />
-            <PastEventName>{event.fields.name}</PastEventName>
-            <PastEventDescription>
-              {event.fields.description?.split('\n')[0] || ''}
-            </PastEventDescription>
-          </PastEventCard>
-        ))}
-      </PastEventsList>
-    </Layout>
+              <PastEventName>{event.fields.name}</PastEventName>
+              <PastEventDescription>
+                {event.fields.description?.split('\n')[0] || ''}
+              </PastEventDescription>
+            </PastEventCard>
+          ))}
+        </PastEventsList>
+      </Layout>
+    </PageWrapper>
   );
 };
 

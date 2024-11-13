@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const HomeContainer = styled.div`
-  background-color: #1404FB;
+  background-color: white;
   min-height: 100vh;
   color: white;
   display: flex;

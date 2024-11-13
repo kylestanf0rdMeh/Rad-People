@@ -56,7 +56,8 @@ const GlobalStyles = createGlobalStyle`
     overflow-x: hidden;
     width: 100%;
     box-sizing: border-box;
-    background-color: #1404FB;
+    // BACKGROUND OF ALL PAGES SET TO BLUE
+    background-color: white;
     color: white;
     padding-top: 40px; // Adjust this value based on your navbar height
   }

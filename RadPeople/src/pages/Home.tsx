@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import IntroAnimation from '../components/IntroAnimation';
 import VideoBackground from '../components/VideoBackground';
 import { HomeContainer } from '../styles/HomeStyles';
+import PageWrapper from '../components/PageWrapper';
 
 const Home: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -15,10 +16,12 @@ const Home: React.FC = () => {
   return (
     <HomeContainer>
       {showIntro && <IntroAnimation />}
-      <Layout>
-        <VideoBackground />
-      </Layout>
-    </HomeContainer>
+      <PageWrapper>
+        <Layout>
+          <VideoBackground />
+        </Layout>
+      </PageWrapper>
+      </HomeContainer>
   );
 };
 

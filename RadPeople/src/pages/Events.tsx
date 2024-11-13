@@ -12,9 +12,9 @@ const Events: React.FC = () => {
   const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);
   const [activeEventImage, setActiveEventImage] = useState<string>('');
   const [activeEventId, setActiveEventId] = useState<string>('');
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const previousVideoRef = useRef<string | null>(null);
+  const [currentVideo, setCurrentVideo] = useState<string | null>(null);
+  const [previousVideo, setPreviousVideo] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
 
   const sortEventsByDate = (events: EventItem[], ascending: boolean = true) => {
@@ -75,22 +75,9 @@ const Events: React.FC = () => {
     return lines;
   };
 
-  // Add video load handler
-  const handleVideoLoad = () => {
-    setTimeout(() => {
-      setIsVideoLoaded(true);
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 1000); // Match transition duration
-    }, 100); // Small delay to ensure smooth transition
-  };
 
-  // Reset states when active event changes
-  useEffect(() => {
-    setIsVideoLoaded(false);
-  }, [activeEventId]);
 
-  // Set initial events and override first two event thumbnails with videos
+  // Set initial events
   useEffect(() => {
     const getEvents = async () => {
       try {
@@ -128,17 +115,19 @@ const Events: React.FC = () => {
   }, [upcomingEvents]);
 
   const handleEventHover = (event: EventItem) => {
-    setIsTransitioning(true);
-    const media = getEventMedia(event);
+    const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
     
-    // Store current video ID before updating
-    if (event.fields.wistiaVideo?.items?.[0]) {
-      previousVideoRef.current = activeEventId;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
-    // Set new active event
+    if (videoId) {
+      setPreviousVideo(currentVideo);
+      setCurrentVideo(videoId);
+    }
+
     setActiveEventId(event.sys.id);
-    setActiveEventImage(media.url);
+    setActiveEventImage(event.fields.thumbnailImage?.[0]?.fields?.file?.url || '');
   };
 
 
@@ -148,19 +137,15 @@ const Events: React.FC = () => {
       <>
         <EventsContainer screenWidth={screenWidth} screenHeight={screenHeight}>
           <EventBackground imageUrl={activeEventImage}>
-            {upcomingEvents.find(event => event.sys.id === activeEventId)?.fields.wistiaVideo?.items?.[0] ? (
+            {currentVideo && (
               <>
-                {/* Show previous video during transition */}
-                {isTransitioning && previousVideoRef.current && (
-                  <VideoWrapper 
-                    screenWidth={screenWidth}
-                    className="active fadeOut"
-                  >
+                {previousVideo && (
+                  <VideoWrapper screenWidth={screenWidth}>
                     <div className="video-container">
                       <iframe 
-                        src={`https://fast.wistia.net/embed/iframe/${previousVideoRef.current}?autoPlay=1&loop=1&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain`}
+                        src={`https://fast.wistia.net/embed/iframe/${previousVideo}?autoPlay=1&loop=1&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain`}
                         allowTransparency={true}
-                        className="wistia_embed loaded"
+                        className="wistia_embed"
                         name="wistia_embed"
                         allow="autoplay; fullscreen"
                         style={{ backgroundColor: 'black' }}
@@ -168,27 +153,21 @@ const Events: React.FC = () => {
                     </div>
                   </VideoWrapper>
                 )}
-                
-                {/* New video */}
-                <VideoWrapper 
-                  screenWidth={screenWidth}
-                  className={`${isVideoLoaded ? 'active' : ''} ${isTransitioning ? 'fadeIn' : ''}`}
-                >
+                <VideoWrapper screenWidth={screenWidth} className="active">
                   <div className="video-container">
                     <iframe 
-                      src={`https://fast.wistia.net/embed/iframe/${upcomingEvents.find(event => 
-                        event.sys.id === activeEventId)?.fields.wistiaVideo.items[0].hashed_id}?autoPlay=1&loop=1&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain`}
+                      src={`https://fast.wistia.net/embed/iframe/${currentVideo}?autoPlay=1&loop=1&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain`}
                       allowTransparency={true}
-                      className={`wistia_embed ${isVideoLoaded ? 'loaded' : ''}`}
+                      className="wistia_embed"
                       name="wistia_embed"
                       allow="autoplay; fullscreen"
                       style={{ backgroundColor: 'black' }}
-                      onLoad={handleVideoLoad}
                     />
                   </div>
                 </VideoWrapper>
               </>
-              ) : (
+            )}
+            {!currentVideo && (
               <BackgroundImage 
                 imageUrl={activeEventImage}
                 isActive={true}

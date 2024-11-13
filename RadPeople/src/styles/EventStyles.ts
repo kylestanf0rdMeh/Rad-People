@@ -96,34 +96,19 @@ export const BackgroundVideo = styled.video`
   }
 `;
 
-export const VideoWrapper = styled.div<{ screenWidth: number; isActive?: boolean }>`
+export const VideoWrapper = styled.div<{ screenWidth: number }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
   will-change: opacity;
-  transform: translate3d(0, 0, 0);
 
   &.active {
     opacity: 1;
   }
-
-  &.fadeOut {
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-  }
-
-  &.fadeIn {
-    opacity: 0;
-    &.active {
-      opacity: 1;
-      transition: opacity 1s ease-in-out;
-    }
-  }
-
 
   .video-container {
     position: absolute;
@@ -131,7 +116,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number; isActive?: boolean
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(1.01); // Prevent potential edge flickering
+    transform: scale(1.01);
     
     iframe {
       position: absolute;
@@ -143,13 +128,6 @@ export const VideoWrapper = styled.div<{ screenWidth: number; isActive?: boolean
       min-width: 177.77vh;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.8s ease-in-out;
-      will-change: transform, opacity;
-
-      &.loaded {
-        opacity: 1;
-      }
     }
 
     &::after {
@@ -168,22 +146,6 @@ export const VideoWrapper = styled.div<{ screenWidth: number; isActive?: boolean
       z-index: 1;
     }
   }
-`;
-
-// Create a separate overlay component for the video
-export const VideoOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.3),
-    rgba(0, 0, 0, 0.7)
-  );
-  pointer-events: none;
-  z-index: 2; // Ensure overlay is above the video but below other content
 `;
 
 export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeight: number }>`

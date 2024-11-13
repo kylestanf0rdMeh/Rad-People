@@ -124,6 +124,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number; isActive?: boolean
     }
   }
 
+
   .video-container {
     position: absolute;
     top: 0;

@@ -98,13 +98,13 @@ export const ContactRectangle = styled.div`
 
 export const OverlayButton = styled.button`
   position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background-color: white;
+  bottom: 15px;
+  left: 15px;
+  background-color: #edeff1;;
   border: 1px solid #000000;
   border-radius: 0; // Remove border radius for square shape
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,9 +113,9 @@ export const OverlayButton = styled.button`
   padding: 0;
   
   svg {
-    width: 18px;
-    height: 18px;
-    stroke: #0000FF;
+    width: 25px;
+    height: 25px;
+    stroke: black;
     stroke-width: 2;
     fill: none;
   }

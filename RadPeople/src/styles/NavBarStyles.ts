@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
-import { Link, NavLink as RouterNavLink } from 'react-router-dom';
+import { Link as RouterNavLink } from 'react-router-dom';
 
 const BORDER_THICKNESS = '1px';
 const BLUE_COLOR = '#1404FB';
@@ -37,7 +37,7 @@ export const DesktopNav = styled.div`
   }
 `;
 
-export const Logo = styled(Link)`
+export const Logo = styled(RouterNavLink)`
   font-family: 'NF Ultra', sans-serif;
   font-size: 0.8rem; // Slightly reduced font size
   color: #1404FB;

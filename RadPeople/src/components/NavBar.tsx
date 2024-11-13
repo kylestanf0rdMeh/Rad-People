@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi'
 import { 
         NavBarContainer, 
@@ -32,16 +32,16 @@ const NavBar: React.FC = () => {
 
 
       <DesktopNav>
-        <Logo to='/' as={NavLink}>RADPEOPLE</Logo>
+        <Logo to='/' as={Link}>RADPEOPLE</Logo>
 
         <NavLinks>
-          <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
-          <StyledNavLink to="/gallery" as={NavLink}>GALLERY</StyledNavLink>
-          <StyledNavLink to="/shop" as={NavLink}>SHOP</StyledNavLink>
-          <StyledNavLink to="/events" as={NavLink}>EVENTS</StyledNavLink>
+          <StyledNavLink to="/about" as={Link}>ABOUT</StyledNavLink>
+          <StyledNavLink to="/gallery" as={Link}>GALLERY</StyledNavLink>
+          <StyledNavLink to="/shop" as={Link}>SHOP</StyledNavLink>
+          <StyledNavLink to="/events" as={Link}>EVENTS</StyledNavLink>
         </NavLinks>
 
-        <CartLink to="/cart" as={NavLink}>cart</CartLink>
+        <CartLink to="/cart" as={Link}>cart</CartLink>
       </DesktopNav>
 
 
@@ -79,9 +79,9 @@ const NavBar: React.FC = () => {
           )}
         </MenuIcon>
 
-        <MobileLogo as={NavLink} to='/'>RADPEOPLE</MobileLogo>
+        <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
         
-        <CartIcon as={NavLink} to="/cart">
+        <CartIcon as={Link} to="/cart">
           <FiShoppingBag size={20} strokeWidth={1} />
         </CartIcon>
       </MobileNav>
@@ -89,16 +89,16 @@ const NavBar: React.FC = () => {
 
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
-          <MobileMenuLink as={NavLink} to="/about" onClick={closeMobileMenu}>
+          <MobileMenuLink as={Link} to="/about" onClick={closeMobileMenu}>
             <span>ABOUT</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={NavLink} to="/gallery" onClick={closeMobileMenu}>
+          <MobileMenuLink as={Link} to="/gallery" onClick={closeMobileMenu}>
             <span>GALLERY</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={NavLink} to="/shop" onClick={closeMobileMenu}>
+          <MobileMenuLink as={Link} to="/shop" onClick={closeMobileMenu}>
             <span>SHOP</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={NavLink} to="/events" onClick={closeMobileMenu}>
+          <MobileMenuLink as={Link} to="/events" onClick={closeMobileMenu}>
             <span>EVENTS</span> <MobileMenuIcon/>
           </MobileMenuLink>
         </MobileMenuLinks>

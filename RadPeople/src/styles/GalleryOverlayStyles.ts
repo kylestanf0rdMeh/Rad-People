@@ -48,8 +48,8 @@ export const Image = styled.img`
 
 export const CloseButton = styled(OverlayButton)`
   position: fixed;
-  bottom: 8px;
-  left: 8px;
+  bottom: 15px;
+  left: 15px;
   z-index: 1001;
   background-color: #0000FF;
 

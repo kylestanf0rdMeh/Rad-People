@@ -278,6 +278,7 @@ export const SizeButton = styled.button<{ isSelected: boolean }>`
   border-radius: 0;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  position: relative; // Added for pseudo-elements positioning
 
   &:hover {
     border-color: #000000;

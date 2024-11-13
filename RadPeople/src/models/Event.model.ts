@@ -1,27 +1,41 @@
+export interface WistiaItem {
+  duration: number;
+  hashed_id: string;
+  id: number;
+  thumbnail: {
+    height: number;
+    width: number;
+    url: string;
+  };
+}
+
 export interface EventItem {
-    sys: {
-      id: string;
-      contentType: {
-        sys: {
-          id: string;
-        };
+  sys: {
+    id: string;
+    contentType: {
+      sys: {
+        id: string;
       };
     };
-    fields: {
-      name: string;
-      description?: string;
-      musicInformation: string;
-      location?: string;
-      date: string;
-      ticketCount: string;
-      thumbnail: Array<{
-        fields: {
-          file: {
-            url: string;
-          };
+  };
+  fields: {
+    name: string;
+    description?: string;
+    musicInformation: string;
+    location?: string;
+    date: string;
+    ticketCount: string;
+    thumbnailImage: Array<{
+      fields: {
+        file: {
+          url: string;
         };
-      }>;
-      isVideo: boolean;
+      };
+    }>;
+    wistiaVideo: {
+      items: WistiaItem[];
     };
-    contentTypeId: string;
-  }
+    isVideo: boolean;
+  };
+  contentTypeId: string;
+}

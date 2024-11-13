@@ -148,6 +148,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   }
 `;
 
+
 export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeight: number }>`
   position: absolute;
   top: ${props => {

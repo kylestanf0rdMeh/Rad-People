@@ -1,30 +1,27 @@
-import Layout from '../components/Layout';
 import React, { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
 import IntroAnimation from '../components/IntroAnimation';
-import { HomeContainer, Hero, CenteredText } from '../styles/HomeStyles';
+import VideoBackground from '../components/VideoBackground';
+import { HomeContainer } from '../styles/HomeStyles';
+import PageWrapper from '../components/PageWrapper';
 
 const Home: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowIntro(false), 7000); // Increased from 5000 to 7000
+    const timer = setTimeout(() => setShowIntro(false), 7000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <HomeContainer>
       {showIntro && <IntroAnimation />}
-      <Layout>
-        <Hero>
-          <CenteredText>
-            <span>Let's Create</span>
-            <span>Something</span>
-            <span>Special</span>
-            <span>Together</span>
-          </CenteredText>
-        </Hero>
-      </Layout>
-    </HomeContainer>
+      <PageWrapper>
+        <Layout>
+          <VideoBackground />
+        </Layout>
+      </PageWrapper>
+      </HomeContainer>
   );
 };
 

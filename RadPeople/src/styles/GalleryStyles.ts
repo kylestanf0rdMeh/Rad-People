@@ -55,10 +55,11 @@ export const GalleryImage = styled.img<{ fillScreen: boolean; isWide: boolean }>
 export const ContactRectangle = styled.div`
   position: absolute;
   top: 12px;
-  right: 12px;
+  right: 5px;
   background-color: #0000FF;
   color: white;
   padding: 15px;
+  border: 1px solid #000000; // Changed to solid black border
   font-family: 'Sequel Sans', sans-serif;
   z-index: 10;
   display: flex;
@@ -76,6 +77,7 @@ export const ContactRectangle = styled.div`
   @media (max-width: 768px) {
     width: 110px;
     height: 160px;
+    right: 8px;
   }
 
   @media (max-width: 480px) {
@@ -96,13 +98,13 @@ export const ContactRectangle = styled.div`
 
 export const OverlayButton = styled.button`
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 15px;
+  left: 15px;
   background-color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  border: 1px solid #000000;
+  border-radius: 0; // Remove border radius for square shape
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,9 +113,9 @@ export const OverlayButton = styled.button`
   padding: 0;
   
   svg {
-    width: 18px;
-    height: 18px;
-    stroke: #0000FF;
+    width: 25px;
+    height: 25px;
+    stroke: black;
     stroke-width: 2;
     fill: none;
   }

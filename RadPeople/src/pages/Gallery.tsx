@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { GalleryItem } from '../models/Gallery.model';
-import { fetchGalleryImages } from '../middleware/Gallery';
-import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
-import useGalleryNavigation from '../hooks/useGalleryNavigation';
-import useIsMobile from '../hooks/useIsMobile';
-import GalleryOverlay from '../components/GalleryOverlay';
 import { FiGrid } from 'react-icons/fi';
+import useIsMobile from '../hooks/useIsMobile';
+import PageWrapper from '../components/PageWrapper';
+import { GalleryItem } from '../models/Gallery.model';
+import GalleryOverlay from '../components/GalleryOverlay';
+import { fetchGalleryImages } from '../middleware/Gallery';
+import React, { useState, useEffect, useCallback } from 'react';
+import useGalleryNavigation from '../hooks/useGalleryNavigation';
+import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
 
 const Gallery: React.FC = () => {
   const [images, setImages] = useState<GalleryItem[]>([]);
@@ -101,38 +102,41 @@ const Gallery: React.FC = () => {
   };
 
   return (
-    <GalleryPageContainer 
+    <PageWrapper>
+      <GalleryPageContainer 
       onClick={handleClick} 
       onMouseMove={handleMouseMove}
       style={{ cursor: isOverlayOpen ? 'default' : (isMobile ? 'default' : cursor) }}
-    >
-    <GalleryContainer>
-      {currentImage && (
-        <GalleryImage
-          key={currentImage.src}
-          src={currentImage.src}
-          alt={images[currentIndex].fields.descriptions || 'Gallery image'}
-          fillScreen={currentImage.fillScreen}
-          isWide={currentImage.isWide}
+      >
+        <GalleryContainer>
+          {currentImage && (
+            <GalleryImage
+              key={currentImage.src}
+              src={currentImage.src}
+              alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+              fillScreen={currentImage.fillScreen}
+              isWide={currentImage.isWide}
+            />
+          )}
+        </GalleryContainer>
+
+        <ContactRectangle>
+          <h3>Contact Us</h3>
+          <p>contact@radpeople.us</p>
+        </ContactRectangle>
+
+        <OverlayButton onClick={toggleOverlay}>
+          <FiGrid />
+        </OverlayButton>
+        
+        <GalleryOverlay
+          isOpen={isOverlayOpen}
+          images={images}
+          onClose={toggleOverlay}
+          onImageClick={handleOverlayImageClick}
         />
-      )}
-    </GalleryContainer>
-    <ContactRectangle>
-      <h3>Contact Us</h3>
-      <p>Email: info@example.com</p>
-      <p>Phone: (123) 456-7890</p>
-      <p>123 Main St, City</p>
-    </ContactRectangle>
-    <OverlayButton onClick={toggleOverlay}>
-      <FiGrid />
-    </OverlayButton>
-    <GalleryOverlay
-      isOpen={isOverlayOpen}
-      images={images}
-      onClose={toggleOverlay}
-      onImageClick={handleOverlayImageClick}
-    />
-  </GalleryPageContainer>
+      </GalleryPageContainer>
+    </PageWrapper>
   );
 };
 

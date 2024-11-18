@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
-import { Link, NavLink as RouterNavLink } from 'react-router-dom';
+import { Link as RouterNavLink } from 'react-router-dom';
 
 const BORDER_THICKNESS = '1px';
 const BLUE_COLOR = '#1404FB';
@@ -28,15 +28,16 @@ export const DesktopNav = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
-  height: 100%; // Set a fixed height for the navbar
+  padding: 0 max(5px, calc((100vw - 100%) / 2)); // Match the FilterMenu padding style
+  height: 100%;
+  width: 100%;
 
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
-export const Logo = styled(Link)`
+export const Logo = styled(RouterNavLink)`
   font-family: 'NF Ultra', sans-serif;
   font-size: 0.8rem; // Slightly reduced font size
   color: #1404FB;
@@ -58,7 +59,7 @@ export const NavLinks = styled.div`
 `;
 
 export const NavLink = styled(RouterNavLink)`
-  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-family: 'MotoyaExCedar', sans-serif;
   text-decoration: none;
   color: black;
   font-size: 0.8rem; // Slightly reduced font size
@@ -88,12 +89,13 @@ export const NavLink = styled(RouterNavLink)`
 `;
 
 export const CartLink = styled(RouterNavLink)`
-  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-family: 'MotoyaExCedar', sans-serif;
   text-decoration: none;
   color: black;
   font-size: 0.8rem; // Slightly reduced font size
   position: relative;
   transition: color 0.3s ease;
+  
 
   &::after {
     content: '';
@@ -120,7 +122,7 @@ export const MobileNav = styled.div`
   display: none;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0.5rem 0 1rem; // Reduce right padding
+  padding: 0 10px; // Updated to consistent 10px padding
   height: 100%;
   background-color: white;
 
@@ -130,15 +132,24 @@ export const MobileNav = styled.div`
 `;
 
 export const MenuIcon = styled.div`
-  font-size: 1.2rem;
   cursor: pointer;
-  color: ${LIGHT_GRAY_COLOR}; // Changed to light gray
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 15px;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-touch-callout: none;
+  margin: 0;
+  padding: 0;
+
+  span {
+    display: block;
+    width: 20px;
+    height: 1px;
+    background-color: #000000;
+    transition: all 0.3s ease;
+  }
 `;
 
 export const MobileLogo = styled.h1`
@@ -156,12 +167,12 @@ export const MobileLogo = styled.h1`
 
 export const CartIcon = styled.div`
   font-size: 1.2rem;
-  color: ${LIGHT_GRAY_COLOR};
+  color: #000000; // Changed to black
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-touch-callout: none;
-  margin-right: -0.5rem; // Negative margin to offset the padding and hug the right border
+  margin-right: -18px; // Negative margin to offset the padding and hug the right border
 `;
 
 export const MobileMenu = styled.div<{ open: boolean }>`
@@ -193,10 +204,11 @@ export const MobileMenuLinks = styled.div`
 `;
 
 export const MobileMenuLink = styled.div`
-  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-family: 'MotoyaExCedar', sans-serif;
+  font-size: 12px;
   text-decoration: none;
   color: black;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 10px; // Changed to 10px horizontal padding
   border-bottom: ${BORDER_THICKNESS} solid black;
   display: flex;
   justify-content: space-between;
@@ -234,12 +246,34 @@ export const MobileMenuLink = styled.div`
 `;
 
 export const MobileMenuIcon = styled.div`
-  color: ${LIGHT_GRAY_COLOR};
-  margin-left: auto;
-  padding-left: 1rem;
-  transition: color 0.3s ease;
+  position: relative;
+  width: 8px;
+  height: 12px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 1px;
+    background-color: #000000;
+    transform: rotate(45deg);
+    transform-origin: left center;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 1px;
+    background-color: #000000;
+    transform: rotate(-45deg);
+    transform-origin: left center;
+    bottom: 0px;
+  }
 
   ${MobileMenuLink}:hover & {
-    color: ${BLUE_COLOR};
+    &::before, &::after {
+      background-color: ${BLUE_COLOR};
+    }
   }
 `;

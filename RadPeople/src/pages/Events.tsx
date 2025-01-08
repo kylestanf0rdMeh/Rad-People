@@ -4,7 +4,7 @@ import { EventItem } from '../models/Event.model';
 import { fetchEvents } from '../middleware/Events';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
-import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription } from '../styles/EventStyles';
+import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay } from '../styles/EventStyles';
 
 
 const Events: React.FC = () => {
@@ -14,8 +14,8 @@ const Events: React.FC = () => {
   const [activeEventImage, setActiveEventImage] = useState<string>('');
   const [activeEventId, setActiveEventId] = useState<string>('');
   const [currentVideo, setCurrentVideo] = useState<string | null>(null);
-  const [previousVideo, setPreviousVideo] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
+  const [preloadedVideos, setPreloadedVideos] = useState<Set<string>>(new Set());
 
 
   const sortEventsByDate = (events: EventItem[], ascending: boolean = true) => {
@@ -115,12 +115,10 @@ const Events: React.FC = () => {
     }
 
     if (videoId) {
-      // Store the current video as previous before setting new one
-      setPreviousVideo(currentVideo);
+      // Keep current video playing while fading out
+      // Immediately set new video to start loading/playing
       setCurrentVideo(videoId);
     } else {
-      // If no video, clear both video states
-      setPreviousVideo(null);
       setCurrentVideo(null);
     }
 
@@ -136,6 +134,25 @@ const Events: React.FC = () => {
     };
   }, []);
 
+  // Preload videos when component mounts or when upcomingEvents changes
+  useEffect(() => {
+    const videoIds = upcomingEvents
+      .map(event => event.fields.wistiaVideo?.items?.[0]?.hashed_id)
+      .filter((id): id is string => !!id);
+
+    // Preload each video
+    videoIds.forEach(videoId => {
+      if (!preloadedVideos.has(videoId)) {
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'iframe';
+        preloadLink.href = `https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true`;
+        document.head.appendChild(preloadLink);
+        setPreloadedVideos(prev => new Set([...prev, videoId]));
+      }
+    });
+  }, [upcomingEvents]);
+
 
   return (
     <PageWrapper>
@@ -145,13 +162,20 @@ const Events: React.FC = () => {
         <>
           <EventsContainer screenWidth={screenWidth} screenHeight={screenHeight}>
             <EventBackground imageUrl={activeEventImage}>
-              {currentVideo && (
-                <>
-                  {previousVideo && (
-                    <VideoWrapper screenWidth={screenWidth}>
+              <div className="video-background">
+                {upcomingEvents.map(event => {
+                  const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
+                  if (!videoId) return null;
+                  
+                  return (
+                    <VideoWrapper 
+                      key={videoId}
+                      screenWidth={screenWidth} 
+                      className={activeEventId === event.sys.id ? 'active' : ''}
+                    >
                       <div className="video-container">
                         <iframe 
-                          src={`https://fast.wistia.net/embed/iframe/${previousVideo}?autoPlay=1&loop=true&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain&endVideoBehavior=loop`}
+                          src={`https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true&endVideoBehavior=loop&playbackRate=1&controls=false&playbar=false&fullscreenButton=false&volumeControl=false&playButton=false&preload=auto`}
                           allowTransparency={true}
                           className="wistia_embed"
                           name="wistia_embed"
@@ -160,21 +184,9 @@ const Events: React.FC = () => {
                         />
                       </div>
                     </VideoWrapper>
-                  )}
-                  <VideoWrapper screenWidth={screenWidth} className="active">
-                    <div className="video-container">
-                      <iframe 
-                        src={`https://fast.wistia.net/embed/iframe/${currentVideo}?autoPlay=1&loop=true&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain&endVideoBehavior=loop`}
-                        allowTransparency={true}
-                        className="wistia_embed"
-                        name="wistia_embed"
-                        allow="autoplay; fullscreen"
-                        style={{ backgroundColor: 'black' }}
-                      />
-                    </div>
-                  </VideoWrapper>
-                </>
-              )}
+                  );
+                })}
+              </div>
               {!currentVideo && (
                 <BackgroundImage 
                   imageUrl={activeEventImage}
@@ -190,6 +202,7 @@ const Events: React.FC = () => {
               </EventTitle>
 
               <EventNamesContainer screenWidth={screenWidth} screenHeight={screenHeight}>
+                {/* Only display 4 events */}
                 {[...Array(4)].map((_, i) => {
                   const event = upcomingEvents[i];
                   return event ? (
@@ -239,7 +252,9 @@ const Events: React.FC = () => {
         </>
         )}
 
-      <PastEventsTitle>Past Events</PastEventsTitle>
+
+      {/* PAST EVENTS */}
+      <PastEventsTitle>PAST</PastEventsTitle>
         <PastEventsList>
           {pastEvents.map((event) => (
             <PastEventCard key={event.sys.id}>
@@ -247,6 +262,7 @@ const Events: React.FC = () => {
                 src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
                 alt={event.fields.name}
               />
+              <ViewOverlay>VIEW</ViewOverlay>
               <PastEventName>{event.fields.name}</PastEventName>
               <PastEventDescription>
                 {event.fields.description?.split('\n')[0] || ''}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi'
 import { 
         NavBarContainer, 
@@ -35,10 +35,10 @@ const NavBar: React.FC = () => {
         <Logo to='/' as={Link}>RADPEOPLE</Logo>
 
         <NavLinks>
-          <StyledNavLink to="/about" as={Link}>ABOUT</StyledNavLink>
-          <StyledNavLink to="/gallery" as={Link}>GALLERY</StyledNavLink>
-          <StyledNavLink to="/shop" as={Link}>SHOP</StyledNavLink>
-          <StyledNavLink to="/events" as={Link}>EVENTS</StyledNavLink>
+          <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
+          <StyledNavLink to="/gallery" as={NavLink}>GALLERY</StyledNavLink>
+          <StyledNavLink to="/shop" as={NavLink}>SHOP</StyledNavLink>
+          <StyledNavLink to="/events" as={NavLink}>EVENTS</StyledNavLink>
         </NavLinks>
 
         <CartLink to="/cart" as={Link}>cart</CartLink>

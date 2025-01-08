@@ -103,11 +103,16 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+  transition: opacity 0.6s ease-in-out;
   will-change: opacity;
+  z-index: 0;
 
   &.active {
     opacity: 1;
+  }
+
+  &:not(.active) {
+    opacity: 0;
   }
 
   .video-container {
@@ -210,9 +215,9 @@ export const EventLink = styled(Link)`
 export const EventDate = styled.p`
   font-family: 'Helvetica Neue LT Com';
   color: white;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5rem 0.5rem;
   text-transform: uppercase;
-  ${fluidTypography(0.7, 0.9, 320, 1500)}
+  ${fluidTypography(0.7, 1, 320, 1500)}
 `;
 
 export const EventDetailsWrapper = styled.div`
@@ -240,8 +245,8 @@ export const EventName = styled.h3`
 export const LocationIcon = styled.div`
   position: absolute;
   left: 0;
-  top: 4px;
-  height: ${fluidSize(8, 16, 320, 1500)}; // Fluid height from 12px to 16px
+  top: 3px;
+  height: ${fluidSize(8, 10, 320, 1500)}; // Fluid height from 12px to 16px
   margin-left: 9px;
   width: ${fluidSize(11, 15, 320, 1500)}; // Fluid width from 11px to 15px
   z-index: 1;
@@ -310,10 +315,70 @@ export const EventDescription = styled.p`
 
 export const PastEventsTitle = styled.h2`
   font-family: 'Sequel Sans Regular';
-  font-size: 2.5rem;
+  font-size: 4.5rem;
   color: black;
-  margin: 4rem 0 2rem;
+  margin: 2rem 0 2rem;
   padding: 0 2rem;
+`;
+
+export const PastEventName = styled.h3`
+  font-family: 'Sequel Sans Regular';
+  font-size: 2rem;
+  color: black;
+  margin: 0 0 0.5rem;
+`;
+
+export const PastEventDescription = styled.p`
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.85rem;
+  color: black;
+  margin: 0;
+  line-height: 1.4;
+`;
+
+export const ViewOverlay = styled.div`
+  position: absolute;
+  top: calc(25% + 1rem);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  border: 1px solid black;
+  font-size: 0.7rem;
+  padding: 0.3rem 3rem; // Reduced vertical padding from 0.5rem to 0.3rem
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sequel Sans Regular';
+
+  &:hover {
+    // background: transparent;
+    background: #1404FB;
+    color: white;
+    border-color: transparent;
+    transition: background 0.3s ease-in-out;
+  }
+`;
+
+export const PastEventCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 1rem;
+  }
+
+  &:hover ${ViewOverlay} {
+    opacity: 1;
+  }
 `;
 
 export const PastEventsList = styled.div`
@@ -321,32 +386,16 @@ export const PastEventsList = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   padding: 0 2rem 4rem;
-`;
-
-export const PastEventCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-
-  img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    margin-bottom: 1rem;
+  
+  /* Add empty columns to maintain layout */
+  &::after {
+    content: '';
+    grid-column: span 4;
   }
-`;
 
-export const PastEventName = styled.h3`
-  font-family: 'Sequel Sans Regular';
-  font-size: 1.2rem;
-  color: black;
-  margin: 0 0 0.5rem;
-`;
-
-export const PastEventDescription = styled.p`
-  font-family: 'Sequel Sans Regular';
-  font-size: 0.8rem;
-  color: black;
-  margin: 0;
-  line-height: 1.4;
+  /* Ensure single items take up same space */
+  ${PastEventCard} {
+    min-height: 100%;
+    width: 100%;
+  }
 `;

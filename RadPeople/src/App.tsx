@@ -10,6 +10,10 @@ import GlobalStyles from './styles/GlobalStyles';
 import ProductDetail from './pages/Products/ProductDetails';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { ProductsProvider } from './contexts/ProductsContext';
+import { GalleryProvider } from './contexts/GalleryContext';
+import FontLoader from './components/FontLoader';
+import { EventsProvider } from './contexts/EventsContext';
 
 
 // I created a separate component for the animated routes
@@ -34,13 +38,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <>
-      <GlobalStyles />
-      <Router>
-        <NavBar />
-        <AnimatedRoutes />
-      </Router>
-    </>
+    <Router>
+      <FontLoader>
+        <ProductsProvider>
+          <GalleryProvider>
+            <EventsProvider>
+              <GlobalStyles />
+              <NavBar />
+              <AnimatedRoutes />
+            </EventsProvider>
+          </GalleryProvider>
+        </ProductsProvider>
+      </FontLoader>
+    </Router>
   );
 }
 

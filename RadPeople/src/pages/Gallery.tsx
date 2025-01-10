@@ -1,20 +1,23 @@
 import { FiGrid } from 'react-icons/fi';
 import useIsMobile from '../hooks/useIsMobile';
 import PageWrapper from '../components/PageWrapper';
-import { GalleryItem } from '../models/Gallery.model';
 import GalleryOverlay from '../components/GalleryOverlay';
-import { fetchGalleryImages } from '../middleware/Gallery';
 import React, { useState, useEffect, useCallback } from 'react';
 import useGalleryNavigation from '../hooks/useGalleryNavigation';
 import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
+import { useGallery } from '../contexts/GalleryContext';
 
 const Gallery: React.FC = () => {
-  const [images, setImages] = useState<GalleryItem[]>([]);
+  const { images, loading, prefetchGallery } = useGallery();
   const { currentIndex, setCurrentIndex, goToNext, goToPrevious } = useGalleryNavigation(images.length);
   const isMobile = useIsMobile();
   const [cursor, setCursor] = useState<'w-resize' | 'e-resize'>('e-resize');
   const [currentImage, setCurrentImage] = useState<{ src: string; fillScreen: boolean; isWide: boolean } | null>(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+  useEffect(() => {
+    prefetchGallery();
+  }, [prefetchGallery]);
 
   const preloadImage = useCallback((src: string) => {
     return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -38,7 +41,7 @@ const Gallery: React.FC = () => {
         if (isMobile) {
           shouldFillScreen = img.naturalHeight >= img.naturalWidth;
         } else {
-          isWide = aspectRatio > 1.5; // Adjust this threshold as needed
+          isWide = aspectRatio > 1.5;
           shouldFillScreen = isWide;
         }
         setCurrentImage({ src: imageSrc, fillScreen: shouldFillScreen, isWide });
@@ -49,21 +52,12 @@ const Gallery: React.FC = () => {
   }, [images, currentIndex, isMobile, preloadImage]);
 
   useEffect(() => {
-    const loadImages = async () => {
-      try {
-        const fetchedImages = await fetchGalleryImages();
-        setImages(fetchedImages);
-      } catch (error) {
-        console.error('Error loading gallery images:', error);
-      }
-    };
-
-    loadImages();
-  }, []);
-
-  useEffect(() => {
     loadCurrentImage();
   }, [loadCurrentImage]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     // Ignore clicks when the overlay is open

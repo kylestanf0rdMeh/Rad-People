@@ -11,7 +11,7 @@ const GlobalStyles = createGlobalStyle`
     src: url(${NFUltraRegular}) format('opentype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -19,7 +19,7 @@ const GlobalStyles = createGlobalStyle`
     src: url(${HelveticaNeueLTCom77BoldCondensed}) format('truetype');
     font-weight: bold;
     font-style: normal;
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -27,7 +27,7 @@ const GlobalStyles = createGlobalStyle`
     src: url(${MotoyaExCedar}) format('truetype');
     font-weight: bold;
     font-style: normal;
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -35,7 +35,7 @@ const GlobalStyles = createGlobalStyle`
     src: url(${SequelSans}) format('truetype');
     font-weight: bold;
     font-style: normal;
-    font-display: swap;
+    font-display: block;
   }
 
   @font-face {
@@ -43,7 +43,7 @@ const GlobalStyles = createGlobalStyle`
     src: url(${SequelSansLightDisp}) format('truetype');
     font-weight: bold;  /* Light weight */
     font-style: normal;
-    font-display: swap;
+    font-display: block;
   }
 
   html, body, #root {

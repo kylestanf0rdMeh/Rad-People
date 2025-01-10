@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useAnimation } from 'framer-motion'
-import { useLoadFont } from '../hooks/UseLoadFont'
 import { AnimatedChar, BlueScreen, NFUltraText } from '../styles/IntroAnimationStyles'
 
 // Animation timing (in seconds)
@@ -15,11 +14,8 @@ export default function IntroAnimation() {
   const [animationStarted, setAnimationStarted] = useState(false)
   const controls = useAnimation()
   const blueScreenRef = useRef<HTMLDivElement>(null)
-  const fontLoaded = useLoadFont('NF Ultra')
 
   const animateTextAppear = useCallback(() => {
-    if (!fontLoaded) return
-
     setAnimationStarted(true)
     setTimeout(() => {
       fullText.split('').forEach((_, index) => {
@@ -34,7 +30,7 @@ export default function IntroAnimation() {
       const totalTextDuration = TYPING_SPEED * fullText.length + DELAY_AFTER_TEXT_APPEAR
       setTimeout(animateBlueScreen, totalTextDuration * 1000)
     }, DELAY_BEFORE_TEXT_APPEAR * 1000)
-  }, [fullText, fontLoaded])
+  }, [fullText])
 
   const animateBlueScreen = useCallback(async () => {
     await controls.start({
@@ -50,25 +46,23 @@ export default function IntroAnimation() {
   }, [controls])
 
   useEffect(() => {
-    if (fontLoaded && !animationStarted) {
+    if (!animationStarted) {
       animateTextAppear()
     }
-  }, [fontLoaded, animationStarted, animateTextAppear])
+  }, [animationStarted, animateTextAppear])
 
   return (
     <BlueScreen ref={blueScreenRef} animate={controls} initial={{ y: 0 }}>
-      {fontLoaded && ( 
-        <NFUltraText>
-          {fullText.split('').map((char, index) => (
-            <AnimatedChar 
-              key={index}
-              $isVisible={charStates[index].isVisible}
-            >
-              {char}
-            </AnimatedChar>
-          ))}
-        </NFUltraText>
-      )}
+      <NFUltraText>
+        {fullText.split('').map((char, index) => (
+          <AnimatedChar 
+            key={index}
+            $isVisible={charStates[index].isVisible}
+          >
+            {char}
+          </AnimatedChar>
+        ))}
+      </NFUltraText>
     </BlueScreen>
   )
 }

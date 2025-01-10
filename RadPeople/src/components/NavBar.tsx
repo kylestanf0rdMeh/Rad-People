@@ -1,6 +1,8 @@
 import React, { useState, useCallback, memo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi'
+import { useProducts } from '../contexts/ProductsContext';
+import { useEvents } from '../contexts/EventsContext';
 import { 
         NavBarContainer, 
         DesktopNav, 
@@ -19,6 +21,8 @@ import {
        } from '../styles/NavBarStyles';
 
 const NavBar: React.FC = memo(() => {
+  const { prefetchProducts } = useProducts();
+  const { prefetchEvents } = useEvents();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = useCallback(() => {
@@ -28,6 +32,14 @@ const NavBar: React.FC = memo(() => {
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
   }, []);
+
+  const handleShopInteraction = useCallback(() => {
+    prefetchProducts();
+  }, [prefetchProducts]);
+
+  const handleEventsInteraction = useCallback(() => {
+    prefetchEvents();
+  }, [prefetchEvents]);
 
   return (
     <NavBarContainer>
@@ -39,8 +51,22 @@ const NavBar: React.FC = memo(() => {
         <NavLinks>
           <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
           <StyledNavLink to="/gallery" as={NavLink}>GALLERY</StyledNavLink>
-          <StyledNavLink to="/shop" as={NavLink} end={false}>SHOP</StyledNavLink>
-          <StyledNavLink to="/events" as={NavLink} end={false}>EVENTS</StyledNavLink>
+          <StyledNavLink 
+            to="/shop" 
+            as={NavLink} 
+            end={false}
+            onMouseEnter={handleShopInteraction}
+          >
+            SHOP
+          </StyledNavLink>
+          <StyledNavLink 
+            to="/events" 
+            as={NavLink} 
+            end={false}
+            onMouseEnter={handleEventsInteraction}
+          >
+            EVENTS
+          </StyledNavLink>
         </NavLinks>
 
         <CartLink to="/cart" as={Link}>cart</CartLink>
@@ -48,7 +74,10 @@ const NavBar: React.FC = memo(() => {
 
 
       <MobileNav> 
-        <MenuIcon onClick={toggleMobileMenu}>
+        <MenuIcon onClick={() => {
+          toggleMobileMenu();
+          handleShopInteraction();
+        }}>
           {mobileMenuOpen ? (
             // X icon
             <div style={{ 

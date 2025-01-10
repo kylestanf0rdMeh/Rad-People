@@ -1,15 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from '../components/Layout';
 import { EventItem } from '../models/Event.model';
-import { fetchEvents } from '../middleware/Events';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
+import { useEvents } from '../contexts/EventsContext';
 import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
 
+declare global {
+  interface Window {
+    _wq: Array<{
+      id: string;
+      options: {
+        doNotTrack: boolean;
+        plugin: {
+          metrics: boolean;
+          googleAnalytics4: boolean;
+          visitorTracking: boolean;
+        };
+      };
+    }>;
+  }
+}
 
 const Events: React.FC = () => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const { events, loading, prefetchEvents } = useEvents();
   const [pastEvents, setPastEvents] = useState<EventItem[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);
   const [activeEventImage, setActiveEventImage] = useState<string>('');
@@ -18,6 +34,50 @@ const Events: React.FC = () => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [preloadedVideos, setPreloadedVideos] = useState<Set<string>>(new Set());
 
+  // Trigger fetch on mount
+  useEffect(() => {
+    prefetchEvents();
+  }, [prefetchEvents]);
+
+  // Process events when data arrives
+  useEffect(() => {
+    if (events.length > 0) {
+      const { past, upcoming } = categorizeEvents(events);
+      const sortedUpcoming = sortEventsByDate(upcoming);
+      
+      setUpcomingEvents(sortedUpcoming);
+      setPastEvents(sortEventsByDate(past, false));
+
+      // Set initial active event
+      if (sortedUpcoming.length > 0) {
+        const firstEvent = sortedUpcoming[0];
+        const media = getEventMedia(firstEvent);
+        setActiveEventId(firstEvent.sys.id);
+        setActiveEventImage(media.url);
+        if (media.isVideo && media.videoId) {
+          setCurrentVideo(media.videoId);
+        }
+      }
+    }
+  }, [events]);
+
+  // Preload videos when upcoming events are set
+  useEffect(() => {
+    const videoIds = upcomingEvents
+      .map(event => event.fields.wistiaVideo?.items?.[0]?.hashed_id)
+      .filter((id): id is string => !!id);
+
+    videoIds.forEach(videoId => {
+      if (!preloadedVideos.has(videoId)) {
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'iframe';
+        preloadLink.href = `https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true`;
+        document.head.appendChild(preloadLink);
+        setPreloadedVideos(prev => new Set([...prev, videoId]));
+      }
+    });
+  }, [upcomingEvents, preloadedVideos]);
 
   const sortEventsByDate = (events: EventItem[], ascending: boolean = true) => {
     return [...events].sort((a, b) => {
@@ -77,37 +137,6 @@ const Events: React.FC = () => {
     return lines;
   };
 
-
-
-  // Set initial events
-  useEffect(() => {
-    const getEvents = async () => {
-      try {
-        const fetchedEvents = await fetchEvents();
-        const { past, upcoming } = categorizeEvents(fetchedEvents);
-        const sortedUpcoming = sortEventsByDate(upcoming);
-    
-        setUpcomingEvents(sortedUpcoming);
-        setPastEvents(sortEventsByDate(past, false));
-    
-        // Set initial active event
-        if (sortedUpcoming.length > 0) {
-          const firstEvent = sortedUpcoming[0];
-          const media = getEventMedia(firstEvent);
-          setActiveEventId(firstEvent.sys.id);
-          setActiveEventImage(media.url);
-          if (media.isVideo && media.videoId) {
-            setCurrentVideo(media.videoId);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-  
-    getEvents();
-  }, []); // Only run once on component mount
-
   const handleEventHover = (event: EventItem) => {
     const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
     
@@ -135,29 +164,28 @@ const Events: React.FC = () => {
     };
   }, []);
 
-  // Preload videos when component mounts or when upcomingEvents changes
+  // Add this useEffect for Wistia initialization
   useEffect(() => {
-    const videoIds = upcomingEvents
-      .map(event => event.fields.wistiaVideo?.items?.[0]?.hashed_id)
-      .filter((id): id is string => !!id);
-
-    // Preload each video
-    videoIds.forEach(videoId => {
-      if (!preloadedVideos.has(videoId)) {
-        const preloadLink = document.createElement('link');
-        preloadLink.rel = 'preload';
-        preloadLink.as = 'iframe';
-        preloadLink.href = `https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true`;
-        document.head.appendChild(preloadLink);
-        setPreloadedVideos(prev => new Set([...prev, videoId]));
+    window._wq = window._wq || [];
+    window._wq.push({
+      id: "_all",
+      options: {
+        doNotTrack: true,
+        plugin: {
+          metrics: false,
+          googleAnalytics4: false,
+          visitorTracking: false
+        }
       }
     });
-  }, [upcomingEvents]);
+  }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <PageWrapper>
-
       <Layout>
         {upcomingEvents.length > 0 && (
         <>
@@ -177,7 +205,7 @@ const Events: React.FC = () => {
                     >
                       <div className="video-container">
                         <iframe 
-                          src={`https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true&endVideoBehavior=loop&playbackRate=1&controls=false&playbar=false&fullscreenButton=false&volumeControl=false&playButton=false&preload=auto`}
+                          src={`https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true&endVideoBehavior=loop&playbackRate=1&controls=false&playbar=false&fullscreenButton=false&volumeControl=false&playButton=false&preload=auto&doNotTrack=true`}
                           allowTransparency={true}
                           className="wistia_embed"
                           name="wistia_embed"

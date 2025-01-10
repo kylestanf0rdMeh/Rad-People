@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../../components/Layout';
 import { ProductItem } from '../../models/Product.model';
-import { fetchProducts } from '../../middleware/Product';
 import PageWrapper from '../../components/PageWrapper';
+
+import { useProducts } from '../../contexts/ProductsContext';
 import useWindowDimensions from '../../hooks/useWindowDimensions'
 import { 
   ProductCard, 
@@ -25,9 +26,9 @@ import {
 
 
 const ProductList: React.FC = () => {
+  const { products, loading } = useProducts();
   const { width } = useWindowDimensions();
-  const [activeGrid, setActiveGrid] = useState<number>(4); // Default to 4
-  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [activeGrid, setActiveGrid] = useState<number>(4);
   const [sortedProducts, setSortedProducts] = useState<{
     default: ProductItem[];
     oldToNew: ProductItem[];
@@ -37,67 +38,64 @@ const ProductList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortModalOpen, setSortModalOpen] = useState(false);
   const [sortType, setSortType] = useState('date-new');
+  const [displayProducts, setDisplayProducts] = useState<ProductItem[]>([]);
 
+  const preComputeProducts = useCallback((products: ProductItem[]) => {
+    const defaultOrder = [...products];
+    const oldToNew = [...defaultOrder].reverse();
+    const priceLowToHigh = [...defaultOrder].sort((a, b) => a.fields.price - b.fields.price);
+    const priceHighToLow = [...defaultOrder].sort((a, b) => b.fields.price - a.fields.price);
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      try{
-        const fetchedProducts = await fetchProducts();
-        preComputeProducts(fetchedProducts);
-      }catch(e){
-        console.error('Error loading products: ', e)
-      }
-    }
+    setSortedProducts({
+      default: defaultOrder,
+      oldToNew,
+      priceLowToHigh,
+      priceHighToLow
+    });
+    setDisplayProducts(defaultOrder);
+  }, []);
 
-    loadProducts()
+  const gridClick = useCallback((viewSize: number) => {
+    setActiveGrid(viewSize);
+    setIsModalOpen(false);
   }, []);
 
   useEffect(() => {
-    if (width <= 768) { // mobile breakpoint
-      setActiveGrid(2); // or whatever grid size you want for mobile
-    } else if (activeGrid < 4) { // if coming back to desktop
-      setActiveGrid(4); // reset to default desktop view
+    if (products.length > 0) {
+      preComputeProducts(products);
     }
-  }, [width]); // dependency on width changes
+  }, [products, preComputeProducts]);
 
-  const gridClick = (viewSize: number) => {
-    setActiveGrid(viewSize)
-    setIsModalOpen(!isModalOpen)
-  }
+  // Handle responsive grid
+  useEffect(() => {
+    if (width <= 768) {
+      setActiveGrid(2);
+    } else if (activeGrid < 4) {
+      setActiveGrid(4);
+    }
+  }, [width]);
 
-  const handleSort = (type: string) => {
+  const handleSort = useCallback((type: string) => {
     setSortType(type);
     setSortModalOpen(false);
     
     switch(type) {
       case 'date-old':
-        setProducts(sortedProducts.oldToNew);
+        setDisplayProducts(sortedProducts.oldToNew);
         break;
       case 'price-low':
-        setProducts(sortedProducts.priceLowToHigh);
+        setDisplayProducts(sortedProducts.priceLowToHigh);
         break;
       case 'price-high':
-        setProducts(sortedProducts.priceHighToLow);
+        setDisplayProducts(sortedProducts.priceHighToLow);
         break;
-      default: // 'date-new' or initial state
-        setProducts(sortedProducts.default);
+      default:
+        setDisplayProducts(sortedProducts.default);
     }
-  };
+  }, [sortedProducts]);
 
-  const preComputeProducts = (fetchedProducts: ProductItem[]) => {
-    const defaultOrder = [...fetchedProducts];
-    // Pre-compute all sort orders
-    const oldToNew = [...defaultOrder].reverse();
-    const priceLowToHigh = [...defaultOrder].sort((a, b) => a.fields.price - b.fields.price);
-    const priceHighToLow = [...defaultOrder].sort((a, b) => b.fields.price - a.fields.price);
-
-    setProducts(defaultOrder);
-        setSortedProducts({
-          default: defaultOrder,
-          oldToNew,
-          priceLowToHigh,
-          priceHighToLow
-    });
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -176,11 +174,11 @@ const ProductList: React.FC = () => {
 
           {/* PRODUCTS ARE LISTED IN THIS SECTION */}
           <ProductGrid columns={activeGrid}>
-            {products.map((product) => (
+            {displayProducts.map((product) => (
               <ProductLink 
                 key={product.sys.id}
                 to={`/product/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
-                state={{ product }}  // Pass the product data as state
+                state={{ product }}
                 columns={activeGrid}
               >
                 <ProductCard>

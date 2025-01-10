@@ -18,6 +18,7 @@ interface CacheConfig {
  * @param key - Unique identifier for caching the data
  * @param fetchFn - Async function that fetches the data
  * @param config - Optional cache configuration (defaults to 5 minutes)
+ * @param shouldFetch - Optional boolean to control when fetching occurs
  * 
  * @example
  * const { data, loading, error } = useDataFetching(
@@ -29,13 +30,18 @@ interface CacheConfig {
 export function useDataFetching<T>(
   key: string,
   fetchFn: () => Promise<T>,
-  config: CacheConfig = { maxAge: 5 * 60 * 1000 } // 5 minutes default
+  config: CacheConfig = { maxAge: 5 * 60 * 1000 },
+  shouldFetch: boolean = true
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-
+  console.log('FETCHED ONHOVER')
   useEffect(() => {
+    if (!shouldFetch) {
+      return;
+    }
+
     const fetchData = async () => {
       try {
         // Try to load from cache before making API call
@@ -69,7 +75,7 @@ export function useDataFetching<T>(
     };
 
     fetchData();
-  }, [key, fetchFn, config.maxAge]);
+  }, [key, fetchFn, config.maxAge, shouldFetch]);
 
   return { data, loading, error };
 }

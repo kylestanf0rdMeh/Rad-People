@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi'
 import { 
@@ -18,14 +18,16 @@ import {
         MobileMenuIcon
        } from '../styles/NavBarStyles';
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC = memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => !prev);
+  }, []);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
-  };
+  }, []);
 
   return (
     <NavBarContainer>
@@ -37,8 +39,8 @@ const NavBar: React.FC = () => {
         <NavLinks>
           <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
           <StyledNavLink to="/gallery" as={NavLink}>GALLERY</StyledNavLink>
-          <StyledNavLink to="/shop" as={NavLink}>SHOP</StyledNavLink>
-          <StyledNavLink to="/events" as={NavLink}>EVENTS</StyledNavLink>
+          <StyledNavLink to="/shop" as={NavLink} end={false}>SHOP</StyledNavLink>
+          <StyledNavLink to="/events" as={NavLink} end={false}>EVENTS</StyledNavLink>
         </NavLinks>
 
         <CartLink to="/cart" as={Link}>cart</CartLink>
@@ -105,6 +107,6 @@ const NavBar: React.FC = () => {
       </MobileMenu>
     </NavBarContainer>
   );
-};
+});
 
 export default NavBar;

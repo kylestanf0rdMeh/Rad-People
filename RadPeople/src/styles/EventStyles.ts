@@ -367,6 +367,7 @@ export const PastEventCard = styled.div`
   flex-direction: column;
   position: relative;
   cursor: pointer;
+  padding-bottom: 3rem;
 
   img {
     width: 100%;

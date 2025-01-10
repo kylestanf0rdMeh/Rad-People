@@ -2,7 +2,7 @@ import Cart from './pages/Cart'
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
-import EventDescription from './pages/EventDescription';
+import EventDetails from './pages/Events/EventDetails';
 import Gallery from './pages/Gallery';
 import NavBar from './components/NavBar';
 import ProductList from './pages/Products/ProductList';
@@ -25,7 +25,7 @@ function AnimatedRoutes() {
         <Route path="/shop" element={<ProductList />} />
         <Route path="/product/:id/:name" element={<ProductDetail />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/events/:id/:name" element={<EventDescription />} />
+        <Route path="/events/:id/:name" element={<EventDetails />} />
         <Route path="/cart" element={<Cart />} />
       </Routes>
     </AnimatePresence>

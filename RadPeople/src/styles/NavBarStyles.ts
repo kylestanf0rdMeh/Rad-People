@@ -79,9 +79,17 @@ export const NavLink = styled(RouterNavLink)`
     transition: transform 0.3s ease;
   }
 
-  &:hover, &.active {
+  &.active {
     color: ${BLUE_COLOR};
+    
+    &::after {
+      transform: scaleX(1);
+    }
+  }
 
+  &:hover {
+    color: ${BLUE_COLOR};
+    
     &::after {
       transform: scaleX(1);
     }

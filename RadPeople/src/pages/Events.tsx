@@ -5,6 +5,7 @@ import { fetchEvents } from '../middleware/Events';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay } from '../styles/EventStyles';
+import { Link } from 'react-router-dom';
 
 
 const Events: React.FC = () => {
@@ -161,6 +162,7 @@ const Events: React.FC = () => {
         {upcomingEvents.length > 0 && (
         <>
           <EventsContainer screenWidth={screenWidth} screenHeight={screenHeight}>
+            {/* VIDEO BACKGROUND */}
             <EventBackground imageUrl={activeEventImage}>
               <div className="video-background">
                 {upcomingEvents.map(event => {
@@ -196,6 +198,7 @@ const Events: React.FC = () => {
               )}
             </EventBackground>
 
+              {/* Our Overlay */}
               <EventTitle>
                 <EventTitleText>EVENT</EventTitleText>
                 <EventTitleText>CALENDAR</EventTitleText>
@@ -212,7 +215,10 @@ const Events: React.FC = () => {
                       screenWidth={screenWidth}
                       onMouseEnter={() => handleEventHover(event)}
                     >
-                      <EventLink to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}>
+                      <EventLink 
+                        to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+                        state={{ event }}
+                      >
                         <EventContentWrapper>
                           <EventDate>
                             {new Date(event.fields.date).toLocaleDateString('en-US', {
@@ -257,7 +263,12 @@ const Events: React.FC = () => {
       <PastEventsTitle>PAST</PastEventsTitle>
         <PastEventsList>
           {pastEvents.map((event) => (
-            <PastEventCard key={event.sys.id}>
+            <PastEventCard 
+              key={event.sys.id} 
+              as={Link} 
+              to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+              state={{ event }}
+            >
               <img 
                 src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
                 alt={event.fields.name}

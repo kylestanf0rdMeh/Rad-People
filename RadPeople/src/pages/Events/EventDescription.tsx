@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
-import { fetchEvents } from '../middleware/Events';
-import { EventItem } from '../models/Event.model';
+import Layout from '../../components/Layout';
+import { fetchEvents } from '../../middleware/Events';
+import { EventItem } from '../../models/Event.model';
 import defaultVideo from '../assets/radpeople-landingPage.mp4';
 
 

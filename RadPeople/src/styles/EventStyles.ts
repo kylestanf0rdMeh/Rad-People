@@ -337,14 +337,14 @@ export const PastEventDescription = styled.p`
 
 export const ViewOverlay = styled.div`
   position: absolute;
-  top: 150px;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
   color: black;
   border: 1px solid black;
   font-size: 0.7rem;
-  padding: 0.3rem 3rem; // Reduced vertical padding from 0.5rem to 0.3rem
+  padding: 0.3rem 3rem;
   opacity: 0;
   transition: opacity 0.3s ease;
   display: flex;
@@ -353,7 +353,6 @@ export const ViewOverlay = styled.div`
   font-family: 'Sequel Sans Regular';
 
   &:hover {
-    // background: transparent;
     background: #1404FB;
     color: white;
     border-color: transparent;
@@ -398,4 +397,10 @@ export const PastEventsList = styled.div`
     min-height: 100%;
     width: 100%;
   }
+`;
+
+export const ImageContainer = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
 `;

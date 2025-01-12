@@ -1,15 +1,7 @@
 import styled, { css } from 'styled-components'
 import { motion } from 'framer-motion'
-import NFUltraRegular from '../assets/NFUltra-Regular.otf'
 
 export const NFUltraText = styled(motion.span)`
-  @font-face {
-    font-family: 'NF Ultra';
-    src: url(${NFUltraRegular}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
   font-family: 'NF Ultra', sans-serif;
   color: #1404FB;
   font-size: 2rem;

@@ -1,22 +1,99 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from '../components/Layout';
 import { EventItem } from '../models/Event.model';
-import { fetchEvents } from '../middleware/Events';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
-import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription } from '../styles/EventStyles';
+import { useEvents } from '../contexts/EventsContext';
+import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay } from '../styles/EventStyles';
+import { Link } from 'react-router-dom';
+import { WistiaPlayer } from '@wistia/wistia-player-react';
 
+declare global {
+  interface Window {
+    _wq: Array<{
+      id: string;
+      options: {
+        doNotTrack: boolean;
+        plugin: {
+          metrics: boolean;
+          googleAnalytics4: boolean;
+          visitorTracking: boolean;
+        };
+      };
+    }>;
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window._wq = window._wq || [];
+  window._wq.push({
+    id: '*',
+    options: {
+      doNotTrack: true,
+      plugin: {
+        metrics: false,
+        googleAnalytics4: false,
+        visitorTracking: false
+      }
+    }
+  });
+}
 
 const Events: React.FC = () => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const { events, loading, prefetchEvents } = useEvents();
   const [pastEvents, setPastEvents] = useState<EventItem[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<EventItem[]>([]);
   const [activeEventImage, setActiveEventImage] = useState<string>('');
   const [activeEventId, setActiveEventId] = useState<string>('');
   const [currentVideo, setCurrentVideo] = useState<string | null>(null);
-  const [previousVideo, setPreviousVideo] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
+  const [preloadedVideos, setPreloadedVideos] = useState<Set<string>>(new Set());
 
+  // Trigger fetch on mount
+  useEffect(() => {
+    prefetchEvents();
+  }, [prefetchEvents]);
+
+  // Process events when data arrives
+  useEffect(() => {
+    if (events.length > 0) {
+      const { past, upcoming } = categorizeEvents(events);
+      const sortedUpcoming = sortEventsByDate(upcoming);
+      
+      setUpcomingEvents(sortedUpcoming);
+      setPastEvents(sortEventsByDate(past, false));
+
+      // Set initial active event
+      if (sortedUpcoming.length > 0) {
+        const firstEvent = sortedUpcoming[0];
+        const media = getEventMedia(firstEvent);
+        setActiveEventId(firstEvent.sys.id);
+        setActiveEventImage(media.url);
+        if (media.isVideo && media.videoId) {
+          setCurrentVideo(media.videoId);
+        }
+      }
+    }
+  }, [events]);
+
+  // Preload videos when upcoming events are set
+  useEffect(() => {
+    const videoIds = upcomingEvents
+      .map(event => event.fields.wistiaVideo?.items?.[0]?.hashed_id)
+      .filter((id): id is string => !!id);
+
+    videoIds.forEach(videoId => {
+      if (!preloadedVideos.has(videoId)) {
+        const preloadLink = document.createElement('link');
+        preloadLink.rel = 'preload';
+        preloadLink.as = 'iframe';
+        preloadLink.href = `https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true`;
+        document.head.appendChild(preloadLink);
+        setPreloadedVideos(prev => new Set([...prev, videoId]));
+      }
+    });
+  }, [upcomingEvents, preloadedVideos]);
 
   const sortEventsByDate = (events: EventItem[], ascending: boolean = true) => {
     return [...events].sort((a, b) => {
@@ -76,37 +153,6 @@ const Events: React.FC = () => {
     return lines;
   };
 
-
-
-  // Set initial events
-  useEffect(() => {
-    const getEvents = async () => {
-      try {
-        const fetchedEvents = await fetchEvents();
-        const { past, upcoming } = categorizeEvents(fetchedEvents);
-        const sortedUpcoming = sortEventsByDate(upcoming);
-    
-        setUpcomingEvents(sortedUpcoming);
-        setPastEvents(sortEventsByDate(past, false));
-    
-        // Set initial active event
-        if (sortedUpcoming.length > 0) {
-          const firstEvent = sortedUpcoming[0];
-          const media = getEventMedia(firstEvent);
-          setActiveEventId(firstEvent.sys.id);
-          setActiveEventImage(media.url);
-          if (media.isVideo && media.videoId) {
-            setCurrentVideo(media.videoId);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-  
-    getEvents();
-  }, []); // Only run once on component mount
-
   const handleEventHover = (event: EventItem) => {
     const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
     
@@ -115,12 +161,10 @@ const Events: React.FC = () => {
     }
 
     if (videoId) {
-      // Store the current video as previous before setting new one
-      setPreviousVideo(currentVideo);
+      // Keep current video playing while fading out
+      // Immediately set new video to start loading/playing
       setCurrentVideo(videoId);
     } else {
-      // If no video, clear both video states
-      setPreviousVideo(null);
       setCurrentVideo(null);
     }
 
@@ -136,45 +180,71 @@ const Events: React.FC = () => {
     };
   }, []);
 
+  // Add debug logging
+  useEffect(() => {
+    if (events.length > 0) {
+      // console.log('First video data:', events[0].fields.wistiaVideo?.items?.[0]);
+    }
+  }, [events]);
+
+  // Add useEffect to fetch events if none exist
+  useEffect(() => {
+    if (!events.length && !loading) {
+      prefetchEvents();
+    }
+  }, [events.length, loading, prefetchEvents]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <PageWrapper>
-
       <Layout>
         {upcomingEvents.length > 0 && (
         <>
           <EventsContainer screenWidth={screenWidth} screenHeight={screenHeight}>
+            {/* VIDEO BACKGROUND */}
             <EventBackground imageUrl={activeEventImage}>
-              {currentVideo && (
-                <>
-                  {previousVideo && (
-                    <VideoWrapper screenWidth={screenWidth}>
+              <div className="video-background">
+                {upcomingEvents.map(event => {
+                  const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
+                  if (!videoId) return null;
+                  
+                  return (
+                    <VideoWrapper 
+                      key={videoId}
+                      screenWidth={screenWidth} 
+                      className={activeEventId === event.sys.id ? 'active' : ''}
+                    >
                       <div className="video-container">
-                        <iframe 
-                          src={`https://fast.wistia.net/embed/iframe/${previousVideo}?autoPlay=1&loop=true&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain&endVideoBehavior=loop`}
-                          allowTransparency={true}
-                          className="wistia_embed"
-                          name="wistia_embed"
-                          allow="autoplay; fullscreen"
-                          style={{ backgroundColor: 'black' }}
+                        <WistiaPlayer
+                          mediaId={videoId}
+                          autoplay={true}
+                          playBarControl={false}
+                          fullscreenControl={false}
+                          volumeControl={false}
+                          controlsVisibleOnLoad={false}
+                          playerColor="000000"
+                          muted={true}
+                          silentAutoplay={true}
+                          endVideoBehavior="loop"
+                          doNotTrack={true}
+                          onLoadStart={(_event) => {
+                            // console.log('Video loading started:', videoId);
+                          }}
+                          onLoadedData={(_event) => {
+                            // console.log('Video loaded:', videoId);
+                          }}
+                          onLoadedMediaData={(_event) => {
+                            // console.log('Media data loaded:', videoId);
+                          }}
                         />
                       </div>
                     </VideoWrapper>
-                  )}
-                  <VideoWrapper screenWidth={screenWidth} className="active">
-                    <div className="video-container">
-                      <iframe 
-                        src={`https://fast.wistia.net/embed/iframe/${currentVideo}?autoPlay=1&loop=true&background=1&controlsVisibleOnLoad=false&playButton=false&playerColor=000000&videoFoam=true&muted=1&silentAutoPlay=true&fitStrategy=contain&endVideoBehavior=loop`}
-                        allowTransparency={true}
-                        className="wistia_embed"
-                        name="wistia_embed"
-                        allow="autoplay; fullscreen"
-                        style={{ backgroundColor: 'black' }}
-                      />
-                    </div>
-                  </VideoWrapper>
-                </>
-              )}
+                  );
+                })}
+              </div>
               {!currentVideo && (
                 <BackgroundImage 
                   imageUrl={activeEventImage}
@@ -184,12 +254,14 @@ const Events: React.FC = () => {
               )}
             </EventBackground>
 
+              {/* Our Overlay */}
               <EventTitle>
                 <EventTitleText>EVENT</EventTitleText>
                 <EventTitleText>CALENDAR</EventTitleText>
               </EventTitle>
 
               <EventNamesContainer screenWidth={screenWidth} screenHeight={screenHeight}>
+                {/* Only display 4 events */}
                 {[...Array(4)].map((_, i) => {
                   const event = upcomingEvents[i];
                   return event ? (
@@ -199,7 +271,10 @@ const Events: React.FC = () => {
                       screenWidth={screenWidth}
                       onMouseEnter={() => handleEventHover(event)}
                     >
-                      <EventLink to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}>
+                      <EventLink 
+                        to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+                        state={{ event }}
+                      >
                         <EventContentWrapper>
                           <EventDate>
                             {new Date(event.fields.date).toLocaleDateString('en-US', {
@@ -239,14 +314,22 @@ const Events: React.FC = () => {
         </>
         )}
 
-      <PastEventsTitle>Past Events</PastEventsTitle>
+
+      {/* PAST EVENTS */}
+      <PastEventsTitle>PAST</PastEventsTitle>
         <PastEventsList>
           {pastEvents.map((event) => (
-            <PastEventCard key={event.sys.id}>
+            <PastEventCard 
+              key={event.sys.id} 
+              as={Link} 
+              to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+              state={{ event }}
+            >
               <img 
                 src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
                 alt={event.fields.name}
               />
+              <ViewOverlay>VIEW</ViewOverlay>
               <PastEventName>{event.fields.name}</PastEventName>
               <PastEventDescription>
                 {event.fields.description?.split('\n')[0] || ''}

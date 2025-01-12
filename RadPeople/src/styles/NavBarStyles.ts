@@ -62,26 +62,34 @@ export const NavLink = styled(RouterNavLink)`
   font-family: 'MotoyaExCedar', sans-serif;
   text-decoration: none;
   color: black;
-  font-size: 0.8rem; // Slightly reduced font size
+  font-size: 0.8rem;
   position: relative;
   transition: color 0.3s ease;
-  padding: 2px 5px; // Reduced padding
+  padding: 2px 5px;
 
   &::after {
     content: '';
     position: absolute;
     width: 100%;
     height: 2px;
-    bottom: -2px; // Adjusted to be closer to the text
+    bottom: -2px;
     left: 0;
     background-color: ${BLUE_COLOR};
     transform: scaleX(0);
     transition: transform 0.3s ease;
   }
 
-  &:hover, &.active {
+  &.active {
     color: ${BLUE_COLOR};
+    
+    &::after {
+      transform: scaleX(1);
+    }
+  }
 
+  &:hover {
+    color: ${BLUE_COLOR};
+    
     &::after {
       transform: scaleX(1);
     }

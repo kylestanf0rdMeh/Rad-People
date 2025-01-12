@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useCallback, memo } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi'
+import { useProducts } from '../contexts/ProductsContext';
+import { usePrefetchData } from '../hooks/usePrefetchData';
+import { useEvents } from '../contexts/EventsContext';
+import { useGallery } from '../contexts/GalleryContext';
 import { 
         NavBarContainer, 
         DesktopNav, 
@@ -18,14 +22,38 @@ import {
         MobileMenuIcon
        } from '../styles/NavBarStyles';
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC = memo(() => {
+  const { prefetchProducts } = useProducts();
+  const { prefetchAllData } = usePrefetchData();
+  const { prefetchEvents } = useEvents();
+  const { prefetchGallery } = useGallery();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen(prev => {
+      // If we're opening the menu, trigger prefetch
+      if (!prev) {
+        prefetchAllData();
+      }
+      return !prev;
+    });
+  }, [prefetchAllData]);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
-  };
+  }, []);
+
+  const handleShopInteraction = useCallback(() => {
+    prefetchProducts();
+  }, [prefetchProducts]);
+
+  const handleEventsInteraction = useCallback(() => {
+    prefetchEvents();
+  }, [prefetchEvents]);
+
+  const handleGalleryInteraction = useCallback(() => {
+    prefetchGallery();
+  }, [prefetchGallery]);
 
   return (
     <NavBarContainer>
@@ -35,10 +63,30 @@ const NavBar: React.FC = () => {
         <Logo to='/' as={Link}>RADPEOPLE</Logo>
 
         <NavLinks>
-          <StyledNavLink to="/about" as={Link}>ABOUT</StyledNavLink>
-          <StyledNavLink to="/gallery" as={Link}>GALLERY</StyledNavLink>
-          <StyledNavLink to="/shop" as={Link}>SHOP</StyledNavLink>
-          <StyledNavLink to="/events" as={Link}>EVENTS</StyledNavLink>
+          <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
+          <StyledNavLink 
+            to="/gallery" 
+            as={NavLink}
+            onMouseEnter={handleGalleryInteraction}
+          >
+            GALLERY
+          </StyledNavLink>
+          <StyledNavLink 
+            to="/shop" 
+            as={NavLink} 
+            end={false}
+            onMouseEnter={handleShopInteraction}
+          >
+            SHOP
+          </StyledNavLink>
+          <StyledNavLink 
+            to="/events" 
+            as={NavLink} 
+            end={false}
+            onMouseEnter={handleEventsInteraction}
+          >
+            EVENTS
+          </StyledNavLink>
         </NavLinks>
 
         <CartLink to="/cart" as={Link}>cart</CartLink>
@@ -46,7 +94,10 @@ const NavBar: React.FC = () => {
 
 
       <MobileNav> 
-        <MenuIcon onClick={toggleMobileMenu}>
+        <MenuIcon onClick={() => {
+          toggleMobileMenu();
+          handleShopInteraction();
+        }}>
           {mobileMenuOpen ? (
             // X icon
             <div style={{ 
@@ -105,6 +156,6 @@ const NavBar: React.FC = () => {
       </MobileMenu>
     </NavBarContainer>
   );
-};
+});
 
 export default NavBar;

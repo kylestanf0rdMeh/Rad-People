@@ -122,16 +122,15 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
     width: 100%;
     height: 100%;
     transform: scale(1.01);
+    overflow: hidden;
     
-    iframe {
+    wistia-player {
       position: absolute;
       top: 50%;
       left: 50%;
       width: 100vw !important;
-      height: 56.25vw !important;
-      min-height: 100%;
-      min-width: 177.77vh;
-      transform: translate(-50%, -50%);
+      height: 100vh !important;
+      transform: translate(-50%, -50%) scale(1.2);
       pointer-events: none;
     }
 
@@ -338,7 +337,7 @@ export const PastEventDescription = styled.p`
 
 export const ViewOverlay = styled.div`
   position: absolute;
-  top: calc(25% + 1rem);
+  top: 150px;
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;

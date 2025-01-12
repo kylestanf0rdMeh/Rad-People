@@ -2,7 +2,9 @@ import React, { useState, useCallback, memo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi'
 import { useProducts } from '../contexts/ProductsContext';
+import { usePrefetchData } from '../hooks/usePrefetchData';
 import { useEvents } from '../contexts/EventsContext';
+import { useGallery } from '../contexts/GalleryContext';
 import { 
         NavBarContainer, 
         DesktopNav, 
@@ -22,12 +24,20 @@ import {
 
 const NavBar: React.FC = memo(() => {
   const { prefetchProducts } = useProducts();
+  const { prefetchAllData } = usePrefetchData();
   const { prefetchEvents } = useEvents();
+  const { prefetchGallery } = useGallery();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = useCallback(() => {
-    setMobileMenuOpen(prev => !prev);
-  }, []);
+    setMobileMenuOpen(prev => {
+      // If we're opening the menu, trigger prefetch
+      if (!prev) {
+        prefetchAllData();
+      }
+      return !prev;
+    });
+  }, [prefetchAllData]);
 
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
@@ -41,6 +51,10 @@ const NavBar: React.FC = memo(() => {
     prefetchEvents();
   }, [prefetchEvents]);
 
+  const handleGalleryInteraction = useCallback(() => {
+    prefetchGallery();
+  }, [prefetchGallery]);
+
   return (
     <NavBarContainer>
 
@@ -50,7 +64,13 @@ const NavBar: React.FC = memo(() => {
 
         <NavLinks>
           <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
-          <StyledNavLink to="/gallery" as={NavLink}>GALLERY</StyledNavLink>
+          <StyledNavLink 
+            to="/gallery" 
+            as={NavLink}
+            onMouseEnter={handleGalleryInteraction}
+          >
+            GALLERY
+          </StyledNavLink>
           <StyledNavLink 
             to="/shop" 
             as={NavLink} 

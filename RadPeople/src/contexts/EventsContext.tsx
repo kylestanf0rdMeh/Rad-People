@@ -14,7 +14,8 @@ const EventsContext = createContext<EventsContextType | undefined>(undefined);
 
 export const EventsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [shouldFetch, setShouldFetch] = useState(false);
-  const { data, loading, error } = useDataFetching<EventItem[]>(
+
+  const { data, error, loading } = useDataFetching<EventItem[]>(
     'events',
     fetchEvents,
     { maxAge: 30 * 60 * 1000 }, // 30 minutes cache

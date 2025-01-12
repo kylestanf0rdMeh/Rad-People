@@ -6,6 +6,7 @@ import useWindowDimensions from '../hooks/useWindowDimensions';
 import { useEvents } from '../contexts/EventsContext';
 import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
+import { WistiaPlayer } from '@wistia/wistia-player-react';
 
 declare global {
   interface Window {
@@ -21,6 +22,21 @@ declare global {
       };
     }>;
   }
+}
+
+if (typeof window !== 'undefined') {
+  window._wq = window._wq || [];
+  window._wq.push({
+    id: '*',
+    options: {
+      doNotTrack: true,
+      plugin: {
+        metrics: false,
+        googleAnalytics4: false,
+        visitorTracking: false
+      }
+    }
+  });
 }
 
 const Events: React.FC = () => {
@@ -164,21 +180,19 @@ const Events: React.FC = () => {
     };
   }, []);
 
-  // Add this useEffect for Wistia initialization
+  // Add debug logging
   useEffect(() => {
-    window._wq = window._wq || [];
-    window._wq.push({
-      id: "_all",
-      options: {
-        doNotTrack: true,
-        plugin: {
-          metrics: false,
-          googleAnalytics4: false,
-          visitorTracking: false
-        }
-      }
-    });
-  }, []);
+    if (events.length > 0) {
+      // console.log('First video data:', events[0].fields.wistiaVideo?.items?.[0]);
+    }
+  }, [events]);
+
+  // Add useEffect to fetch events if none exist
+  useEffect(() => {
+    if (!events.length && !loading) {
+      prefetchEvents();
+    }
+  }, [events.length, loading, prefetchEvents]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -204,13 +218,27 @@ const Events: React.FC = () => {
                       className={activeEventId === event.sys.id ? 'active' : ''}
                     >
                       <div className="video-container">
-                        <iframe 
-                          src={`https://fast.wistia.net/embed/iframe/${videoId}?background=true&autoPlay=true&loop=true&endVideoBehavior=loop&playbackRate=1&controls=false&playbar=false&fullscreenButton=false&volumeControl=false&playButton=false&preload=auto&doNotTrack=true`}
-                          allowTransparency={true}
-                          className="wistia_embed"
-                          name="wistia_embed"
-                          allow="autoplay; fullscreen"
-                          style={{ backgroundColor: 'black' }}
+                        <WistiaPlayer
+                          mediaId={videoId}
+                          autoplay={true}
+                          playBarControl={false}
+                          fullscreenControl={false}
+                          volumeControl={false}
+                          controlsVisibleOnLoad={false}
+                          playerColor="000000"
+                          muted={true}
+                          silentAutoplay={true}
+                          endVideoBehavior="loop"
+                          doNotTrack={true}
+                          onLoadStart={(_event) => {
+                            // console.log('Video loading started:', videoId);
+                          }}
+                          onLoadedData={(_event) => {
+                            // console.log('Video loaded:', videoId);
+                          }}
+                          onLoadedMediaData={(_event) => {
+                            // console.log('Media data loaded:', videoId);
+                          }}
                         />
                       </div>
                     </VideoWrapper>

@@ -16,8 +16,10 @@ const Gallery: React.FC = () => {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   useEffect(() => {
-    prefetchGallery();
-  }, [prefetchGallery]);
+    if (!images.length && !loading) {
+      prefetchGallery();
+    }
+  }, [images.length, loading, prefetchGallery]);
 
   const preloadImage = useCallback((src: string) => {
     return new Promise<HTMLImageElement>((resolve, reject) => {

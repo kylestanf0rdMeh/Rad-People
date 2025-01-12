@@ -8,11 +8,10 @@ export const fetchProducts = async (): Promise<ProductItem[]> => {
       const response: EntryCollection<ProductItem> = await contentfulClient.getEntries({
         content_type: 'products',
       });
-      console.log('Contentful response:', response);
       //   ignore this false error for now,there is nothing wrong with this (has to do with type safety)
       return response.items.map(item => ({
         sys: item.sys,
-        fields: item.fields,
+        fields: item.fields as ProductItem['fields'],
         contentTypeId: item.sys.contentType.sys.id
       }));
     } catch (error) {
@@ -42,6 +41,20 @@ export const fetchProductsStripe = async (): Promise<StripeProduct[]> => {
     return products;
   } catch (error) {
     console.error('Error fetching products from Stripe:', error);
+    throw error;
+  }
+};
+
+export const fetchSingleProduct = async (productId: string): Promise<ProductItem> => {
+  try {
+    const response = await contentfulClient.getEntry(productId);
+    return {
+      sys: response.sys,
+      fields: response.fields as ProductItem['fields'],
+      contentTypeId: response.sys.contentType.sys.id
+    };
+  } catch (error) {
+    console.error('Error fetching single product:', error);
     throw error;
   }
 };

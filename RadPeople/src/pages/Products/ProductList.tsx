@@ -26,7 +26,7 @@ import {
 
 
 const ProductList: React.FC = () => {
-  const { products, loading } = useProducts();
+  const { products, loading, prefetchProducts } = useProducts();
   const { width } = useWindowDimensions();
   const [activeGrid, setActiveGrid] = useState<number>(4);
   const [sortedProducts, setSortedProducts] = useState<{
@@ -93,6 +93,13 @@ const ProductList: React.FC = () => {
         setDisplayProducts(sortedProducts.default);
     }
   }, [sortedProducts]);
+
+  // Add useEffect to fetch products if none exist
+  useEffect(() => {
+    if (!products.length && !loading) {
+      prefetchProducts();
+    }
+  }, [products.length, loading, prefetchProducts]);
 
   if (loading) {
     return <div>Loading...</div>;

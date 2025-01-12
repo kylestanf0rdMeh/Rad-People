@@ -40,6 +40,12 @@ const ProductList: React.FC = () => {
   const [sortType, setSortType] = useState('date-new');
   const [displayProducts, setDisplayProducts] = useState<ProductItem[]>([]);
 
+  useEffect(() => {
+    if (!products.length) {
+      prefetchProducts();
+    }
+  }, [products.length, prefetchProducts]);
+
   const preComputeProducts = useCallback((products: ProductItem[]) => {
     const defaultOrder = [...products];
     const oldToNew = [...defaultOrder].reverse();
@@ -93,13 +99,6 @@ const ProductList: React.FC = () => {
         setDisplayProducts(sortedProducts.default);
     }
   }, [sortedProducts]);
-
-  // Add useEffect to fetch products if none exist
-  useEffect(() => {
-    if (!products.length && !loading) {
-      prefetchProducts();
-    }
-  }, [products.length, loading, prefetchProducts]);
 
   if (loading) {
     return <div>Loading...</div>;

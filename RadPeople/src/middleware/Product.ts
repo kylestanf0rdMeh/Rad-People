@@ -5,6 +5,7 @@ import { StripeProduct } from '../models/StripeProduct.model';
 
 export const fetchProducts = async (): Promise<ProductItem[]> => {
     try {
+      console.log('Fetching products from Contentful');
       const response: EntryCollection<ProductItem> = await contentfulClient.getEntries({
         content_type: 'products',
       });

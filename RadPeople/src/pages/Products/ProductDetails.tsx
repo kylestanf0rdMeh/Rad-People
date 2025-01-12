@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, Navigate, useParams } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import PageWrapper from '../../components/PageWrapper';
 import { ProductItem } from '../../models/Product.model';
@@ -30,6 +30,7 @@ import {
   BreadcrumbArrow,
   BreadcrumbCurrent
 } from '../../styles/ProductDetailsStyles';
+import { fetchSingleProduct } from '../../middleware/Product';
 
 interface LocationState {
   product: ProductItem;
@@ -37,14 +38,42 @@ interface LocationState {
 
 const ProductDetail: React.FC = () => {
   const location = useLocation();
+  const { productId } = useParams<{ productId: string }>();
   const state = location.state as LocationState;
+  const { width } = useWindowDimensions();
   const imageRef = React.useRef<HTMLDivElement>(null);
   const summaryRef = React.useRef<HTMLDivElement>(null);
-  const { width } = useWindowDimensions();
   const isMobile = width <= 768;
+  
+  const [product, setProduct] = useState<ProductItem | null>(state?.product || null);
+  const [loading, setLoading] = useState(!state?.product && !!productId);
+  const [error, setError] = useState(false);
+  const [fetchAttempted, setFetchAttempted] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string>('');
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!product) {
+        try {
+          setLoading(true);
+          const fetchedProduct = await fetchSingleProduct(productId);
+          setProduct(fetchedProduct);
+        } catch (err) {
+          console.error('Error loading product:', err);
+          setError(true);
+        } finally {
+          setLoading(false);
+          setFetchAttempted(true);
+        }
+      } else {
+        setFetchAttempted(true);
+      }
+    };
 
+    loadProduct();
+  }, [productId, state?.product]);
+
+  useEffect(() => {
     if (isMobile) return;
 
     const handleScroll = () => {
@@ -71,27 +100,30 @@ const ProductDetail: React.FC = () => {
       imageSection?.removeEventListener('scroll', handleScroll);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isMobile]);
 
-  if (!state?.product) {
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if ((error || !product) && fetchAttempted) {
     return <Navigate to="/" replace />;
   }
 
-  const { product } = state;
-  const shippingWeeks = product.fields.shipingInWeeks || '4';
+  const shippingWeeks = product?.fields.shipingInWeeks || '4';
 
 
   const allImages = [
-    product.fields.image[0],
-    ...(product.fields.altImages || [])
+    product?.fields.image[0],
+    ...(product?.fields.altImages || [])
   ];
 
 
   const deriveDescriptionQueues = () => {
-    const description = product.fields.description;
+    const description = product?.fields.description;
     // Split by dash but keep the dash in the result
-    const items = description.split(/(?=-)/).filter(item => item.trim().length > 0);
-    return items.map(item => item.trim());
+    const items = description?.split(/(?=-)/).filter(item => item.trim().length > 0);
+    return items?.map(item => item.trim());
   };
 
   const sortSizes = (sizes: string[]) => {
@@ -101,11 +133,8 @@ const ProductDetail: React.FC = () => {
 
   // Convert sizes string to array
   const sizeOptions = sortSizes(
-    product.fields.sizes.split(',').map(size => size.trim().toLowerCase())
+    product?.fields.sizes.split(',').map(size => size.trim().toLowerCase()) || []
   );
-
-  const [selectedSize, setSelectedSize] = useState<string>(sizeOptions[0]);
-
 
   return (
     <PageWrapper>
@@ -113,7 +142,7 @@ const ProductDetail: React.FC = () => {
         <BreadcrumbContainer>
           <BreadcrumbLink to="/shop">Product List</BreadcrumbLink>
           <BreadcrumbArrow>→</BreadcrumbArrow>
-          <BreadcrumbCurrent>{product.fields.name}</BreadcrumbCurrent>
+          <BreadcrumbCurrent>{product?.fields.name}</BreadcrumbCurrent>
         </BreadcrumbContainer>
 
 
@@ -126,8 +155,8 @@ const ProductDetail: React.FC = () => {
                 {allImages.map((image, index) => (
                   <ProductImage
                     key={`product-image-${index}`}
-                    src={`https:${image.fields.file.url}`}
-                    alt={image.fields.title || product.fields.name}
+                    src={`https:${image?.fields.file.url}`}
+                    alt={image?.fields.title || product?.fields.name}
                   />
                 ))}
               </ImageSection>
@@ -137,8 +166,8 @@ const ProductDetail: React.FC = () => {
               {allImages.map((image, index) => (
                 <ProductImage
                   key={`product-image-${index}`}
-                  src={`https:${image.fields.file.url}`}
-                  alt={image.fields.title || product.fields.name}
+                  src={`https:${image?.fields.file.url}`}
+                  alt={image?.fields.title || product?.fields.name}
                 />
               ))}
             </ImageSection>
@@ -148,8 +177,8 @@ const ProductDetail: React.FC = () => {
           <ProductSummary ref={summaryRef}>
 
             <TitleRow>
-              <ProductTitle>{product.fields.name}</ProductTitle>
-              <ProductPrice>${product.fields.price}</ProductPrice>
+              <ProductTitle>{product?.fields.name}</ProductTitle>
+              <ProductPrice>${product?.fields.price}</ProductPrice>
             </TitleRow>
 
 
@@ -157,7 +186,7 @@ const ProductDetail: React.FC = () => {
             <DesktopDescription>
               <ProductDescription>
 
-                {deriveDescriptionQueues().map((item, index) => (
+                {deriveDescriptionQueues()?.map((item, index) => (
                   <DescriptionItem key={`desc-${index}`}>
                     {item}
                   </DescriptionItem>
@@ -168,7 +197,7 @@ const ProductDetail: React.FC = () => {
             </DesktopDescription>
 
             <ProductOptions>
-              <ProductColor>Color: {product.fields.color}</ProductColor>
+              <ProductColor>Color: {product?.fields.color}</ProductColor>
               
               <SizesContainer>
 
@@ -198,7 +227,7 @@ const ProductDetail: React.FC = () => {
             <MobileOrderWrapper>
 
               <ProductDescription>
-                {deriveDescriptionQueues().map((item, index) => (
+                {deriveDescriptionQueues()?.map((item, index) => (
                   <DescriptionItem key={`desc-${index}`}>
                     {item}
                   </DescriptionItem>
@@ -209,12 +238,12 @@ const ProductDetail: React.FC = () => {
             <DropdownsWrapper>
               <DetailsDropdown 
                 title="Size + Fit"
-                content={product.fields.sizeAndFit || 'Size and fit information not available.'}
+                content={product?.fields.sizeAndFit || 'Size and fit information not available.'}
               />
 
               <DetailsDropdown 
                 title="Care"
-                content={product.fields.care || 'Care information not available.'}
+                content={product?.fields.care || 'Care information not available.'}
               />
             </DropdownsWrapper>
           </ProductSummary>

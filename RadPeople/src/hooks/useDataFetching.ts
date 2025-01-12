@@ -36,7 +36,6 @@ export function useDataFetching<T>(
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  console.log('FETCHED ONHOVER')
   useEffect(() => {
     if (!shouldFetch) {
       return;
@@ -64,6 +63,7 @@ export function useDataFetching<T>(
           data: freshData,
           timestamp: Date.now()
         };
+
         
         localStorage.setItem(key, JSON.stringify(cacheItem));
         setData(freshData);

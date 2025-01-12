@@ -1,6 +1,6 @@
 import contentfulClient from '../services/contentful';
 import { EntryCollection } from 'contentful';
-import { EventItem, WistiaItem } from '../models/Event.model';
+import { EventItem } from '../models/Event.model';
 
 // Type guard to check if a field exists and has a value
 const hasRequiredField = (obj: any, field: string): boolean => {

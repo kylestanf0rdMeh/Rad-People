@@ -4,7 +4,7 @@ import { EventItem } from '../models/Event.model';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import { useEvents } from '../contexts/EventsContext';
-import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer } from '../styles/EventStyles';
+import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 
@@ -49,6 +49,7 @@ const Events: React.FC = () => {
   const [currentVideo, setCurrentVideo] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [preloadedVideos, setPreloadedVideos] = useState<Set<string>>(new Set());
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Trigger fetch on mount
   useEffect(() => {
@@ -180,12 +181,6 @@ const Events: React.FC = () => {
     };
   }, []);
 
-  // Add debug logging
-  useEffect(() => {
-    if (events.length > 0) {
-      // console.log('First video data:', events[0].fields.wistiaVideo?.items?.[0]);
-    }
-  }, [events]);
 
   // Add useEffect to fetch events if none exist
   useEffect(() => {
@@ -252,63 +247,119 @@ const Events: React.FC = () => {
                   screenWidth={screenWidth}
                 />
               )}
-            </EventBackground>
+              
+              {screenWidth <= 767 && (
+                <MobileEventNav>
+                  {[...Array(Math.min(4, upcomingEvents.length))].map((_, i) => (
+                    <EventNumber
+                      key={i}
+                      isActive={activeIndex === i}
+                      onClick={() => {
+                        setActiveIndex(i);
+                        handleEventHover(upcomingEvents[i]);
+                      }}
+                    >
+                      {i + 1}
+                    </EventNumber>
+                  ))}
+                </MobileEventNav>
+              )}
 
-              {/* Our Overlay */}
               <EventTitle>
                 <EventTitleText>EVENT</EventTitleText>
                 <EventTitleText>CALENDAR</EventTitleText>
               </EventTitle>
+            </EventBackground>
 
               <EventNamesContainer screenWidth={screenWidth} screenHeight={screenHeight}>
-                {/* Only display 4 events */}
-                {[...Array(4)].map((_, i) => {
-                  const event = upcomingEvents[i];
-                  return event ? (
-                    <EventItemContainer
-                      key={event.sys.id}
-                      isActive={activeEventId === event.sys.id}
-                      screenWidth={screenWidth}
-                      onMouseEnter={() => handleEventHover(event)}
-                    >
-                      <EventLink 
-                        to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
-                        state={{ event }}
+                {screenWidth > 767 ? (
+                  [...Array(4)].map((_, i) => {
+                    const event = upcomingEvents[i];
+                    return event ? (
+                      <EventItemContainer
+                        key={event.sys.id}
+                        isActive={activeEventId === event.sys.id}
+                        screenWidth={screenWidth}
+                        onMouseEnter={() => handleEventHover(event)}
                       >
-                        <EventContentWrapper>
-                          <EventDate>
-                            {new Date(event.fields.date).toLocaleDateString('en-US', {
-                              month: '2-digit',
-                              day: '2-digit',
-                              year: '2-digit'
-                            }).replace(/\//g, '.')}
-                          </EventDate>
+                        <EventLink 
+                          to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+                          state={{ event }}
+                        >
+                          <EventContentWrapper>
+                            <EventDate>
+                              {new Date(event.fields.date).toLocaleDateString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: '2-digit'
+                              }).replace(/\//g, '.')}
+                            </EventDate>
 
-                          <EventName>{event.fields.name}</EventName>
-                          <EventLocation>
-                            <LocationIcon />
-                            {splitIntoLines(event.fields.location || '').map((line, i) => (
-                              i === 0 ? (
-                                <LocationFirstLine key="first">{line}</LocationFirstLine>
-                              ) : (
-                                <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                              )
-                            ))}
-                          </EventLocation>
-                          <EventDescription>
-                            {event.fields.description?.split('\n')[0] || ''}
-                          </EventDescription>
-                        </EventContentWrapper>
-                      </EventLink>
-                    </EventItemContainer>
-                  ) : (
-                    <EventItemContainer 
-                      key={`empty-${i}`} 
-                      isActive={false} 
-                      screenWidth={screenWidth}
-                    />
-                  );
-                })}
+                            <EventName>{event.fields.name}</EventName>
+                            <EventLocation>
+                              <LocationIcon />
+                              {splitIntoLines(event.fields.location || '').map((line, i) => (
+                                i === 0 ? (
+                                  <LocationFirstLine key="first">{line}</LocationFirstLine>
+                                ) : (
+                                  <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                                )
+                              ))}
+                            </EventLocation>
+                            <EventDescription>
+                              {event.fields.description?.split('\n')[0] || ''}
+                            </EventDescription>
+                          </EventContentWrapper>
+                        </EventLink>
+                      </EventItemContainer>
+                    ) : (
+                      <EventItemContainer 
+                        key={`empty-${i}`} 
+                        isActive={false} 
+                        screenWidth={screenWidth}
+                      />
+                    );
+                  })
+                ) : (
+                  <>
+                    {upcomingEvents[activeIndex] && (
+                      <EventItemContainer
+                        isActive={true}
+                        screenWidth={screenWidth}
+                      >
+                        <EventLink 
+                          to={`/events/${upcomingEvents[activeIndex].sys.id}/${encodeURIComponent(upcomingEvents[activeIndex].fields.name)}`}
+                          state={{ event: upcomingEvents[activeIndex] }}
+                        >
+                          <EventContentWrapper>
+                            <EventDate>
+                              {new Date(upcomingEvents[activeIndex].fields.date).toLocaleDateString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: '2-digit'
+                              }).replace(/\//g, '.')}
+                            </EventDate>
+
+                            <EventName>{upcomingEvents[activeIndex].fields.name}</EventName>
+                            <EventLocation>
+                              <LocationIcon />
+                              {splitIntoLines(upcomingEvents[activeIndex].fields.location || '').map((line, i) => (
+                                i === 0 ? (
+                                  <LocationFirstLine key="first">{line}</LocationFirstLine>
+                                ) : (
+                                  <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                                )
+                              ))}
+                            </EventLocation>
+                            <EventDescription>
+                              {upcomingEvents[activeIndex].fields.description?.split('\n')[0] || ''}
+                            </EventDescription>
+                          </EventContentWrapper>
+                        </EventLink>
+                      </EventItemContainer>
+                    )}
+                  </>
+                )}
               </EventNamesContainer>
             </EventsContainer>
         </>

@@ -30,7 +30,7 @@ export const EventCard = styled.div`
 `;
 
 export const EventsContainer = styled.div<{ screenWidth: number; screenHeight: number }>`
-  height: ${props => Math.min(props.screenWidth * 0.5, props.screenHeight * 0.95, 1000)}px;
+  height: ${props => Math.min(props.screenWidth * 0.9, props.screenHeight * 0.95, 1200)}px;
   position: relative;
   margin-bottom: 2rem;
 `;
@@ -50,7 +50,7 @@ export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean;
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => Math.min(props.screenWidth * 0.5, 1000)}px;
+  height: ${props => Math.min(props.screenWidth * 0.9, 1200)}px;
   background-image: url(${props => props.imageUrl});
   background-size: cover;
   background-position: center;
@@ -101,7 +101,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: ${props => Math.min(props.screenWidth * 0.9, 1200)}px;
   opacity: 0;
   transition: opacity 0.6s ease-in-out;
   will-change: opacity;
@@ -157,36 +157,57 @@ export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeigh
   position: absolute;
   top: ${props => {
     const basePosition = Math.min(props.screenHeight * 0.6, props.screenWidth * 0.27);
-    const minPosition = 200; // minimum distance from top
-    const maxPosition = 800; // maximum distance from top
+    const minPosition = 200;
+    const maxPosition = 800;
     return Math.min(Math.max(basePosition, minPosition), maxPosition);
   }}px;
   left: 0;
   width: 100%;
   margin: 0;
   padding: ${props => Math.min(props.screenWidth * 0.02, 70)}px ${props => Math.min(props.screenWidth * 0.03, 48)}px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: ${props => Math.min(props.screenWidth * 0.01, 16)}px;
+  
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: ${props => Math.min(props.screenWidth * 0.01, 16)}px;
+  }
+
+  @media (max-width: 767px) {
+    display: block;
+    padding: 0 2rem;
+  }
 `;
 
 
 export const EventTitle = styled.div`
   position: absolute;
-  top: 2rem;
+  top: 7rem;
   left: 1rem;
   color: white;
   margin-left: 20px;
 
+  @media (max-width: 767px) {
+    top: 6rem;
+    left: 0.5rem;
+    margin-left: 10px;
+  }
 `;
 
 export const EventTitleText = styled.h2`
   font-family: 'Sequel Sans Regular';
-  font-size: 10rem;
   -webkit-text-stroke: 1px black;
-  line-height: 135px;
   margin: 0;
   text-transform: uppercase;
+  
+  @media (min-width: 768px) {
+    font-size: 10rem;
+    line-height: 135px;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 3rem;
+    line-height: 45px;
+  }
 `;
 
 export const EventContentWrapper = styled.div`
@@ -403,4 +424,34 @@ export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   margin-bottom: 1rem;
+`;
+
+export const MobileEventNav = styled.div`
+  display: flex;
+  gap: 1rem;
+  position: absolute;
+  top: 2rem;
+  margin-left: 30px;
+  z-index: 2;
+  
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
+export const EventNumber = styled.button<{ isActive: boolean }>`
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid white;
+  background: ${props => props.isActive ? 'white' : 'transparent'};
+  color: ${props => props.isActive ? 'black' : 'white'};
+  font-family: 'Sequel Sans Regular';
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: white;
+    color: black;
+  }
 `;

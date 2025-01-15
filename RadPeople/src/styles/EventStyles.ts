@@ -30,9 +30,13 @@ export const EventCard = styled.div`
 `;
 
 export const EventsContainer = styled.div<{ screenWidth: number; screenHeight: number }>`
-  height: ${props => Math.min(props.screenWidth * 0.9, props.screenHeight * 0.95, 1200)}px;
+  height: ${props => Math.min(props.screenWidth * 0.55, props.screenHeight * 0.95, 1000)}px;
   position: relative;
   margin-bottom: 2rem;
+  
+  @media (max-width: 767px) {
+    height: ${props => Math.min(props.screenWidth * 0.65, props.screenHeight * 0.95, 1000)}px;
+  }
 `;
 
 export const EventBackground = styled.div<{ imageUrl: string }>`
@@ -50,7 +54,7 @@ export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean;
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => Math.min(props.screenWidth * 0.9, 1200)}px;
+  height: ${props => Math.min(props.screenWidth * 0.55, 1000)}px;
   background-image: url(${props => props.imageUrl});
   background-size: cover;
   background-position: center;
@@ -69,6 +73,10 @@ export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean;
       rgba(0, 0, 0, 0.3),
       rgba(0, 0, 0, 1.5)
     );
+  }
+
+  @media (max-width: 767px) {
+    height: ${props => Math.min(props.screenWidth * 0.65, 1000)}px;
   }
 `;
 
@@ -101,7 +109,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => Math.min(props.screenWidth * 0.9, 1200)}px;
+  height: ${props => Math.min(props.screenWidth * 0.55, 1000)}px;
   opacity: 0;
   transition: opacity 0.6s ease-in-out;
   will-change: opacity;
@@ -150,6 +158,10 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
       z-index: 1;
     }
   }
+
+  @media (max-width: 767px) {
+    height: ${props => Math.min(props.screenWidth * 0.65, 1000)}px;
+  }
 `;
 
 
@@ -164,24 +176,25 @@ export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeigh
   left: 0;
   width: 100%;
   margin: 0;
-  padding: ${props => Math.min(props.screenWidth * 0.02, 70)}px ${props => Math.min(props.screenWidth * 0.03, 48)}px;
   
   @media (min-width: 768px) {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: ${props => Math.min(props.screenWidth * 0.01, 16)}px;
+    padding: ${props => Math.min(props.screenWidth * 0.02, 70)}px ${props => Math.min(props.screenWidth * 0.03, 48)}px;
   }
 
   @media (max-width: 767px) {
     display: block;
-    padding: 0 2rem;
+    padding: 0 1rem;
+    width: calc(100% - 2rem); // Account for padding
   }
 `;
 
 
 export const EventTitle = styled.div`
   position: absolute;
-  top: 7rem;
+  top: 2rem;
   left: 1rem;
   color: white;
   margin-left: 20px;
@@ -214,14 +227,22 @@ export const EventContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%; // Ensure full width
 `;
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
-  max-width: ${props => Math.min(props.screenWidth * 0.2, 350)}px;
   opacity: ${props => props.isActive ? 1 : 0.4};
   transition: opacity 0.7s ease;
   margin-top: ${props => Math.min(props.screenWidth * 0.01, 24)}px;
   
+  @media (min-width: 768px) {
+    max-width: ${props => Math.min(props.screenWidth * 0.2, 350)}px;
+  }
+  
+  @media (max-width: 767px) {
+    width: 100%; // Full width on mobile
+  }
+
   &:hover {
     opacity: 1;
   }
@@ -253,11 +274,22 @@ export const EventName = styled.h3`
   color: white;
   cursor: pointer;
   margin: 0;
-  word-wrap: break-word;
-  hyphens: auto;
   text-transform: uppercase;
-  line-height: 0.9;
-  ${fluidTypography(1.4, 2.2, 320, 1500)}
+  line-height: 1.2;
+  
+  @media (max-width: 767px) {
+    font-size: 1.5rem;
+    white-space: normal; // Allow text to wrap
+    word-wrap: break-word;
+    width: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    ${fluidTypography(1.4, 2.2, 320, 1500)}
+  }
 `;
 
 
@@ -299,10 +331,22 @@ export const EventLocation = styled.div`
   margin: 0;
   margin-top: 5px;
   position: relative;
-  line-height: 1;
+  line-height: 1.2;
   text-transform: uppercase;
-  max-width: 350px;
-  ${fluidTypography(1.2, 1.9, 320, 1500)}
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media (max-width: 767px) {
+    font-size: 1.2rem;
+    max-width: 90vw;
+    padding-right: 20px; // Space for location icon
+  }
+  
+  @media (min-width: 768px) {
+    max-width: 350px;
+    ${fluidTypography(1.2, 1.9, 320, 1500)}
+  }
 `;
 
 export const LocationFirstLine = styled.span`
@@ -322,12 +366,22 @@ export const EventDescription = styled.p`
   font-family: 'Sequel Sans Regular';
   color: white;
   margin-top: 10px;
-  max-width: 300px;
   margin-left: 10px;
+  margin-right: 10px;
   opacity: 0.9;
   word-wrap: break-word;
   hyphens: auto;
-  ${fluidTypography(0.7, 0.8, 320, 1500)}
+  
+  @media (max-width: 767px) {
+    max-width: 90vw;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  @media (min-width: 768px) {
+    max-width: 300px;
+    ${fluidTypography(0.7, 0.8, 320, 1500)}
+  }
 `;
 
 
@@ -440,13 +494,13 @@ export const MobileEventNav = styled.div`
 `;
 
 export const EventNumber = styled.button<{ isActive: boolean }>`
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 1rem;
+  height: 1rem;
   border: 1px solid white;
   background: ${props => props.isActive ? 'white' : 'transparent'};
   color: ${props => props.isActive ? 'black' : 'white'};
   font-family: 'Sequel Sans Regular';
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
 

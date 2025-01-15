@@ -298,13 +298,19 @@ const Events: React.FC = () => {
                             <EventName>{event.fields.name}</EventName>
                             <EventLocation>
                               <LocationIcon />
-                              {splitIntoLines(event.fields.location || '').map((line, i) => (
-                                i === 0 ? (
-                                  <LocationFirstLine key="first">{line}</LocationFirstLine>
-                                ) : (
-                                  <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                                )
-                              ))}
+                              {screenWidth > 767 ? (
+                                // Desktop: Split into lines
+                                splitIntoLines(event.fields.location || '').map((line, i) => (
+                                  i === 0 ? (
+                                    <LocationFirstLine key="first">{line}</LocationFirstLine>
+                                  ) : (
+                                    <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                                  )
+                                ))
+                              ) : (
+                                // Mobile: Single line
+                                <LocationFirstLine>{event.fields.location}</LocationFirstLine>
+                              )}
                             </EventLocation>
                             <EventDescription>
                               {event.fields.description?.split('\n')[0] || ''}
@@ -343,13 +349,19 @@ const Events: React.FC = () => {
                             <EventName>{upcomingEvents[activeIndex].fields.name}</EventName>
                             <EventLocation>
                               <LocationIcon />
-                              {splitIntoLines(upcomingEvents[activeIndex].fields.location || '').map((line, i) => (
-                                i === 0 ? (
-                                  <LocationFirstLine key="first">{line}</LocationFirstLine>
-                                ) : (
-                                  <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                                )
-                              ))}
+                              {screenWidth > 767 ? (
+                                // Desktop: Split into lines
+                                splitIntoLines(upcomingEvents[activeIndex].fields.location || '').map((line, i) => (
+                                  i === 0 ? (
+                                    <LocationFirstLine key="first">{line}</LocationFirstLine>
+                                  ) : (
+                                    <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                                  )
+                                ))
+                              ) : (
+                                // Mobile: Single line
+                                <LocationFirstLine>{upcomingEvents[activeIndex].fields.location}</LocationFirstLine>
+                              )}
                             </EventLocation>
                             <EventDescription>
                               {upcomingEvents[activeIndex].fields.description?.split('\n')[0] || ''}

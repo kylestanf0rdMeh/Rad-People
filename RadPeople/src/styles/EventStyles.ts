@@ -184,7 +184,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
 export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeight: number }>`
   position: absolute;
   top: ${props => {
-    const basePosition = Math.min(props.screenHeight * 0.6, props.screenWidth * 0.27);
+    const basePosition = Math.min(props.screenHeight * 0.6, props.screenWidth * 0.3);
     const minPosition = 200;
     const maxPosition = 800;
     return Math.min(Math.max(basePosition, minPosition), maxPosition);
@@ -253,7 +253,7 @@ export const EventContentWrapper = styled.div`
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
   opacity: ${props => props.isActive ? 1 : 0.4};
   transition: all 1.2s ease-in-out;
-  margin-top: ${props => Math.min(props.screenWidth * 0.01, 24)}px;
+  margin-top: ${props => Math.min(props.screenWidth * 0.06, 24)}px;
   
   @media (min-width: 768px) {
     max-width: ${props => Math.min(props.screenWidth * 0.2, 350)}px;

@@ -49,17 +49,23 @@ export const EventBackground = styled.div<{ imageUrl: string }>`
   background-color: black;
 `;
 
-export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean; screenWidth: number }>`
+export const BackgroundImage = styled.div<{ 
+  imageUrl: string; 
+  isActive: boolean; 
+  shouldShow: boolean;
+  screenWidth: number 
+}>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;  // Changed to 100% to match parent
+  height: 100%;
   background-image: url(${props => props.imageUrl});
   background-size: cover;
   background-position: center;
-  opacity: ${props => props.isActive ? 1 : 0};
-  transition: opacity 2s ease-in-out;
+  opacity: ${props => (props.shouldShow && props.isActive) ? 1 : 0};
+  visibility: ${props => props.shouldShow ? 'visible' : 'hidden'};
+  transition: opacity 0.3s ease-in-out;
 
   &::after {
     content: '';
@@ -107,7 +113,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.6s ease-in-out;
+  transition: opacity 0.3s ease-in-out; // Increased duration and smoother easing
   will-change: opacity;
   z-index: 0;
 
@@ -224,11 +230,12 @@ export const EventContentWrapper = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%; // Ensure full width
+
 `;
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
   opacity: ${props => props.isActive ? 1 : 0.4};
-  transition: opacity 0.7s ease;
+  transition: all 1.2s ease-in-out;  // Slower, smoother transition
   margin-top: ${props => Math.min(props.screenWidth * 0.01, 24)}px;
   
   @media (min-width: 768px) {
@@ -236,8 +243,13 @@ export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: n
   }
   
   @media (max-width: 767px) {
-    width: 100%; // Full width on mobile
-    margin-bottom: 0; // Ensure no extra space at bottom
+    width: 100%;
+    margin-bottom: 0;
+    position: absolute;  // Add this
+    left: 0;            // Add this
+    opacity: ${props => props.isActive ? 1 : 0};  // Full fade for mobile
+    pointer-events: ${props => props.isActive ? 'auto' : 'none'};  // Disable inactive items
+    transform: translateX(${props => props.isActive ? '0' : '20px'});  // Slight slide effect
   }
 
   &:hover {
@@ -323,6 +335,11 @@ export const LocationIcon = styled.div`
     position: relative;
     left: ${fluidSize(2, 3, 320, 1500)}; // Fluid left position from 2px to 3px
   }
+
+  @media (max-width: 767px) {
+    top: 7px;
+    height: ${fluidSize(8, 30, 320, 1500)}; // Fluid height from 12px to 16px
+  }
 `;
 
 
@@ -339,8 +356,9 @@ export const EventLocation = styled.div`
   text-overflow: ellipsis;
   
   @media (max-width: 767px) {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     max-width: 90vw;
+    margin-top: 0px;
     padding-right: 20px; // Space for location icon
   }
   
@@ -377,12 +395,39 @@ export const EventDescription = styled.p`
     max-width: 90vw;
     font-size: 0.8rem;
     line-height: 1.4;
+    padding-bottom: 20px;
+    margin-top: 17px;
     margin-bottom: 0; // Remove bottom margin
   }
   
   @media (min-width: 768px) {
     max-width: 300px;
     ${fluidTypography(0.7, 0.8, 320, 1500)}
+  }
+`;
+
+export const MobileEventButton = styled.button`
+  width: 90vw;  // Match description's max-width
+  margin: 10px 10px 0;  // Match description's margins
+  padding: 0.3rem 0;
+  border: 1px solid black;
+  background: white;
+  color: black;
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.7rem;
+  display: flex;           
+  justify-content: center; 
+  align-items: center;     
+  transition: all 0.3s ease-in-out;  // Add smooth transition
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  &:hover {
+    background: #1404FB;
+    color: white;
+    border-color: white;
   }
 `;
 

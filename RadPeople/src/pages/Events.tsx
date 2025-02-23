@@ -4,7 +4,7 @@ import { EventItem } from '../models/Event.model';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import { useEvents } from '../contexts/EventsContext';
-import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber } from '../styles/EventStyles';
+import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber, MobileEventButton } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 
@@ -55,6 +55,23 @@ const Events: React.FC = () => {
   useEffect(() => {
     prefetchEvents();
   }, [prefetchEvents]);
+
+
+  // Mobile View Events are auto progressed
+  useEffect(() => {
+    // Only run auto-rotation if screen width is mobile size
+    if (screenWidth <= 767) {
+      const timer = setInterval(() => {
+        setActiveIndex((prevIndex) => {
+          const nextIndex = (prevIndex + 1) % Math.min(4, upcomingEvents.length);
+          handleEventHover(upcomingEvents[nextIndex]);
+          return nextIndex;
+        });
+      }, 9000);
+
+      return () => clearInterval(timer);
+    }
+  }, [screenWidth, upcomingEvents]); // Add screenWidth to dependencies
 
   // Process events when data arrives
   useEffect(() => {
@@ -204,9 +221,7 @@ const Events: React.FC = () => {
               <div className="video-background">
                 {upcomingEvents.map(event => {
                   const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
-                  if (!videoId) return null;
-                  
-                  return (
+                  return videoId ? (
                     <VideoWrapper 
                       key={videoId}
                       screenWidth={screenWidth} 
@@ -237,16 +252,17 @@ const Events: React.FC = () => {
                         />
                       </div>
                     </VideoWrapper>
-                  );
+                  ) : null;
                 })}
               </div>
-              {!currentVideo && (
-                <BackgroundImage 
-                  imageUrl={activeEventImage}
-                  isActive={true}
-                  screenWidth={screenWidth}
-                />
-              )}
+              <BackgroundImage 
+                imageUrl={activeEventImage}
+                isActive={!currentVideo}
+                shouldShow={!upcomingEvents.find(event => 
+                  event.sys.id === activeEventId)?.fields.wistiaVideo?.items?.[0]?.hashed_id
+                }
+                screenWidth={screenWidth}
+              />
               
               {screenWidth <= 767 && (
                 <MobileEventNav>
@@ -277,16 +293,16 @@ const Events: React.FC = () => {
                     const event = upcomingEvents[i];
                     return event ? (
                       <EventItemContainer
-                        key={event.sys.id}
-                        isActive={activeEventId === event.sys.id}
-                        screenWidth={screenWidth}
-                        onMouseEnter={() => handleEventHover(event)}
+                      key={event.sys.id}
+                      isActive={activeEventId === event.sys.id}
+                      screenWidth={screenWidth}
+                      onMouseEnter={() => handleEventHover(event)}
                       >
-                        <EventLink 
-                          to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
-                          state={{ event }}
-                        >
-                          <EventContentWrapper>
+                        <EventContentWrapper>
+                          <EventLink 
+                            to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+                            state={{ event }}
+                          >
                             <EventDate>
                               {new Date(event.fields.date).toLocaleDateString('en-US', {
                                 month: '2-digit',
@@ -298,25 +314,16 @@ const Events: React.FC = () => {
                             <EventName>{event.fields.name}</EventName>
                             <EventLocation>
                               <LocationIcon />
-                              {screenWidth > 767 ? (
-                                // Desktop: Split into lines
-                                splitIntoLines(event.fields.location || '').map((line, i) => (
-                                  i === 0 ? (
-                                    <LocationFirstLine key="first">{line}</LocationFirstLine>
-                                  ) : (
-                                    <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                                  )
-                                ))
-                              ) : (
-                                // Mobile: Single line
-                                <LocationFirstLine>{event.fields.location}</LocationFirstLine>
-                              )}
+                              <LocationFirstLine>{event.fields.location}</LocationFirstLine>
                             </EventLocation>
                             <EventDescription>
-                              {event.fields.description?.split('\n')[0] || ''}
+                              {(event.fields.description?.split('\n')[0] || '').length > 300 
+                                ? `${event.fields.description?.split('\n')[0].slice(0, 300)}...`
+                                : event.fields.description?.split('\n')[0] || ''
+                              }
                             </EventDescription>
-                          </EventContentWrapper>
-                        </EventLink>
+                          </EventLink>
+                        </EventContentWrapper>
                       </EventItemContainer>
                     ) : (
                       <EventItemContainer 
@@ -364,8 +371,17 @@ const Events: React.FC = () => {
                               )}
                             </EventLocation>
                             <EventDescription>
-                              {upcomingEvents[activeIndex].fields.description?.split('\n')[0] || ''}
+                              {(upcomingEvents[activeIndex].fields.description?.split('\n')[0] || '').length > 300 
+                                ? `${upcomingEvents[activeIndex].fields.description?.split('\n')[0].slice(0, 300)}...`
+                                : upcomingEvents[activeIndex].fields.description?.split('\n')[0] || ''
+                              }
                             </EventDescription>
+                            <MobileEventButton 
+                              as={Link}
+                              to={`/events/${upcomingEvents[activeIndex].sys.id}/${encodeURIComponent(upcomingEvents[activeIndex].fields.name)}`}
+                            >
+                              LEARN MORE
+                            </MobileEventButton>
                           </EventContentWrapper>
                         </EventLink>
                       </EventItemContainer>

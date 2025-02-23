@@ -184,7 +184,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
 export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeight: number }>`
   position: absolute;
   top: ${props => {
-    const basePosition = Math.min(props.screenHeight * 0.6, props.screenWidth * 0.3);
+    const basePosition = Math.min(props.screenHeight * 0.5, props.screenWidth * 0.3);
     const minPosition = 200;
     const maxPosition = 800;
     return Math.min(Math.max(basePosition, minPosition), maxPosition);
@@ -455,15 +455,22 @@ export const PastEventsTitle = styled.h2`
   font-family: 'Sequel Sans Regular';
   font-size: 4.5rem;
   color: black;
-  margin: 2rem 0 2rem;
+  margin: 2rem 0 3.5rem;
   padding: 0 2rem;
+
+  @media (max-width: 767px) {
+    font-size: 2.5rem;
+    padding: 0 1rem;
+    margin: 0.15rem 0 1.75rem;
+  }
 `;
 
 export const PastEventName = styled.h3`
   font-family: 'Sequel Sans Regular';
   font-size: 2rem;
   color: black;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.3rem;  /* Reduced from 0.5rem to 0.2rem */
+  text-transform: uppercase;
 `;
 
 export const PastEventDescription = styled.p`
@@ -511,11 +518,7 @@ export const PastEventCard = styled.div`
     aspect-ratio: 1;
     object-fit: cover;
     object-position: center;
-    margin-bottom: 1rem;
-  }
-
-  &:hover ${ViewOverlay} {
-    opacity: 1;
+    margin-bottom: 0.1rem;
   }
 `;
 
@@ -523,7 +526,7 @@ export const PastEventsList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  padding: 0 2rem 4rem;
+  padding: 0 1rem 4rem;
   
   /* Add empty columns to maintain layout */
   &::after {
@@ -536,12 +539,21 @@ export const PastEventsList = styled.div`
     min-height: 100%;
     width: 100%;
   }
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;  /* Single column on mobile */
+    gap: 1rem;  /* Reduced gap for mobile */
+    
+    &::after {
+      grid-column: span 1;  /* Update empty column span for mobile */
+    }
+  }
 `;
 
 export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  margin-bottom: 1rem;
+  // margin-bottom: 0.01rem;
 `;
 
 export const MobileEventNav = styled.div`

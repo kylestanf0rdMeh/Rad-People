@@ -113,7 +113,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out; // Increased duration and smoother easing
+  transition: opacity 0.5s ease-in-out; // Increased duration and smoother easing
   will-change: opacity;
   z-index: 0;
 
@@ -235,7 +235,7 @@ export const EventContentWrapper = styled.div`
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
   opacity: ${props => props.isActive ? 1 : 0.4};
-  transition: all 1.2s ease-in-out;  // Slower, smoother transition
+  transition: all 1.2s ease-in-out;
   margin-top: ${props => Math.min(props.screenWidth * 0.01, 24)}px;
   
   @media (min-width: 768px) {
@@ -245,11 +245,10 @@ export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: n
   @media (max-width: 767px) {
     width: 100%;
     margin-bottom: 0;
-    position: absolute;  // Add this
-    left: 0;            // Add this
-    opacity: ${props => props.isActive ? 1 : 0};  // Full fade for mobile
-    pointer-events: ${props => props.isActive ? 'auto' : 'none'};  // Disable inactive items
-    transform: translateX(${props => props.isActive ? '0' : '20px'});  // Slight slide effect
+    position: relative;  // Changed to relative
+    opacity: ${props => props.isActive ? 1 : 0};
+    pointer-events: ${props => props.isActive ? 'auto' : 'none'};
+    transform: translateX(${props => props.isActive ? '0' : '20px'});
   }
 
   &:hover {

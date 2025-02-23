@@ -35,7 +35,7 @@ export const EventsContainer = styled.div<{ screenWidth: number; screenHeight: n
   margin-bottom: 2rem;
   
   @media (max-width: 767px) {
-    height: ${props => Math.min(props.screenWidth * 0.65, props.screenHeight * 0.95, 1000)}px;
+    height: ${props => Math.min(props.screenWidth * 1.3, props.screenHeight * 0.65, 1000)}px; // Increased from 0.65 to 1.3
   }
 `;
 
@@ -54,7 +54,7 @@ export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean;
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => Math.min(props.screenWidth * 0.55, 1000)}px;
+  height: 100%;  // Changed to 100% to match parent
   background-image: url(${props => props.imageUrl});
   background-size: cover;
   background-position: center;
@@ -73,10 +73,6 @@ export const BackgroundImage = styled.div<{ imageUrl: string; isActive: boolean;
       rgba(0, 0, 0, 0.3),
       rgba(0, 0, 0, 1.5)
     );
-  }
-
-  @media (max-width: 767px) {
-    height: ${props => Math.min(props.screenWidth * 0.65, 1000)}px;
   }
 `;
 
@@ -109,7 +105,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   top: 0;
   left: 0;
   width: 100%;
-  height: ${props => Math.min(props.screenWidth * 0.55, 1000)}px;
+  height: 100%;
   opacity: 0;
   transition: opacity 0.6s ease-in-out;
   will-change: opacity;
@@ -136,10 +132,11 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 100vw !important;
-      height: 100vh !important;
+      width: 200vw !important;  // Increased from 100% to ensure coverage
+      height: 200vh !important; // Increased from 100% to ensure coverage
       transform: translate(-50%, -50%) scale(1.2);
       pointer-events: none;
+      object-fit: cover;
     }
 
     &::after {
@@ -157,10 +154,6 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
       pointer-events: none;
       z-index: 1;
     }
-  }
-
-  @media (max-width: 767px) {
-    height: ${props => Math.min(props.screenWidth * 0.65, 1000)}px;
   }
 `;
 
@@ -200,7 +193,7 @@ export const EventTitle = styled.div`
   margin-left: 20px;
 
   @media (max-width: 767px) {
-    top: 6rem;
+    top: 4.5rem;  // Changed from 6rem to 4rem to move it closer to event numbers
     left: 0.5rem;
     margin-left: 10px;
   }
@@ -219,7 +212,8 @@ export const EventTitleText = styled.h2`
 
   @media (max-width: 767px) {
     font-size: 3rem;
-    line-height: 45px;
+    line-height: 40px;
+    -webkit-text-stroke: 1px white;
   }
 `;
 
@@ -485,7 +479,7 @@ export const MobileEventNav = styled.div`
   gap: 1rem;
   position: absolute;
   top: 2rem;
-  margin-left: 30px;
+  margin-left: 23px;
   z-index: 2;
   
   @media (min-width: 768px) {
@@ -494,18 +488,30 @@ export const MobileEventNav = styled.div`
 `;
 
 export const EventNumber = styled.button<{ isActive: boolean }>`
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border: 1px solid white;
-  background: ${props => props.isActive ? 'white' : 'transparent'};
-  color: ${props => props.isActive ? 'black' : 'white'};
+  border-radius: 0;
+  background: ${props => props.isActive ? '#0000FF' : 'transparent'};
+  color: ${props => props.isActive ? 'white' : 'white'};
   font-family: 'Sequel Sans Regular';
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  outline: none;
 
   &:hover {
-    background: white;
-    color: black;
+    background: ${props => props.isActive ? '#0000FF' : 'white'};
+    color: ${props => props.isActive ? 'white' : 'black'};
+  }
+
+  &:focus {
+    outline: none;
   }
 `;

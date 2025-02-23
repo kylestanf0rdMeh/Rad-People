@@ -180,7 +180,9 @@ export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeigh
   @media (max-width: 767px) {
     display: block;
     padding: 0 1rem;
-    width: calc(100% - 2rem); // Account for padding
+    width: calc(100% - 2rem);
+    top: auto;  // Remove top positioning
+    bottom: 2rem;  // Position from bottom
   }
 `;
 
@@ -235,6 +237,7 @@ export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: n
   
   @media (max-width: 767px) {
     width: 100%; // Full width on mobile
+    margin-bottom: 0; // Ensure no extra space at bottom
   }
 
   &:hover {
@@ -253,6 +256,10 @@ export const EventDate = styled.p`
   margin: 0 0 0.5rem 0.5rem;
   text-transform: uppercase;
   ${fluidTypography(0.7, 1, 320, 1500)}
+
+  @media (max-width: 767px) {
+    font-size: 0.9rem;  // Increased font size for mobile
+  }
 `;
 
 export const EventDetailsWrapper = styled.div`
@@ -368,8 +375,9 @@ export const EventDescription = styled.p`
   
   @media (max-width: 767px) {
     max-width: 90vw;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     line-height: 1.4;
+    margin-bottom: 0; // Remove bottom margin
   }
   
   @media (min-width: 768px) {

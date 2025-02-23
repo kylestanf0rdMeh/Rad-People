@@ -35,7 +35,7 @@ export const EventsContainer = styled.div<{ screenWidth: number; screenHeight: n
   margin-bottom: 2rem;
   
   @media (max-width: 767px) {
-    height: ${props => Math.min(props.screenWidth * 1.3, props.screenHeight * 0.65, 1000)}px; // Increased from 0.65 to 1.3
+    height: ${props => Math.min(props.screenWidth * 1.3, props.screenHeight * 0.65, 1000)}px;
   }
 `;
 
@@ -113,7 +113,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out; // Increased duration and smoother easing
+  transition: opacity 0.5s ease-in-out;
   will-change: opacity;
   z-index: 0;
 
@@ -131,18 +131,35 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(1.01);
     overflow: hidden;
     
     wistia-player {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 200vw !important;  // Increased from 100% to ensure coverage
-      height: 200vh !important; // Increased from 100% to ensure coverage
-      transform: translate(-50%, -50%) scale(1.2);
       pointer-events: none;
-      object-fit: cover;
+
+      @media (min-width: 768px) {
+        /* Desktop: Set only width and let height adjust automatically */
+        width: 100vw !important;
+        height: auto !important;
+        transform: translate(-50%, -50%);
+        
+        /* Ensure the iframe and video maintain aspect ratio */
+        iframe,
+        video {
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+      }
+
+      @media (max-width: 767px) {
+        /* Mobile: Keep current behavior */
+        width: 200vw !important;
+        height: 200vh !important;
+        transform: translate(-50%, -50%) scale(1.2);
+      }
     }
 
     &::after {
@@ -291,7 +308,7 @@ export const EventName = styled.h3`
   
   @media (max-width: 767px) {
     font-size: 1.5rem;
-    white-space: normal; // Allow text to wrap
+    white-space: normal;
     word-wrap: break-word;
     width: 100%;
   }
@@ -350,19 +367,20 @@ export const EventLocation = styled.div`
   position: relative;
   line-height: 1.2;
   text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   
   @media (max-width: 767px) {
     font-size: 1.5rem;
     max-width: 90vw;
     margin-top: 0px;
-    padding-right: 20px; // Space for location icon
+    padding-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   @media (min-width: 768px) {
     max-width: 350px;
+    white-space: normal; // Allow wrapping
     ${fluidTypography(1.2, 1.9, 320, 1500)}
   }
 `;

@@ -317,10 +317,15 @@ const Events: React.FC = () => {
                               <LocationFirstLine>{event.fields.location}</LocationFirstLine>
                             </EventLocation>
                             <EventDescription>
-                              {(event.fields.description?.split('\n')[0] || '').length > 300 
-                                ? `${event.fields.description?.split('\n')[0].slice(0, 300)}...`
-                                : event.fields.description?.split('\n')[0] || ''
-                              }
+                              {(() => {
+                                const description = event.fields.description?.split('\n')[0] || '';
+                                const isMiddleViewport = window.innerWidth >= 768 && window.innerWidth <= 1250;
+                                const charLimit = isMiddleViewport ? 200 : 300; // Reduced character limit for middle viewport
+                                
+                                return description.length > charLimit 
+                                  ? `${description.slice(0, charLimit)}...`
+                                  : description;
+                              })()}
                             </EventDescription>
                           </EventLink>
                         </EventContentWrapper>

@@ -200,6 +200,12 @@ export const EventNamesContainer = styled.div<{ screenWidth: number; screenHeigh
     padding: ${props => Math.min(props.screenWidth * 0.02, 70)}px ${props => Math.min(props.screenWidth * 0.03, 48)}px;
   }
 
+  @media (min-width: 768px) and (max-width: 990px) {
+    top: ${props => {
+      // Option 1: Viewport height based
+      return `${props.screenHeight * 0.25}px`;  // 35% of viewport height
+    }};  }
+
   @media (max-width: 767px) {
     display: block;
     padding: 0 1rem;
@@ -230,9 +236,19 @@ export const EventTitleText = styled.h2`
   margin: 0;
   text-transform: uppercase;
   
-  @media (min-width: 768px) {
+  @media (min-width: 1251px) {
     font-size: 10rem;
     line-height: 135px;
+  }
+
+  @media (min-width: 991px) and (max-width: 1250px) {
+    font-size: 7rem;  /* Reduced from 10rem */
+    line-height: 95px;  /* Adjusted line height */
+  }
+
+  @media (min-width: 768px) and (max-width: 990px) {
+    font-size: 4rem;  /* Reduced from 10rem */
+    line-height: 60px;  /* Adjusted line height */
   }
 
   @media (max-width: 767px) {
@@ -312,12 +328,19 @@ export const EventName = styled.h3`
     word-wrap: break-word;
     width: 100%;
   }
-  
+
   @media (min-width: 768px) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  @media (min-width: 1251px) {
     ${fluidTypography(1.4, 2.2, 320, 1500)}
+  }
+
+  @media (min-width: 768px) and (max-width: 1250px) {
+    ${fluidTypography(0.9, 1.2, 320, 1500)}  /* Further reduced size range */
   }
 `;
 
@@ -383,6 +406,15 @@ export const EventLocation = styled.div`
     white-space: normal; // Allow wrapping
     ${fluidTypography(1.2, 1.9, 320, 1500)}
   }
+
+  @media (min-width: 1251px) {
+    ${fluidTypography(1.2, 1.9, 320, 1500)}
+  }
+
+  @media (min-width: 769px) and (max-width: 1250px) {
+    ${fluidTypography(0.8, 1.4, 320, 1500)}  /* Reduced size range */
+  }
+
 `;
 
 export const LocationFirstLine = styled.span`
@@ -420,6 +452,14 @@ export const EventDescription = styled.p`
   @media (min-width: 768px) {
     max-width: 300px;
     ${fluidTypography(0.7, 0.8, 320, 1500)}
+  }
+
+  @media (min-width: 1251px) {
+    ${fluidTypography(0.7, 0.8, 320, 1500)}
+  }
+
+  @media (min-width: 768px) and (max-width: 1250px) {
+    ${fluidTypography(0.5, 0.7, 320, 1500)}  /* Reduced size range */
   }
 `;
 
@@ -471,6 +511,10 @@ export const PastEventName = styled.h3`
   color: black;
   margin: 0 0 0.3rem;  /* Reduced from 0.5rem to 0.2rem */
   text-transform: uppercase;
+
+  @media (min-width: 768px) and (max-width: 1050px) {
+    font-size: 1rem;
+  }
 `;
 
 export const PastEventDescription = styled.p`
@@ -479,6 +523,10 @@ export const PastEventDescription = styled.p`
   color: black;
   margin: 0;
   line-height: 1.4;
+
+  @media (min-width: 768px) and (max-width: 1050px) {
+    font-size: 0.65rem;
+  }
 `;
 
 export const ViewOverlay = styled.div`
@@ -519,6 +567,12 @@ export const PastEventCard = styled.div`
     object-fit: cover;
     object-position: center;
     margin-bottom: 0.1rem;
+  }
+
+  &:hover {
+    ${ViewOverlay} {
+      opacity: 1;
+    }
   }
 `;
 

@@ -10,7 +10,6 @@ const hasRequiredField = (obj: any, field: string): boolean => {
 // Transform contentful response to EventItem
 const transformEventResponse = (response: any): EventItem => {
   // Add debug logging
-  console.log('Transforming event:', response.fields);
 
   // Check for minimum required fields
   if (!hasRequiredField(response, 'name')) {
@@ -29,6 +28,7 @@ const transformEventResponse = (response: any): EventItem => {
     fields: response.fields,
     contentTypeId: response.sys.contentType.sys.id
   };
+
 
   return transformedEvent as EventItem;
 };

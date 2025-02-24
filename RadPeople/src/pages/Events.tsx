@@ -4,7 +4,7 @@ import { EventItem } from '../models/Event.model';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import { useEvents } from '../contexts/EventsContext';
-import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay } from '../styles/EventStyles';
+import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber, MobileEventButton } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 
@@ -49,11 +49,29 @@ const Events: React.FC = () => {
   const [currentVideo, setCurrentVideo] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [preloadedVideos, setPreloadedVideos] = useState<Set<string>>(new Set());
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Trigger fetch on mount
   useEffect(() => {
     prefetchEvents();
   }, [prefetchEvents]);
+
+
+  // Mobile View Events are auto progressed
+  useEffect(() => {
+    // Only run auto-rotation if screen width is mobile size
+    if (screenWidth <= 767) {
+      const timer = setInterval(() => {
+        setActiveIndex((prevIndex) => {
+          const nextIndex = (prevIndex + 1) % Math.min(4, upcomingEvents.length);
+          handleEventHover(upcomingEvents[nextIndex]);
+          return nextIndex;
+        });
+      }, 9000);
+
+      return () => clearInterval(timer);
+    }
+  }, [screenWidth, upcomingEvents]); // Add screenWidth to dependencies
 
   // Process events when data arrives
   useEffect(() => {
@@ -180,12 +198,6 @@ const Events: React.FC = () => {
     };
   }, []);
 
-  // Add debug logging
-  useEffect(() => {
-    if (events.length > 0) {
-      // console.log('First video data:', events[0].fields.wistiaVideo?.items?.[0]);
-    }
-  }, [events]);
 
   // Add useEffect to fetch events if none exist
   useEffect(() => {
@@ -209,9 +221,7 @@ const Events: React.FC = () => {
               <div className="video-background">
                 {upcomingEvents.map(event => {
                   const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
-                  if (!videoId) return null;
-                  
-                  return (
+                  return videoId ? (
                     <VideoWrapper 
                       key={videoId}
                       screenWidth={screenWidth} 
@@ -242,73 +252,147 @@ const Events: React.FC = () => {
                         />
                       </div>
                     </VideoWrapper>
-                  );
+                  ) : null;
                 })}
               </div>
-              {!currentVideo && (
-                <BackgroundImage 
-                  imageUrl={activeEventImage}
-                  isActive={true}
-                  screenWidth={screenWidth}
-                />
+              <BackgroundImage 
+                imageUrl={activeEventImage}
+                isActive={!currentVideo}
+                shouldShow={!upcomingEvents.find(event => 
+                  event.sys.id === activeEventId)?.fields.wistiaVideo?.items?.[0]?.hashed_id
+                }
+                screenWidth={screenWidth}
+              />
+              
+              {screenWidth <= 767 && (
+                <MobileEventNav>
+                  {[...Array(Math.min(4, upcomingEvents.length))].map((_, i) => (
+                    <EventNumber
+                      key={i}
+                      isActive={activeIndex === i}
+                      onClick={() => {
+                        setActiveIndex(i);
+                        handleEventHover(upcomingEvents[i]);
+                      }}
+                    >
+                      {i + 1}
+                    </EventNumber>
+                  ))}
+                </MobileEventNav>
               )}
-            </EventBackground>
 
-              {/* Our Overlay */}
               <EventTitle>
                 <EventTitleText>EVENT</EventTitleText>
                 <EventTitleText>CALENDAR</EventTitleText>
               </EventTitle>
+            </EventBackground>
 
               <EventNamesContainer screenWidth={screenWidth} screenHeight={screenHeight}>
-                {/* Only display 4 events */}
-                {[...Array(4)].map((_, i) => {
-                  const event = upcomingEvents[i];
-                  return event ? (
-                    <EventItemContainer
+                {screenWidth > 767 ? (
+                  [...Array(4)].map((_, i) => {
+                    const event = upcomingEvents[i];
+                    return event ? (
+                      <EventItemContainer
                       key={event.sys.id}
                       isActive={activeEventId === event.sys.id}
                       screenWidth={screenWidth}
                       onMouseEnter={() => handleEventHover(event)}
-                    >
-                      <EventLink 
-                        to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
-                        state={{ event }}
                       >
                         <EventContentWrapper>
-                          <EventDate>
-                            {new Date(event.fields.date).toLocaleDateString('en-US', {
-                              month: '2-digit',
-                              day: '2-digit',
-                              year: '2-digit'
-                            }).replace(/\//g, '.')}
-                          </EventDate>
+                          <EventLink 
+                            to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+                            state={{ event }}
+                          >
+                            <EventDate>
+                              {new Date(event.fields.date).toLocaleDateString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: '2-digit'
+                              }).replace(/\//g, '.')}
+                            </EventDate>
 
-                          <EventName>{event.fields.name}</EventName>
-                          <EventLocation>
-                            <LocationIcon />
-                            {splitIntoLines(event.fields.location || '').map((line, i) => (
-                              i === 0 ? (
-                                <LocationFirstLine key="first">{line}</LocationFirstLine>
-                              ) : (
-                                <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                              )
-                            ))}
-                          </EventLocation>
-                          <EventDescription>
-                            {event.fields.description?.split('\n')[0] || ''}
-                          </EventDescription>
+                            <EventName>{event.fields.name}</EventName>
+                            <EventLocation>
+                              <LocationIcon />
+                              <LocationFirstLine>{event.fields.location}</LocationFirstLine>
+                            </EventLocation>
+                            <EventDescription>
+                              {(() => {
+                                const description = event.fields.description?.split('\n')[0] || '';
+                                const isMiddleViewport = window.innerWidth >= 768 && window.innerWidth <= 1250;
+                                const charLimit = isMiddleViewport ? 200 : 300; // Reduced character limit for middle viewport
+                                
+                                return description.length > charLimit 
+                                  ? `${description.slice(0, charLimit)}...`
+                                  : description;
+                              })()}
+                            </EventDescription>
+                          </EventLink>
                         </EventContentWrapper>
-                      </EventLink>
-                    </EventItemContainer>
-                  ) : (
-                    <EventItemContainer 
-                      key={`empty-${i}`} 
-                      isActive={false} 
-                      screenWidth={screenWidth}
-                    />
-                  );
-                })}
+                      </EventItemContainer>
+                    ) : (
+                      <EventItemContainer 
+                        key={`empty-${i}`} 
+                        isActive={false} 
+                        screenWidth={screenWidth}
+                      />
+                    );
+                  })
+                ) : (
+                  <>
+                    {upcomingEvents[activeIndex] && (
+                      <EventItemContainer
+                        isActive={true}
+                        screenWidth={screenWidth}
+                      >
+                        <EventLink 
+                          to={`/events/${upcomingEvents[activeIndex].sys.id}/${encodeURIComponent(upcomingEvents[activeIndex].fields.name)}`}
+                          state={{ event: upcomingEvents[activeIndex] }}
+                        >
+                          <EventContentWrapper>
+                            <EventDate>
+                              {new Date(upcomingEvents[activeIndex].fields.date).toLocaleDateString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: '2-digit'
+                              }).replace(/\//g, '.')}
+                            </EventDate>
+
+                            <EventName>{upcomingEvents[activeIndex].fields.name}</EventName>
+                            <EventLocation>
+                              <LocationIcon />
+                              {screenWidth > 767 ? (
+                                // Desktop: Split into lines
+                                splitIntoLines(upcomingEvents[activeIndex].fields.location || '').map((line, i) => (
+                                  i === 0 ? (
+                                    <LocationFirstLine key="first">{line}</LocationFirstLine>
+                                  ) : (
+                                    <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                                  )
+                                ))
+                              ) : (
+                                // Mobile: Single line
+                                <LocationFirstLine>{upcomingEvents[activeIndex].fields.location}</LocationFirstLine>
+                              )}
+                            </EventLocation>
+                            <EventDescription>
+                              {(upcomingEvents[activeIndex].fields.description?.split('\n')[0] || '').length > 300 
+                                ? `${upcomingEvents[activeIndex].fields.description?.split('\n')[0].slice(0, 300)}...`
+                                : upcomingEvents[activeIndex].fields.description?.split('\n')[0] || ''
+                              }
+                            </EventDescription>
+                            <MobileEventButton 
+                              as={Link}
+                              to={`/events/${upcomingEvents[activeIndex].sys.id}/${encodeURIComponent(upcomingEvents[activeIndex].fields.name)}`}
+                            >
+                              LEARN MORE
+                            </MobileEventButton>
+                          </EventContentWrapper>
+                        </EventLink>
+                      </EventItemContainer>
+                    )}
+                  </>
+                )}
               </EventNamesContainer>
             </EventsContainer>
         </>
@@ -325,11 +409,13 @@ const Events: React.FC = () => {
               to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
               state={{ event }}
             >
-              <img 
-                src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
-                alt={event.fields.name}
-              />
-              <ViewOverlay>VIEW</ViewOverlay>
+              <ImageContainer>
+                <img 
+                  src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
+                  alt={event.fields.name}
+                />
+                <ViewOverlay>VIEW</ViewOverlay>
+              </ImageContainer>
               <PastEventName>{event.fields.name}</PastEventName>
               <PastEventDescription>
                 {event.fields.description?.split('\n')[0] || ''}

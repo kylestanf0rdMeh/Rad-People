@@ -43,7 +43,6 @@ export const Image = styled.img`
   height: 100%;
   width: auto;
   object-fit: contain;
-  border: 1px solid #000000; // Added border to match navbar
 `;
 
 export const CloseButton = styled(OverlayButton)`

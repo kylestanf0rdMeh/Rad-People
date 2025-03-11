@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 import { OverlayButton } from './GalleryStyles';
+import { motion } from 'framer-motion';
 
-export const OverlayContainer = styled.div<{ isOpen: boolean }>`
+export const OverlayContainer = styled(motion.div)<{ isOpen: boolean }>`
   position: fixed;
-  top: 40px; // Adjust this value to match your navbar height
+  top: 40px;
   left: 0;
   right: 0;
   bottom: 0;
   background-color: white;
-  z-index: 999; // Reduced z-index to be below navbar
+  z-index: 999;
   overflow-y: auto;
-  display: ${props => props.isOpen ? 'block' : 'none'};
-  border-top: 1px solid #000000; // Added border to match navbar
+  display: ${props => props.isOpen ? 'flex' : 'none'};
+  border-top: 1px solid #000000;
 `;
 
 export const ImageGrid = styled.div`

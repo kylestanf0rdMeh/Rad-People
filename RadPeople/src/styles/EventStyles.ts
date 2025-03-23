@@ -262,8 +262,7 @@ export const EventContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%; // Ensure full width
-
+  width: 80vh; // Ensure full width
 `;
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`

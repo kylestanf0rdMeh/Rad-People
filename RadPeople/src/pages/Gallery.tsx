@@ -1,6 +1,7 @@
 import { FiGrid } from 'react-icons/fi';
 import useIsMobile from '../hooks/useIsMobile';
 import PageWrapper from '../components/PageWrapper';
+import { AnimatePresence } from 'framer-motion';
 import GalleryOverlay from '../components/GalleryOverlay';
 import React, { useState, useEffect, useCallback } from 'react';
 import useGalleryNavigation from '../hooks/useGalleryNavigation';
@@ -105,19 +106,28 @@ const Gallery: React.FC = () => {
       style={{ cursor: isOverlayOpen ? 'default' : (isMobile ? 'default' : cursor) }}
       >
         <GalleryContainer>
-          {currentImage && (
-            <GalleryImage
-              key={currentImage.src}
-              src={currentImage.src}
-              alt={images[currentIndex].fields.descriptions || 'Gallery image'}
-              fillScreen={currentImage.fillScreen}
-              isWide={currentImage.isWide}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            {currentImage && (
+              <GalleryImage
+                key={currentImage.src}
+                src={currentImage.src}
+                alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+                fillScreen={currentImage.fillScreen}
+                isWide={currentImage.isWide}
+                initial={{ opacity: 0.3 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0.3 }}
+                transition={{
+                  duration: 0.1,
+                  ease: "easeInOut"
+                }}
+              />
+            )}
+          </AnimatePresence>
         </GalleryContainer>
 
         <ContactRectangle>
-          <h3>Contact Us</h3>
+          <h3>CONTACT US</h3>
           <p>contact@radpeople.us</p>
         </ContactRectangle>
 

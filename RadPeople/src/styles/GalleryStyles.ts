@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 
 export const theme = {
@@ -8,13 +9,15 @@ export const theme = {
 
 
 export const GalleryPageContainer = styled.div`
-  width: 100vw;
-  height: calc(100vh - 40px);
+  position: fixed;
+  top: 40px; // Account for navbar
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  position: relative;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -28,9 +31,10 @@ export const GalleryContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
-export const GalleryImage = styled.img<{ fillScreen: boolean; isWide: boolean }>`
+export const GalleryImage = styled(motion.img)<{ fillScreen: boolean; isWide: boolean }>`
   max-width: 100%;
   max-height: 100%;
   object-fit: ${props => props.fillScreen ? 'cover' : 'contain'};
@@ -40,6 +44,7 @@ export const GalleryImage = styled.img<{ fillScreen: boolean; isWide: boolean }>
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+  position: absolute;
 
   @media (min-width: 769px) {
     width: ${props => props.isWide ? '100%' : 'auto'};

@@ -268,7 +268,7 @@ export const EventContentWrapper = styled.div`
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
   opacity: ${props => props.isActive ? 1 : 0.4};
-  transition: all 1.2s ease-in-out;
+  transition: all 0.5s ease-in-out;
   margin-top: ${props => Math.min(props.screenWidth * 0.06, 24)}px;
   
   @media (min-width: 768px) {

@@ -1,0 +1,261 @@
+import styled from "styled-components";
+
+// Create a new container for the event content
+export const EventContentContainer = styled.div`
+  position: relative;
+  min-height: 100vh; // Use min-height instead of height
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const FixedBackgroundContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; // This will make it expand with the parent
+  overflow: hidden;
+  z-index: 1;
+  border-radius: 0;
+`;
+
+export const EventDetailsInfoOverlay = styled.div`
+  position: absolute;
+  bottom: 3.5rem;
+  left: 2rem;
+  width: 30%;
+  z-index: 5;
+  
+  @media (max-width: 767px) {
+    bottom: 5rem;
+    left: 1rem;
+    width: 75%;
+  }
+`;
+
+export const EventDetailLocation = styled.div`
+  font-family: 'Sequel Sans Regular';
+  color: white;
+  margin: 0;
+  margin-top: 5px;
+  position: relative;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+`;
+
+export const EventDetailLocationText = styled.span`
+  display: block;
+  padding-left: 25px;
+`;
+
+export const DetailEventDescription = styled.p`
+  font-family: 'Sequel Sans Regular';
+  color: white;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  opacity: 0.9;
+  word-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%; // Allow full width
+  line-height: 1.2; // Tighter line height
+  font-size: 0.8rem; // Smaller font size
+  white-space: normal; // Allow wrapping
+  overflow: hidden; // Hide overflow
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // Show up to 3 lines
+  -webkit-box-orient: vertical;
+  
+  @media (max-width: 767px) {
+    max-width: 90vw;
+    font-size: 0.65rem; // Even smaller on mobile
+    -webkit-line-clamp: 2; // Show fewer lines on mobile
+  }
+`;
+
+// For image backgrounds
+export const FixedBackgroundImage = styled.div<{ imageUrl: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.imageUrl});
+  background-size: cover;
+  background-position: center;
+  display: block;
+  padding: 0;
+  margin: 0;
+`;
+
+// For video backgrounds - updated to match the fixed-position-video approach
+export const VideoContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin-left: -1rem;
+  overflow: hidden;
+  border-radius: 0; // Ensure no rounded corners
+  
+  /* This is the key part - ensure the Wistia player maintains its size */
+  .wistia-player-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px !important; /* Fixed width */
+    height: 1080px !important; /* Fixed height */
+    max-width: none !important;
+    object-fit: none !important;
+    pointer-events: none;
+    border-radius: 0; // Ensure no rounded corners
+  }
+
+  /* Target all possible elements inside the Wistia player */
+    iframe, video, div {
+      border-radius: 0 !important; // Force no rounded corners with !important
+    }
+`;
+
+// Update RightColumnDescription to show all content
+export const RightColumnDescription = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  margin-left: -3px;
+  line-height: 1.4;
+  margin-top: 1.2rem;
+  white-space: normal;
+  word-wrap: break-word;
+  margin-bottom: 2rem; // Add bottom margin for footer spacing
+`;
+
+// Update RightColumnOverlay to grow with content
+export const RightColumnOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22%;
+  min-height: 100%; // Use min-height instead of height
+  background-color: white;
+  z-index: 10;
+  border-left: 1px solid #e5e7eb;
+  overflow-y: auto;
+  padding: 20px;
+  color: black;
+  flex-direction: column;
+  box-sizing: border-box;
+  
+  @media (prefers-color-scheme: dark) {
+    background-color: white;
+    border-left: 1px solid #374151;
+    color: black;
+  }
+`;
+
+// New styled components for the right column content
+export const OverlayBackButton = styled.h2`
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  font-weight: regular;
+  margin-bottom: 1rem;
+  color: black;
+  margin-left: -7px; /* Added negative margin to move closer to the left border */
+`;
+
+export const BackNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin-top: -1rem; /* Added the 2rem margin top here */
+  margin-left: -3px; /* Added negative margin to move closer to the left border */
+  `;
+
+export const OverlayTItle = styled.p`
+  margin-top: 20rem;
+  font-size: 2.8rem;
+  color: black;
+  font-weight: semi-bold;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  line-height: 2.5rem;
+  margin-left: -3px;
+  width: 90%;
+`;
+
+export const EventTitle = styled.h1`
+  position: absolute; // Changed from fixed
+  top: 40px;
+  left: 20px;
+  z-index: 5;
+  font-family: 'Sequel Sans Regular';
+  -webkit-text-stroke: 1px black;
+  margin: 0;
+  text-transform: uppercase;
+  color: white;
+  width: 60%;
+  word-wrap: break-word;
+  
+  @media (min-width: 1251px) {
+    font-size: 6rem;
+    line-height: 5.5rem;
+  }
+
+  @media (min-width: 991px) and (max-width: 1250px) {
+    font-size: 4rem;
+    line-height: 4.5rem;
+  }
+
+  @media (min-width: 768px) and (max-width: 990px) {
+    font-size: 5rem;
+    line-height: 4.2rem;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 2.5rem;
+    line-height: 3rem;
+    -webkit-text-stroke: 1px white;
+  }
+`;
+
+export const AlternateDescription = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  margin-left: -3px;
+  line-height: 1.1;
+  margin-top: -1.3rem;
+  text-transform: uppercase;
+`;
+
+export const OverlayDate = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  margin-left: -3px;
+  text-transform: uppercase;
+  margin-top: -1rem;
+  font-weight: semi-bold;
+`
+
+export const OverlayTime = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  margin-left: -3px;
+  text-transform: uppercase;
+  margin-top: -1.1rem;
+  font-weight: semi-bold;
+`
+
+export const LocationText = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  margin-left: -3px;
+  line-height: 1.4;
+  margin-top: 1.6rem;
+`;

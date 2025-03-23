@@ -25,6 +25,8 @@ export interface EventItem {
     location?: string;
     date: string;
     ticketCount: string;
+    alternateDescription: string;
+    time: string;
     thumbnailImage: Array<{
       fields: {
         file: {

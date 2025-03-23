@@ -8,29 +8,37 @@ import { fetchSingleEvent } from '../../middleware/Events';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { IoArrowBack } from 'react-icons/io5'; // Import back arrow icon
-import { EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, LocationFirstLine, LocationIcon } from '../../styles/EventStyles';
+import { EventContentWrapper, EventDate, EventItemContainer, EventName, LocationIcon } from '../../styles/EventStyles';
 import styled from 'styled-components';
 
 interface LocationState {
   event: EventItem;
 }
 
-// Fixed background container
+// Create a new container for the event content
+const EventContentContainer = styled.div`
+  position: relative;
+  min-height: 98vh; // Changed from height to min-height
+  height: 100vh; // Back to fixed height for consistency
+  margin-bottom: 0; // Remove the bottom margin
+  display: flex;
+  flex-direction: column;
+`;
+
 const FixedBackgroundContainer = styled.div`
-  position: fixed;
+  position: absolute; // Changed from fixed
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  padding: 0;
-  margin: 0;
   z-index: 1;
+  border-radius: 0; // Ensure no rounded corners
 `;
 
 const EventDetailsInfoOverlay = styled.div`
   position: absolute;
-  bottom: 2rem;
+  bottom: 3.5rem;
   left: 2rem;
   width: 30%;
   z-index: 5;
@@ -61,6 +69,31 @@ const EventDetailLocationText = styled.span`
   padding-left: 25px;
 `;
 
+const DetailEventDescription = styled.p`
+  font-family: 'Sequel Sans Regular';
+  color: white;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  opacity: 0.9;
+  word-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%; // Allow full width
+  line-height: 1.2; // Tighter line height
+  font-size: 0.8rem; // Smaller font size
+  white-space: normal; // Allow wrapping
+  overflow: hidden; // Hide overflow
+  display: -webkit-box;
+  -webkit-line-clamp: 3; // Show up to 3 lines
+  -webkit-box-orient: vertical;
+  
+  @media (max-width: 767px) {
+    max-width: 90vw;
+    font-size: 0.65rem; // Even smaller on mobile
+    -webkit-line-clamp: 2; // Show fewer lines on mobile
+  }
+`;
+
 // For image backgrounds
 const FixedBackgroundImage = styled.div<{ imageUrl: string }>`
   position: absolute;
@@ -83,7 +116,9 @@ const VideoContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
+  margin-left: -1rem;
   overflow: hidden;
+  border-radius: 0; // Ensure no rounded corners
   
   /* This is the key part - ensure the Wistia player maintains its size */
   .wistia-player-container {
@@ -95,15 +130,31 @@ const VideoContainer = styled.div`
     max-width: none !important;
     object-fit: none !important;
     pointer-events: none;
+    border-radius: 0; // Ensure no rounded corners
   }
+
+  /* Target all possible elements inside the Wistia player */
+    iframe, video, div {
+      border-radius: 0 !important; // Force no rounded corners with !important
+    }
+`;
+
+const RightColumnDescription = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  margin-left: -3px;
+  line-height: 1.4;
+  margin-top: 1.2rem;
+  white-space: normal;
+  word-wrap: break-word;
 `;
 
 const RightColumnOverlay = styled.div`
-  position: fixed;
+  position: absolute; // Changed from fixed
   top: 0;
   right: 0;
   width: 22%;
-  height: 100vh;
+  height: 96vh; // Match container height
   background-color: white;
   z-index: 10;
   border-left: 1px solid #e5e7eb;
@@ -134,7 +185,7 @@ const BackNavigation = styled.div`
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  margin-top: 1rem; /* Added the 2rem margin top here */
+  margin-top: -1rem; /* Added the 2rem margin top here */
   margin-left: -3px; /* Added negative margin to move closer to the left border */
   `;
 
@@ -152,8 +203,8 @@ const OverlayTItle = styled.p`
 `;
 
 const EventTitle = styled.h1`
-  position: fixed;
-  top: 90px;
+  position: absolute; // Changed from fixed
+  top: 40px;
   left: 20px;
   z-index: 5;
   font-family: 'Sequel Sans Regular';
@@ -275,6 +326,7 @@ const EventDetails: React.FC = () => {
     navigate('/events');
   };
 
+
   // Helper function to format date
   const formatDate = (dateString: string): string => {
     try {
@@ -319,7 +371,7 @@ const EventDetails: React.FC = () => {
   return (
     <PageWrapper>
       <Layout>
-        <>
+        <EventContentContainer>
           {/* Fixed position background (image or video) */}
           <FixedBackgroundContainer>
             {hasVideo && videoId ? (
@@ -368,19 +420,12 @@ const EventDetails: React.FC = () => {
                   <LocationIcon />
                   <EventDetailLocationText>{event.fields.location}</EventDetailLocationText>
                 </EventDetailLocation>
-              )}
+                )}
                 
                 {event?.fields.description && (
-                  <EventDescription>
-                    {(() => {
-                      const description = event.fields.description?.split('\n')[0] || '';
-                      const charLimit = 300;
-                      
-                      return description.length > charLimit 
-                        ? `${description.slice(0, charLimit)}...`
-                        : description;
-                    })()}
-                  </EventDescription>
+                  <DetailEventDescription>
+                    {event.fields.description?.split('\n')[0] || ''}
+                  </DetailEventDescription>
                 )}
               </EventContentWrapper>
             </EventItemContainer>
@@ -421,8 +466,14 @@ const EventDetails: React.FC = () => {
                 {event.fields.location}
               </LocationText>
             )}
+
+            {event?.fields.description && (
+                <RightColumnDescription>
+                  {event.fields.description}
+                </RightColumnDescription>
+            )}
           </RightColumnOverlay>
-        </>
+        </EventContentContainer>
       </Layout>
     </PageWrapper>
   );

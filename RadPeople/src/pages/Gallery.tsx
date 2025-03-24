@@ -1,11 +1,11 @@
-import { FiGrid } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiGrid } from 'react-icons/fi';
 import useIsMobile from '../hooks/useIsMobile';
 import PageWrapper from '../components/PageWrapper';
 import { AnimatePresence } from 'framer-motion';
 import GalleryOverlay from '../components/GalleryOverlay';
 import React, { useState, useEffect, useCallback } from 'react';
 import useGalleryNavigation from '../hooks/useGalleryNavigation';
-import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton } from '../styles/GalleryStyles';
+import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton, ControlBar, ControlsGroup, ControlBarButton, RightArrowButton, LeftArrowButton } from '../styles/GalleryStyles';
 import { useGallery } from '../contexts/GalleryContext';
 
 const Gallery: React.FC = () => {
@@ -77,6 +77,28 @@ const Gallery: React.FC = () => {
     }
   };
 
+  // Replace the handlePrevious function with this implementation
+  const handlePrevious = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Stop the event from reaching the container
+    console.log('Going to previous image, current index:', currentIndex);
+    
+    // Directly use setCurrentIndex with the same logic as goToPrevious
+    setCurrentIndex((prevIndex) => {
+      const newIndex = (prevIndex - 1 + images.length) % images.length;
+      console.log('Setting index to:', newIndex);
+      return newIndex;
+    });
+  };
+
+  // Create handler for next with direct index calculation
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Calculate the new index directly based on the current index
+    const newIndex = (currentIndex + 1) % images.length;
+    console.log(`Next: ${currentIndex} → ${newIndex}`);
+    setCurrentIndex(newIndex); // Set directly to the calculated value
+  };
+
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     // Ignore mouse moves when the overlay is open
     if (isOverlayOpen) return;
@@ -131,15 +153,34 @@ const Gallery: React.FC = () => {
           <p>contact@radpeople.us</p>
         </ContactRectangle>
 
-        <OverlayButton onClick={toggleOverlay}>
-          <FiGrid />
-        </OverlayButton>
-        
+        <ControlBar>
+          <ControlsGroup>
+            <ControlBarButton onClick={toggleOverlay}>
+              VIEW ALL
+            </ControlBarButton>
+          </ControlsGroup>
+          
+          {/* Right side controls with navigation arrows */}
+          <ControlsGroup>
+            {/* Image counter */}
+            <span>{currentIndex + 1} / {images.length}</span>
+            
+            {/* Navigation arrows */}
+            <LeftArrowButton onClick={handlePrevious} aria-label="Previous image">
+              <FiArrowLeft />
+            </LeftArrowButton>
+            <RightArrowButton onClick={handleNext} aria-label="Next image">
+              <FiArrowRight />
+            </RightArrowButton>
+          </ControlsGroup>
+        </ControlBar>
+      
         <GalleryOverlay
           isOpen={isOverlayOpen}
           images={images}
           onClose={toggleOverlay}
           onImageClick={handleOverlayImageClick}
+          currentIndex={currentIndex} // Pass the current index
         />
       </GalleryPageContainer>
     </PageWrapper>

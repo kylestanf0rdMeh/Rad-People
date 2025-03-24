@@ -158,3 +158,63 @@ export const CloseButton = styled.button`
     outline: none;
   }
 `;
+
+
+// Add these new styled components
+export const ControlBar = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4vh; // Match navbar height
+  background-color: white;
+  border-top: 1px solid #000000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 max(5px, calc((100vw - 100%) / 2)); // Match the FilterMenu padding style
+  z-index: 100;
+`;
+
+export const ControlBarButton = styled.button`
+  background-color: transparent;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 12px;
+  color: black;
+  font-family: 'Sequel Sans Regular', sans-serif;
+  text-transform: uppercase;
+  
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const ControlsGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+`;
+
+export const RightArrowButton = styled(ControlBarButton)`
+  margin-right: 15px; // Increased margin
+  
+  svg {
+    width: 18px; // Increase icon size
+    height: 18px;
+    stroke-width: 1.5; // Slightly thicker lines for better visibility
+  }
+`;
+
+// Also create a similar component for the left arrow for consistency
+export const LeftArrowButton = styled(ControlBarButton)`
+  svg {
+    width: 18px; // Increase icon size
+    height: 18px;
+    stroke-width: 1.5;
+  }
+`;

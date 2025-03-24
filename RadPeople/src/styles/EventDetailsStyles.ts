@@ -3,10 +3,14 @@ import styled from "styled-components";
 // Create a new container for the event content
 export const EventContentContainer = styled.div`
   position: relative;
-  min-height: 100vh; // Use min-height instead of height
+  min-height: 100vh;
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
+  
+  @media (max-width: 767px) {
+    display: block;
+  }
 `;
 
 export const FixedBackgroundContainer = styled.div`
@@ -14,10 +18,18 @@ export const FixedBackgroundContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; // This will make it expand with the parent
+  height: 100%;
   overflow: hidden;
   z-index: 1;
   border-radius: 0;
+  
+  @media (max-width: 767px) {
+    position: absolute; // Keep this absolute
+    height: 100%;  // Fill the container
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
 `;
 
 export const EventDetailsInfoOverlay = styled.div`
@@ -102,25 +114,40 @@ export const VideoContainer = styled.div`
   height: 100%;
   margin-left: -1rem;
   overflow: hidden;
-  border-radius: 0; // Ensure no rounded corners
+  border-radius: 0;
+  
+  @media (max-width: 767px) {
+    position: absolute;
+    margin-left: 0;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
   
   /* This is the key part - ensure the Wistia player maintains its size */
   .wistia-player-container {
     position: absolute;
     top: 0;
     left: 0;
-    width: 1920px !important; /* Fixed width */
-    height: 1080px !important; /* Fixed height */
+    width: 1920px !important;
+    height: 1080px !important;
     max-width: none !important;
     object-fit: none !important;
     pointer-events: none;
-    border-radius: 0; // Ensure no rounded corners
+    border-radius: 0;
+    
+    @media (max-width: 767px) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   /* Target all possible elements inside the Wistia player */
-    iframe, video, div {
-      border-radius: 0 !important; // Force no rounded corners with !important
-    }
+  iframe, video, div {
+    border-radius: 0 !important;
+  }
 `;
 
 // Update RightColumnDescription to show all content
@@ -258,4 +285,139 @@ export const LocationText = styled.p`
   margin-left: -3px;
   line-height: 1.4;
   margin-top: 1.6rem;
+`;
+
+
+// ------------------------ MOBILE VIEW ELEMENTS ------------------------
+
+export const MobileViewContainer = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+`;
+
+export const MobileBackNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  padding: 1rem;
+  border-bottom: 1px solid black;
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+`;
+
+export const MobileBackButton = styled.h2`
+  font-size: 0.8rem;
+  font-weight: regular;
+  color: black;
+  margin: 0;
+`;
+
+export const MobileEventContent = styled.div`
+  position: relative;
+  width: 100%;
+  height: 60vh; // Fixed height for mobile
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden; // Ensure content stays within bounds
+  
+  /* This ensures the FixedBackgroundContainer appears within this container */
+  & > ${FixedBackgroundContainer} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const MobileEventTitle = styled.h1`
+  font-family: 'Sequel Sans Regular';
+  color: white;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 1rem;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  z-index: 6;
+  -webkit-text-stroke: 1px white;
+  width: 90%;
+  word-wrap: break-word;
+`;
+
+export const MobileEventInfoOverlay = styled.div`
+  width: 100%;
+  padding: 1rem;
+  padding-bottom: 2rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 6;
+`;
+
+export const MobileDetailsSection = styled.div`
+  padding: 1.5rem;
+  background-color: white;
+  color: black;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
+export const MobileEventDetailTitle = styled.h2`
+  font-size: 2rem;
+  line-height: 2rem;
+  color: black;
+  text-transform: uppercase;
+  margin: 0;
+  margin-bottom: 1rem;
+`;
+
+export const MobileAlternateDescription = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+export const MobileEventDate = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  text-transform: uppercase;
+  font-weight: semi-bold;
+  margin-bottom: 0.3rem;
+`;
+
+export const MobileEventTime = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  text-transform: uppercase;
+  font-weight: semi-bold;
+  margin-bottom: 1.5rem;
+`;
+
+export const MobileLocationText = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+`;
+
+export const MobileEventDescription = styled.p`
+  font-size: 0.9rem;
+  color: black;
+  line-height: 1.4;
+  white-space: normal;
+  word-wrap: break-word;
+  margin: 0;
+  margin-bottom: 2rem;
 `;

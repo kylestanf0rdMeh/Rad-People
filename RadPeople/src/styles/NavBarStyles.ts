@@ -100,7 +100,7 @@ export const CartLink = styled(RouterNavLink)`
   font-family: 'MotoyaExCedar', sans-serif;
   text-decoration: none;
   color: black;
-  font-size: 0.8rem; // Slightly reduced font size
+  font-size: 0.8rem;
   position: relative;
   transition: color 0.3s ease;
   

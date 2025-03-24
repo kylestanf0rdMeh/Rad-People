@@ -89,7 +89,7 @@ const NavBar: React.FC = memo(() => {
           </StyledNavLink>
         </NavLinks>
 
-        <CartLink to="/cart" as={Link}>cart</CartLink>
+        <CartLink to="/cart" as={Link}>CART</CartLink>
       </DesktopNav>
 
 

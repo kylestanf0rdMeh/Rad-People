@@ -1,28 +1,37 @@
 import React from 'react';
-import { FiX } from 'react-icons/fi';
 import { GalleryItem } from '../models/Gallery.model';
 import {
   OverlayContainer,
   ImageGrid,
   ImageWrapper,
   Image,
-  CloseButton
+  CloseButton,
+  OverlayControlBar,
+  ImageCounter
 } from '../styles/GalleryOverlayStyles';
+import { ControlsGroup } from '../styles/GalleryStyles';
 
 interface GalleryOverlayProps {
   isOpen: boolean;
   images: GalleryItem[];
   onClose: () => void;
   onImageClick: (index: number) => void;
+  currentIndex?: number; // Add this prop
 }
 
-const GalleryOverlay: React.FC<GalleryOverlayProps> = ({ isOpen, images, onClose, onImageClick }) => {
+const GalleryOverlay: React.FC<GalleryOverlayProps> = ({ 
+  isOpen, 
+  images, 
+  onClose, 
+  onImageClick,
+  currentIndex = 0 // Default to 0 if not provided
+}) => {
   return (
     <OverlayContainer
       isOpen={isOpen}
       initial={{ opacity: 0 }}
       animate={isOpen ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ duration: 0.15, ease: "easeInOut" }}  // Increased from 0.13 to 0.3
+      transition={{ duration: 0.15, ease: "easeInOut" }}
       onClick={(e) => e.stopPropagation()}
     >
       <ImageGrid>
@@ -30,7 +39,7 @@ const GalleryOverlay: React.FC<GalleryOverlayProps> = ({ isOpen, images, onClose
           <ImageWrapper 
             key={image.sys.id} 
             onClick={(e) => {
-              e.stopPropagation(); // Prevent event from bubbling up
+              e.stopPropagation();
               onImageClick(index);
             }}
           >
@@ -38,12 +47,25 @@ const GalleryOverlay: React.FC<GalleryOverlayProps> = ({ isOpen, images, onClose
           </ImageWrapper>
         ))}
       </ImageGrid>
-      <CloseButton onClick={(e) => {
-        e.stopPropagation();  // Prevent click from reaching gallery container
-        onClose();
-      }}>
-        <FiX />
-      </CloseButton>
+      
+      {/* Add the control bar */}
+      <OverlayControlBar>
+        <ControlsGroup>
+          <CloseButton onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}>
+            CLOSE
+          </CloseButton>
+        </ControlsGroup>
+        
+        {/* Right side with image counter */}
+        <ControlsGroup>
+          <ImageCounter>
+            {images.length} IMAGES
+          </ImageCounter>
+        </ControlsGroup>
+      </OverlayControlBar>
     </OverlayContainer>
   );
 };

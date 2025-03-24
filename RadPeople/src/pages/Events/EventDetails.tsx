@@ -9,7 +9,7 @@ import { WistiaPlayer } from '@wistia/wistia-player-react';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { IoArrowBack } from 'react-icons/io5'; // Import back arrow icon
 import { EventContentWrapper, EventDate, EventItemContainer, EventName, LocationIcon } from '../../styles/EventStyles';
-import { EventContentContainer, FixedBackgroundContainer, VideoContainer, FixedBackgroundImage, EventTitle, EventDetailsInfoOverlay, EventDetailLocation, EventDetailLocationText, DetailEventDescription, RightColumnOverlay, BackNavigation, OverlayBackButton, OverlayTItle, AlternateDescription, OverlayDate, OverlayTime, LocationText, RightColumnDescription } from '../../styles/EventDetailsStyles';
+import { EventContentContainer, FixedBackgroundContainer, VideoContainer, FixedBackgroundImage, EventTitle, EventDetailsInfoOverlay, EventDetailLocation, EventDetailLocationText, DetailEventDescription, RightColumnOverlay, BackNavigation, OverlayBackButton, OverlayTItle, AlternateDescription, OverlayDate, OverlayTime, LocationText, RightColumnDescription, MobileViewContainer, MobileBackNavigation, MobileBackButton, MobileEventContent, MobileEventTitle, MobileEventInfoOverlay, MobileDetailsSection, MobileEventDetailTitle, MobileAlternateDescription, MobileEventDate, MobileEventTime, MobileLocationText, MobileEventDescription } from '../../styles/EventDetailsStyles';
 
 interface LocationState {
   event: EventItem;
@@ -140,83 +140,169 @@ const EventDetails: React.FC = () => {
               <FixedBackgroundImage imageUrl={imageUrl} />
             )}
           </FixedBackgroundContainer>
-          
-          {/* Event title overlay */}
-          <EventTitle>{event?.fields.name}</EventTitle>
 
-          {/* Add the event info overlay similar to Events.tsx */}
-          <EventDetailsInfoOverlay>
-            <EventItemContainer
-              isActive={true}
-              screenWidth={screenWidth || 1000} // Default value if screenWidth is undefined
-            >
-              <EventContentWrapper>
-                {event?.fields.date && (
-                  <EventDate>
-                    {formatDateShort(event.fields.date)}
-                  </EventDate>
+
+          {/* Conditional rendering based on screen width */}
+          {screenWidth > 767 ? (
+            // Desktop Layout
+            <>
+              {/* Event title overlay */}
+              <EventTitle>{event?.fields.name}</EventTitle>
+
+              {/* Add the event info overlay similar to Events.tsx */}
+              <EventDetailsInfoOverlay>
+                <EventItemContainer
+                  isActive={true}
+                  screenWidth={screenWidth || 1000} // Default value if screenWidth is undefined
+                >
+                  <EventContentWrapper>
+                    {event?.fields.date && (
+                      <EventDate>
+                        {formatDateShort(event.fields.date)}
+                      </EventDate>
+                    )}
+
+                    <EventName>{event?.fields.name}</EventName>
+                    
+                    {event?.fields.location && (
+                    <EventDetailLocation>
+                      <LocationIcon />
+                      <EventDetailLocationText>{event.fields.location}</EventDetailLocationText>
+                    </EventDetailLocation>
+                    )}
+                    
+                    {event?.fields.description && (
+                      <DetailEventDescription>
+                        {event.fields.description?.split('\n')[0] || ''}
+                      </DetailEventDescription>
+                    )}
+                  </EventContentWrapper>
+                </EventItemContainer>
+              </EventDetailsInfoOverlay>
+              
+              {/* Right column information panel */}
+              <RightColumnOverlay>
+                <BackNavigation onClick={handleBackClick}>
+                  <IoArrowBack size={16} color="black" />
+                  <OverlayBackButton>BACK TO EVENTS</OverlayBackButton>
+                </BackNavigation>
+
+                {/* Further event details */}
+                <OverlayTItle>
+                  {event?.fields.name}
+                </OverlayTItle>
+                
+                {event?.fields.alternateDescription && (
+                  <AlternateDescription>
+                    {event.fields.alternateDescription}
+                  </AlternateDescription>
                 )}
 
-                <EventName>{event?.fields.name}</EventName>
+                {event?.fields.date && (
+                  <OverlayDate>
+                    {formatDate(event.fields.date)}
+                  </OverlayDate>
+                )}
+
+                {event?.fields.time && (
+                  <OverlayTime>
+                    {event.fields.time}
+                  </OverlayTime>
+                )}
                 
                 {event?.fields.location && (
-                <EventDetailLocation>
-                  <LocationIcon />
-                  <EventDetailLocationText>{event.fields.location}</EventDetailLocationText>
-                </EventDetailLocation>
+                  <LocationText>
+                    {event.fields.location}
+                  </LocationText>
+                )}
+
+                {event?.fields.description && (
+                    <RightColumnDescription>
+                      {event.fields.description}
+                    </RightColumnDescription>
+                )}
+              </RightColumnOverlay>
+            </>
+          ) : (
+            // Mobile Layout
+            <MobileViewContainer>
+              {/* Back Navigation at top with bottom border */}
+              <MobileBackNavigation onClick={handleBackClick}>
+                <IoArrowBack size={16} color="black" />
+                <MobileBackButton>BACK TO EVENTS</MobileBackButton>
+              </MobileBackNavigation>
+
+              {/* Mobile Event Content */}
+              <MobileEventContent>
+                {/* Event title */}
+                <MobileEventTitle>{event?.fields.name}</MobileEventTitle>
+
+                {/* Event info from EventDetailsInfoOverlay */}
+                <MobileEventInfoOverlay>
+                  <EventContentWrapper>
+                    {event?.fields.date && (
+                      <EventDate>
+                        {formatDateShort(event.fields.date)}
+                      </EventDate>
+                    )}
+
+                    <EventName>{event?.fields.name}</EventName>
+                    
+                    {event?.fields.location && (
+                    <EventDetailLocation>
+                      <LocationIcon />
+                      <EventDetailLocationText>{event.fields.location}</EventDetailLocationText>
+                    </EventDetailLocation>
+                    )}
+                    
+                    {event?.fields.description && (
+                      <DetailEventDescription>
+                        {event.fields.description?.split('\n')[0] || ''}
+                      </DetailEventDescription>
+                    )}
+                  </EventContentWrapper>
+                </MobileEventInfoOverlay>
+              </MobileEventContent>
+
+              {/* Content from RightColumnOverlay */}
+              <MobileDetailsSection>
+                {/* Event details */}
+                <MobileEventDetailTitle>
+                  {event?.fields.name}
+                </MobileEventDetailTitle>
+                
+                {event?.fields.alternateDescription && (
+                  <MobileAlternateDescription>
+                    {event.fields.alternateDescription}
+                  </MobileAlternateDescription>
+                )}
+
+                {event?.fields.date && (
+                  <MobileEventDate>
+                    {formatDate(event.fields.date)}
+                  </MobileEventDate>
+                )}
+
+                {event?.fields.time && (
+                  <MobileEventTime>
+                    {event.fields.time}
+                  </MobileEventTime>
                 )}
                 
-                {event?.fields.description && (
-                  <DetailEventDescription>
-                    {event.fields.description?.split('\n')[0] || ''}
-                  </DetailEventDescription>
+                {event?.fields.location && (
+                  <MobileLocationText>
+                    {event.fields.location}
+                  </MobileLocationText>
                 )}
-              </EventContentWrapper>
-            </EventItemContainer>
-          </EventDetailsInfoOverlay>
-          
-          {/* Right column information panel */}
-          <RightColumnOverlay>
-            <BackNavigation onClick={handleBackClick}>
-              <IoArrowBack size={16} color="black" />
-              <OverlayBackButton>BACK TO EVENTS</OverlayBackButton>
-            </BackNavigation>
 
-            {/* Further event details */}
-            <OverlayTItle>
-              {event?.fields.name}
-            </OverlayTItle>
-            
-            {event?.fields.alternateDescription && (
-              <AlternateDescription>
-                {event.fields.alternateDescription}
-              </AlternateDescription>
-            )}
-
-            {event?.fields.date && (
-              <OverlayDate>
-                {formatDate(event.fields.date)}
-              </OverlayDate>
-            )}
-
-            {event?.fields.time && (
-              <OverlayTime>
-                {event.fields.time}
-              </OverlayTime>
-            )}
-            
-            {event?.fields.location && (
-              <LocationText>
-                {event.fields.location}
-              </LocationText>
-            )}
-
-            {event?.fields.description && (
-                <RightColumnDescription>
-                  {event.fields.description}
-                </RightColumnDescription>
-            )}
-          </RightColumnOverlay>
+                {event?.fields.description && (
+                  <MobileEventDescription>
+                    {event.fields.description}
+                  </MobileEventDescription>
+                )}
+              </MobileDetailsSection>
+            </MobileViewContainer>
+          )}
         </EventContentContainer>
       </Layout>
     </PageWrapper>

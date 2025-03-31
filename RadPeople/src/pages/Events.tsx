@@ -172,22 +172,30 @@ const Events: React.FC = () => {
   };
 
   const handleEventHover = (event: EventItem) => {
-    const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
+    // Ensure we have a valid event
+    if (!event) return;
     
+    // Clear any pending timeout immediately
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-
-    if (videoId) {
-      // Keep current video playing while fading out
-      // Immediately set new video to start loading/playing
-      setCurrentVideo(videoId);
-    } else {
-      setCurrentVideo(null);
+  
+    // Get event details
+    const eventId = event.sys.id;
+    const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
+    const imageUrl = event.fields.thumbnailImage?.[0]?.fields?.file?.url || '';
+    
+    // Set all states synchronously to ensure they update together
+    setActiveEventId(eventId);
+    setActiveEventImage(imageUrl);
+    setCurrentVideo(videoId || null);
+    
+    // Find the index of this event in upcomingEvents to keep activeIndex in sync
+    // This is important for mobile view indicators
+    const eventIndex = upcomingEvents.findIndex(e => e.sys.id === eventId);
+    if (eventIndex !== -1 && eventIndex < 4) {
+      setActiveIndex(eventIndex);
     }
-
-    setActiveEventId(event.sys.id);
-    setActiveEventImage(event.fields.thumbnailImage?.[0]?.fields?.file?.url || '');
   };
 
   useEffect(() => {

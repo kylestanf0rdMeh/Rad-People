@@ -375,8 +375,7 @@ export const LocationIcon = styled.div`
   }
 
   @media (max-width: 767px) {
-    top: 7px;
-    height: ${fluidSize(8, 30, 320, 1500)}; // Fluid height from 12px to 16px
+    top: 2px;
   }
 `;
 

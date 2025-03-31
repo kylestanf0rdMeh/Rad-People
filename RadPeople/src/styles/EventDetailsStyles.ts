@@ -24,8 +24,8 @@ export const FixedBackgroundContainer = styled.div`
   border-radius: 0;
   
   @media (max-width: 767px) {
-    position: absolute; // Keep this absolute
-    height: 100%;  // Fill the container
+    position: absolute; 
+    height: 70%;  // Fill the container
     top: 0;
     left: 0;
     z-index: 1;
@@ -122,6 +122,7 @@ export const VideoContainer = styled.div`
     height: 100%;
     top: 0;
     left: 0;
+    border-bottom: 1px solid black;
   }
   
   /* This is the key part - ensure the Wistia player maintains its size */
@@ -303,9 +304,9 @@ export const MobileBackNavigation = styled.div`
   align-items: center;
   gap: 0.5rem;
   background-color: white;
-  padding: 1rem;
+  padding: 0.5rem;
+  border-top: none;
   border-bottom: 1px solid black;
-  position: relative;
   z-index: 10;
   cursor: pointer;
 `;
@@ -342,14 +343,13 @@ export const MobileEventTitle = styled.h1`
   text-transform: uppercase;
   margin: 0;
   padding: 1rem;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   line-height: 2.5rem;
   position: absolute;
   top: 1rem;
   left: 0;
   z-index: 6;
-  -webkit-text-stroke: 1px white;
-  width: 90%;
+  width: 80%;
   word-wrap: break-word;
 `;
 
@@ -364,7 +364,7 @@ export const MobileEventInfoOverlay = styled.div`
 `;
 
 export const MobileDetailsSection = styled.div`
-  padding: 1.5rem;
+  padding: 1rem;
   background-color: white;
   color: black;
   width: 100%;
@@ -372,48 +372,48 @@ export const MobileDetailsSection = styled.div`
 `;
 
 export const MobileEventDetailTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 2rem;
   color: black;
   text-transform: uppercase;
   margin: 0;
+  margin-top: 1.2rem;
   margin-bottom: 1rem;
+  font-family: 'Sequel Sans Regular';
 `;
 
 export const MobileAlternateDescription = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: black;
   line-height: 1.1;
+  margin-bottom: -0.9rem;
   text-transform: uppercase;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
 `;
 
 export const MobileEventDate = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: black;
+  margin-bottom: -1.1rem;
   text-transform: uppercase;
   font-weight: semi-bold;
-  margin-bottom: 0.3rem;
 `;
 
 export const MobileEventTime = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: black;
   text-transform: uppercase;
   font-weight: semi-bold;
-  margin-bottom: 1.5rem;
 `;
 
 export const MobileLocationText = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: black;
   line-height: 1.4;
   margin-bottom: 1rem;
 `;
 
 export const MobileEventDescription = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: black;
   line-height: 1.4;
   white-space: normal;

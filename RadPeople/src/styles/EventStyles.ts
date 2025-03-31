@@ -627,25 +627,35 @@ export const EventNumber = styled.button<{ isActive: boolean }>`
   border: 1px solid white;
   border-radius: 0;
   background: ${props => props.isActive ? '#0000FF' : 'transparent'};
-  color: ${props => props.isActive ? 'white' : 'white'};
+  color: white;
   font-family: 'Sequel Sans Regular';
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.7s ease, color 0.7s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   aspect-ratio: 1;
   box-sizing: border-box;
-  outline: none;
+  
+  /* Remove all outline and focus indicators */
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Force border to always be white unless active */
+  border: 1px solid white !important;
 
-  &:hover {
-    background: ${props => props.isActive ? '#0000FF' : 'white'};
-    color: ${props => props.isActive ? 'white' : 'black'};
+  /* Simple active state */
+  &:active {
+    background: white;
+    color: black;
   }
-
-  &:focus {
-    outline: none;
+  
+  /* Override any browser default focus styles */
+  &:focus, &:focus-visible {
+    outline: none !important;
+    border-color: white !important;
+    box-shadow: none !important;
   }
 `;

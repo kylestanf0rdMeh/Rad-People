@@ -33,6 +33,12 @@ export const SocialLink = styled(Link)<{ $isHomePage: boolean }>`
   align-items: center;
   gap: 8px;
 
+  &:hover {
+    opacity: 0.8;
+    color:white;
+
+  }
+
   ${props => props.$isHomePage && `
     @media (max-width: 480px) {
         color: white;

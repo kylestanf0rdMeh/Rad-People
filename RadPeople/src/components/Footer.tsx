@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
         </SocialLink>
       </SocialLinksColumn>
       
-      <Copyright>&copy;2024</Copyright>
+      <Copyright>&copy;2025</Copyright>
     </FooterContainer>
   );
 };

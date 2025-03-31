@@ -48,6 +48,7 @@ const Events: React.FC = () => {
   const [activeEventId, setActiveEventId] = useState<string>('');
   const [currentVideo, setCurrentVideo] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
+  const eventNumberRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [preloadedVideos, setPreloadedVideos] = useState<Set<string>>(new Set());
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -64,6 +65,12 @@ const Events: React.FC = () => {
       const timer = setInterval(() => {
         setActiveIndex((prevIndex) => {
           const nextIndex = (prevIndex + 1) % Math.min(4, upcomingEvents.length);
+          
+          // Remove focus from any button that might have it
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+          
           handleEventHover(upcomingEvents[nextIndex]);
           return nextIndex;
         });
@@ -71,7 +78,7 @@ const Events: React.FC = () => {
 
       return () => clearInterval(timer);
     }
-  }, [screenWidth, upcomingEvents]); // Add screenWidth to dependencies
+  }, [screenWidth, upcomingEvents]);
 
   // Process events when data arrives
   useEffect(() => {
@@ -172,22 +179,30 @@ const Events: React.FC = () => {
   };
 
   const handleEventHover = (event: EventItem) => {
-    const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
+    // Ensure we have a valid event
+    if (!event) return;
     
+    // Clear any pending timeout immediately
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-
-    if (videoId) {
-      // Keep current video playing while fading out
-      // Immediately set new video to start loading/playing
-      setCurrentVideo(videoId);
-    } else {
-      setCurrentVideo(null);
+  
+    // Get event details
+    const eventId = event.sys.id;
+    const videoId = event.fields.wistiaVideo?.items?.[0]?.hashed_id;
+    const imageUrl = event.fields.thumbnailImage?.[0]?.fields?.file?.url || '';
+    
+    // Set all states synchronously to ensure they update together
+    setActiveEventId(eventId);
+    setActiveEventImage(imageUrl);
+    setCurrentVideo(videoId || null);
+    
+    // Find the index of this event in upcomingEvents to keep activeIndex in sync
+    // This is important for mobile view indicators
+    const eventIndex = upcomingEvents.findIndex(e => e.sys.id === eventId);
+    if (eventIndex !== -1 && eventIndex < 4) {
+      setActiveIndex(eventIndex);
     }
-
-    setActiveEventId(event.sys.id);
-    setActiveEventImage(event.fields.thumbnailImage?.[0]?.fields?.file?.url || '');
   };
 
   useEffect(() => {
@@ -266,19 +281,27 @@ const Events: React.FC = () => {
               
               {screenWidth <= 767 && (
                 <MobileEventNav>
-                  {[...Array(Math.min(4, upcomingEvents.length))].map((_, i) => (
-                    <EventNumber
-                      key={i}
-                      isActive={activeIndex === i}
-                      onClick={() => {
-                        setActiveIndex(i);
-                        handleEventHover(upcomingEvents[i]);
-                      }}
-                    >
-                      {i + 1}
-                    </EventNumber>
-                  ))}
-                </MobileEventNav>
+                {[...Array(Math.min(4, upcomingEvents.length))].map((_, i) => (
+                  <EventNumber
+                    key={i}
+                    ref={el => eventNumberRefs.current[i] = el}
+                    isActive={activeIndex === i}
+                    onClick={() => {
+                      setActiveIndex(i);
+                      handleEventHover(upcomingEvents[i]);
+                      
+                      // Blur the button after clicking to remove focus state
+                      setTimeout(() => {
+                        if (eventNumberRefs.current[i]) {
+                          eventNumberRefs.current[i]?.blur();
+                        }
+                      }, 300);
+                    }}
+                  >
+                    {i + 1}
+                  </EventNumber>
+                ))}
+              </MobileEventNav>
               )}
 
               <EventTitle>

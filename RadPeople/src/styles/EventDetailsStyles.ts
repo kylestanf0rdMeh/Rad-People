@@ -141,7 +141,8 @@ export const VideoContainer = styled.div`
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      /* Add scale to zoom out the video - adjust the 0.6 value as needed */
+      transform: translate(-50%, -50%) scale(0.6);
     }
   }
 
@@ -345,6 +346,7 @@ export const MobileEventTitle = styled.h1`
   padding: 1rem;
   font-size: 1.8rem;
   line-height: 2.5rem;
+  -webkit-text-stroke: 0.7px black;
   position: absolute;
   top: 1rem;
   left: 0;

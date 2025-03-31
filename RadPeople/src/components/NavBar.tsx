@@ -1,26 +1,27 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { FiShoppingBag } from 'react-icons/fi'
+import { FiShoppingBag } from 'react-icons/fi';
 import { useProducts } from '../contexts/ProductsContext';
 import { usePrefetchData } from '../hooks/usePrefetchData';
 import { useEvents } from '../contexts/EventsContext';
 import { useGallery } from '../contexts/GalleryContext';
+import { CartModalContext } from '../App';
 import { 
-        NavBarContainer, 
-        DesktopNav, 
-        NavLink as StyledNavLink, 
-        Logo, 
-        NavLinks, 
-        CartLink, 
-        MobileNav, 
-        MobileLogo, 
-        MenuIcon,
-        CartIcon, 
-        MobileMenu, 
-        MobileMenuLink, 
-        MobileMenuLinks,
-        MobileMenuIcon
-       } from '../styles/NavBarStyles';
+  NavBarContainer, 
+  DesktopNav, 
+  NavLink as StyledNavLink, 
+  Logo, 
+  NavLinks, 
+  CartLink, 
+  MobileNav, 
+  MobileLogo, 
+  MenuIcon,
+  CartIcon, 
+  MobileMenu, 
+  MobileMenuLink, 
+  MobileMenuLinks,
+  MobileMenuIcon
+} from '../styles/NavBarStyles';
 
 const NavBar: React.FC = memo(() => {
   const { prefetchProducts } = useProducts();
@@ -28,6 +29,7 @@ const NavBar: React.FC = memo(() => {
   const { prefetchEvents } = useEvents();
   const { prefetchGallery } = useGallery();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { openCart } = useContext(CartModalContext);
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => {
@@ -55,10 +57,14 @@ const NavBar: React.FC = memo(() => {
     prefetchGallery();
   }, [prefetchGallery]);
 
+  // Handle cart click
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    openCart();
+  };
+
   return (
     <NavBarContainer>
-
-
       <DesktopNav>
         <Logo to='/' as={Link}>RADPEOPLE</Logo>
 
@@ -89,9 +95,9 @@ const NavBar: React.FC = memo(() => {
           </StyledNavLink>
         </NavLinks>
 
-        <CartLink to="/cart" as={Link}>CART</CartLink>
+        {/* Updated to use onClick instead of navigation */}
+        <CartLink onClick={handleCartClick} as="button">CART</CartLink>
       </DesktopNav>
-
 
       <MobileNav> 
         <MenuIcon onClick={() => {
@@ -132,11 +138,11 @@ const NavBar: React.FC = memo(() => {
 
         <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
         
-        <CartIcon as={Link} to="/cart">
+        {/* Updated CartIcon to use onClick */}
+        <CartIcon onClick={handleCartClick} as="button">
           <FiShoppingBag size={20} strokeWidth={1} />
         </CartIcon>
       </MobileNav>
-
 
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>

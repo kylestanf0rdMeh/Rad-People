@@ -87,7 +87,8 @@ const ModalOverlay = styled.div<{ isOpen: boolean }>`
   opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
   pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
   transition: opacity 0.3s ease-in-out;
-  z-index: ${({ isOpen }) => (isOpen ? 1000 : -1)};
+  z-index: 1000;
+  /* Remove visibility and transition-delay */
 `;
 
 const ModalContainer = styled.div<{ isOpen: boolean }>`

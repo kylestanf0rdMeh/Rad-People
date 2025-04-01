@@ -36,7 +36,7 @@ function AnimatedRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/shop" element={<ProductList />} />
-        <Route path="/product/:productId/:name" element={<ProductDetail />} />
+        <Route path="/shop/:productId/:name" element={<ProductDetail />} />
         <Route path="/events" element={<Events />} />
         <Route path="/events/:eventId/:name" element={<EventDetails />} />
         <Route path="/cart" element={<Cart />} />

@@ -183,7 +183,7 @@ const ProductList: React.FC = () => {
             {displayProducts.map((product) => (
               <ProductLink 
                 key={product.sys.id}
-                to={`/product/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
+                to={`/shop/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
                 state={{ product }}
                 columns={activeGrid}
               >

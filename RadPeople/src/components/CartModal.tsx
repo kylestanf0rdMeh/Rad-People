@@ -10,7 +10,7 @@ interface CartModalProps {
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { items, totalPrice, removeItem, updateQuantity } = useCart();
+  const { items, totalPrice, removeItem, updateQuantity, isValidating } = useCart();
 
   // Close when clicking outside
   useEffect(() => {
@@ -49,6 +49,13 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
+  // Handle quantity changes safely
+  const handleQuantityChange = (id: string, newQuantity: number) => {
+    if (newQuantity >= 1) {
+      updateQuantity(id, newQuantity);
+    }
+  };
+
   return (
     <ModalOverlay isOpen={isOpen}>
       <ModalContainer ref={modalRef} isOpen={isOpen}>
@@ -72,24 +79,30 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       <CartItemName>{item.name}</CartItemName>
                       <CartItemPrice>${item.price}</CartItemPrice>
                     </CartItemHeader>
-                  <CartItemSize>Size: {item.size}</CartItemSize>
+                    <CartItemSize>Size: {item.size}</CartItemSize>
                     
                     <CartItemActions>
                       <QuantityControl>
                         <QuantityButton 
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1 || isValidating}
                         >
                           -
                         </QuantityButton>
-                        <QuantityDisplay>{item.quantity}</QuantityDisplay>
+                        <QuantityDisplay>
+                          {isValidating ? '...' : item.quantity}
+                        </QuantityDisplay>
                         <QuantityButton 
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                          disabled={isValidating}
                         >
                           +
                         </QuantityButton>
                       </QuantityControl>
-                      <RemoveButton onClick={() => removeItem(item.id)}>
+                      <RemoveButton 
+                        onClick={() => removeItem(item.id)}
+                        disabled={isValidating}
+                      >
                         Remove
                       </RemoveButton>
                     </CartItemActions>
@@ -103,9 +116,17 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
         <CartFooter>
           <CartTotal>
             <span>Total</span>
-            <span>${totalPrice.toFixed(2)}</span>
+            {isValidating ? (
+              <span>Validating...</span>
+            ) : (
+              <span>${totalPrice.toFixed(2)}</span>
+            )}
           </CartTotal>
-          <CheckoutButton disabled={items.length === 0}>CHECKOUT</CheckoutButton>
+          <CheckoutButton 
+            disabled={items.length === 0 || isValidating}
+          >
+            {isValidating ? 'VALIDATING...' : 'CHECKOUT'}
+          </CheckoutButton>
         </CartFooter>
       </ModalContainer>
     </ModalOverlay>
@@ -324,6 +345,14 @@ const RemoveButton = styled.button`
 
   &:active {
     outline: none;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    &:hover {
+      color: #888;
+    }
   }
 `;
 

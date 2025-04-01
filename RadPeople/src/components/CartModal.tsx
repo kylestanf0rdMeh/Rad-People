@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { IoCloseOutline } from 'react-icons/io5';
+import { useCart } from '../contexts/CartContext';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface CartModalProps {
 
 const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const { items, totalPrice, removeItem, updateQuantity } = useCart();
 
   // Close when clicking outside
   useEffect(() => {
@@ -47,8 +49,6 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-//   if (!isOpen) return null;
-
   return (
     <ModalOverlay isOpen={isOpen}>
       <ModalContainer ref={modalRef} isOpen={isOpen}>
@@ -60,23 +60,59 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
         </ModalHeader>
         
         <CartContent>
-          {/* Cart items will go here */}
-          <EmptyCartMessage>YOUR CART IS EMPTY</EmptyCartMessage>
+          {items.length === 0 ? (
+            <EmptyCartMessage>YOUR CART IS EMPTY</EmptyCartMessage>
+          ) : (
+            <CartItemsList>
+              {items.map((item) => (
+                <CartItemContainer key={item.id}>
+                  <CartItemImage src={item.image} alt={item.name} />
+                  <CartItemDetails>
+                    <CartItemHeader>
+                      <CartItemName>{item.name}</CartItemName>
+                      <CartItemPrice>${item.price}</CartItemPrice>
+                    </CartItemHeader>
+                  <CartItemSize>Size: {item.size}</CartItemSize>
+                    
+                    <CartItemActions>
+                      <QuantityControl>
+                        <QuantityButton 
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1}
+                        >
+                          -
+                        </QuantityButton>
+                        <QuantityDisplay>{item.quantity}</QuantityDisplay>
+                        <QuantityButton 
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        >
+                          +
+                        </QuantityButton>
+                      </QuantityControl>
+                      <RemoveButton onClick={() => removeItem(item.id)}>
+                        Remove
+                      </RemoveButton>
+                    </CartItemActions>
+                  </CartItemDetails>
+                </CartItemContainer>
+              ))}
+            </CartItemsList>
+          )}
         </CartContent>
         
         <CartFooter>
           <CartTotal>
             <span>Total</span>
-            <span>$0.00</span>
+            <span>${totalPrice.toFixed(2)}</span>
           </CartTotal>
-          <CheckoutButton>CHECKOUT</CheckoutButton>
+          <CheckoutButton disabled={items.length === 0}>CHECKOUT</CheckoutButton>
         </CartFooter>
       </ModalContainer>
     </ModalOverlay>
   );
 };
 
-// Styled Components
+// Existing Styled Components
 const ModalOverlay = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 0;
@@ -88,7 +124,6 @@ const ModalOverlay = styled.div<{ isOpen: boolean }>`
   pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
   transition: opacity 0.3s ease-in-out;
   z-index: 1000;
-  /* Remove visibility and transition-delay */
 `;
 
 const ModalContainer = styled.div<{ isOpen: boolean }>`
@@ -145,13 +180,12 @@ const CloseButton = styled.button`
   }
 `;
 
+// New Styled Components for Cart Items
 const CartContent = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
 `;
 
 const EmptyCartMessage = styled.p`
@@ -159,6 +193,138 @@ const EmptyCartMessage = styled.p`
   font-family: 'Sequel Sans Regular';
   color: black;
   font-size: 0.8rem;
+  margin: auto;
+`;
+
+const CartItemsList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CartItemContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid black;
+`;
+
+const CartItemImage = styled.img`
+  width: 95px;
+  height: 110px;
+  object-fit: cover;
+  border: 1px solid #eee;
+  border-right: 1px solid black;
+`;
+
+const CartItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 0.5rem;
+`;
+
+const CartItemDetails = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+`;
+
+const CartItemName = styled.h3`
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.85rem;
+  margin: 0;
+  color: black;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const CartItemSize = styled.p`
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.75rem;
+  color: #444;
+  margin: 0;
+  text-transform: uppercase;
+`;
+
+const CartItemPrice = styled.p`
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.8rem;
+  color: black;
+  margin: 0;
+  margin-right: 1rem; // Add margin to keep price away from the edge
+  flex-shrink: 0;
+`;
+
+const CartItemActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+`;
+
+const QuantityControl = styled.div`
+  display: flex;
+  align-items: center;
+  // controls size of the box (width)
+  gap: 0.5rem;
+  border: 1px solid black;
+`;
+
+const QuantityButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: black;
+  outline: none;
+  
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  &:focus {
+    outline: none;
+  }
+  
+  /* Remove the active state styling */
+  &:active {
+    outline: none;
+  }
+`;
+
+const QuantityDisplay = styled.span`
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.8rem;
+  color: black;
+  min-width: 20px;
+  text-align: center;
+`;
+
+const RemoveButton = styled.button`
+  background: transparent;
+  border: none;
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.7rem;
+  color: #888;
+  text-decoration: underline;
+  cursor: pointer;
+  
+  &:hover {
+    color: black;
+  }
+
+  &:active {
+    outline: none;
+  }
 `;
 
 const CartFooter = styled.div`
@@ -169,7 +335,7 @@ const CartFooter = styled.div`
 const CartTotal = styled.div`
   display: flex;
   justify-content: space-between;
-  font-family: 'Sequel Sans Regular';
+  font-family: 'Sequel Sans';
   font-size: 0.8rem;
   color: black;
   margin-bottom: 1rem;
@@ -195,6 +361,14 @@ const CheckoutButton = styled.button`
   &:hover {
     background-color: white;
     color: black;
+  }
+  
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    &:hover {
+      color: white;
+    }
   }
   
   &:focus {

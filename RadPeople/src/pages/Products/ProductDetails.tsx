@@ -187,14 +187,14 @@ const ProductDetail: React.FC = () => {
       };
   
       // Add to cart
-      addItem(cartItem);
+      await addItem(cartItem);
   
-      // Keep loading state for 1 second
+      // Only show success if we got here (no error was thrown)
       setTimeout(() => {
-        setCartStatus(prev => ({ ...prev, loading: false }));
-        setShowAddedText(true); // Show "Added to cart" text
-  
-        // Reset "Added to cart" text after 2 seconds
+        setCartStatus({ loading: false, error: null, success: true });
+        setShowAddedText(true);
+        
+        // Reset "Added to cart" text after 3.5 seconds
         setTimeout(() => {
           setShowAddedText(false);
         }, 3500);

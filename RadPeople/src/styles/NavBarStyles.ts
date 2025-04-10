@@ -107,6 +107,7 @@ export const CartLink = styled.button`
   padding: 0;
   text-transform: uppercase;
   transition: color 0.3s ease;
+  position: relative;
   
   &:hover {
     color: #1404FB;
@@ -114,6 +115,32 @@ export const CartLink = styled.button`
   
   &:focus {
     outline: none;
+  }
+`;
+
+export const CartIndicator = styled.div<{ pulse: boolean }>`
+  position: absolute;
+  top: -7px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  background-color: #1404FB;
+  border-radius: 0;
+  animation: ${({ pulse }) => pulse ? 'pulse 1.5s ease-in-out' : 'none'};
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.3);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 `;
 
@@ -182,6 +209,32 @@ export const CartIcon = styled.button`
   @media (max-width: 767px) {
     padding-right: 0.2rem; /* Reduce right padding on mobile */
     margin-right: -1.4rem; /* Shift slightly to the right */
+  }
+`;
+
+export const CartIconIndicator = styled.div<{ pulse: boolean }>`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  background-color: #1404FB;
+  border-radius: 0;
+  animation: ${({ pulse }) => pulse ? 'pulse 1.5s ease-in-out' : 'none'};
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 `;
 

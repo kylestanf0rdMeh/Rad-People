@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { validateCartItem, validateCart, createPaymentIntent } from '../middleware/Cart';
 
 interface ValidatedPrice {
   itemId: string;
@@ -19,21 +20,23 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: CartItem) => void; // Changed back to sync for now
+  addItem: (item: CartItem) => Promise<void>; // Changed to return Promise<void>
   removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void; // Changed back to sync
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+  validateCartForCheckout: () => Promise<string | null>;
   totalItems: number;
   totalPrice: number;
-  isValidating: boolean; // Keep this for UI
+  isValidating: boolean;
 }
 
 const CartContext = createContext<CartContextType>({
   items: [],
-  addItem: () => {},
+  addItem: async () => {}, // Updated to match new signature
   removeItem: () => {},
   updateQuantity: () => {},
   clearCart: () => {},
+  validateCartForCheckout: async () => null,
   totalItems: 0,
   totalPrice: 0,
   isValidating: false
@@ -46,59 +49,24 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isValidating, setIsValidating] = useState(false);
+  const [checkoutToken, setCheckoutToken] = useState<string | null>(null);
 
-  // const validatePrices = async (cartItems: CartItem[]) => {
-  //   try {
-  //     // This would be your API endpoint
-  //     const response = await fetch('/api/validate-prices', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         items: cartItems.map(item => ({
-  //           id: item.id,
-  //           quantity: item.quantity,
-  //           price: item.price,
-  //         }))
-  //       })
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Price validation failed');
-  //     }
-
-  //     const validatedData = await response.json();
-  //     return validatedData;
-  //   } catch (error) {
-  //     console.error('Price validation error:', error);
-  //     throw error;
-  //   }
-  // };
-
-  // Mock validation function until we have a backend
-  const mockValidatePrice = (item: CartItem) => {
-    // This simulates a delay like a real API call would have
-    return new Promise<any>((resolve) => {
-      setTimeout(() => {
-        // Return the same price for now, but in a real system, 
-        // this would come from the server
-        resolve({
-          itemId: item.id,
-          price: item.price * item.quantity,
-          timestamp: Date.now(),
-          signature: "mocksignature123" // In reality, this would be a cryptographic signature
-        });
-      }, 500); // Simulate network delay
-    });
+  // Helper function to check if a price validation is still valid
+  const isPriceValidationValid = (validation?: ValidatedPrice) => {
+    if (!validation) return false;
+    
+    // Check if the validation is recent (within 15 minutes)
+    const fifteenMinutesInMs = 15 * 60 * 1000;
+    const isRecent = Date.now() - validation.timestamp < fifteenMinutesInMs;
+    
+    return isRecent;
   };
 
-  const addItem = (item: CartItem) => {
+  const addItem = async(item: CartItem): Promise<void> => {
     setIsValidating(true);
     
-    // Simulate API validation
-    // const validatedPrices = await validatePrices([item]);
-    mockValidatePrice(item)
+    // Use the middleware to validate the item
+    return validateCartItem(item)
       .then((validatedPrice) => {
         setItems(prevItems => {
           // Check if item already exists in cart
@@ -123,9 +91,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             }];
           }
         });
+        
+        // Reset checkout token since cart has changed
+        setCheckoutToken(null);
       })
       .catch(error => {
         console.error("Error validating price:", error);
+        throw new Error("Failed to add item to the cart")
       })
       .finally(() => {
         setIsValidating(false);
@@ -135,6 +107,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   // Remove item from cart
   const removeItem = (id: string) => {
     setItems(prevItems => prevItems.filter(item => item.id !== id));
+    // Reset checkout token since cart has changed
+    setCheckoutToken(null);
   };
 
   const updateQuantity = (id: string, quantity: number) => {
@@ -148,8 +122,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       return;
     }
     
-    // Simulate API validation
-    mockValidatePrice({...item, quantity})
+    // Use the middleware to validate the updated item
+    validateCartItem({...item, quantity})
       .then((validatedPrice) => {
         setItems(prevItems => 
           prevItems.map(item => 
@@ -162,6 +136,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
               : item
           )
         );
+        
+        // Reset checkout token since cart has changed
+        setCheckoutToken(null);
       })
       .catch(error => {
         console.error("Error validating quantity update:", error);
@@ -173,20 +150,37 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const clearCart = () => {
     setItems([]);
+    setCheckoutToken(null);
   };
 
-  // Helper function to check if a price validation is still valid
-  // In a real app, this would verify the cryptographic signature
-  const isPriceValidationValid = (validation?: ValidatedPrice) => {
-    if (!validation) return false;
+  // New function to validate the entire cart before checkout
+  const validateCartForCheckout = async (): Promise<string | null> => {
+    if (items.length === 0) return null;
     
-    // Check if the validation is recent (within 15 minutes)
-    const fifteenMinutesInMs = 15 * 60 * 1000;
-    const isRecent = Date.now() - validation.timestamp < fifteenMinutesInMs;
+    setIsValidating(true);
     
-    // In production, you would also verify the signature here
-    
-    return isRecent;
+    try {
+      // If we already have a valid checkout token, return it
+      if (checkoutToken) {
+        return checkoutToken;
+      }
+      
+      // Otherwise validate the cart
+      const result = await validateCart(items);
+      
+      // Update items with validated prices
+      setItems(result.validatedItems);
+      
+      // Store the checkout token
+      setCheckoutToken(result.checkoutToken);
+      
+      return result.checkoutToken;
+    } catch (error) {
+      console.error("Error validating cart for checkout:", error);
+      return null;
+    } finally {
+      setIsValidating(false);
+    }
   };
 
   // Calculate total items
@@ -209,6 +203,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       removeItem,
       updateQuantity,
       clearCart,
+      validateCartForCheckout,
       totalItems,
       totalPrice,
       isValidating

@@ -1,10 +1,11 @@
-import React, { useState, useCallback, memo, useContext } from 'react';
+import React, { useState, useCallback, memo, useContext, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi';
 import { useProducts } from '../contexts/ProductsContext';
 import { usePrefetchData } from '../hooks/usePrefetchData';
 import { useEvents } from '../contexts/EventsContext';
 import { useGallery } from '../contexts/GalleryContext';
+import { useCart } from '../contexts/CartContext';
 import { CartModalContext } from '../App';
 import { 
   NavBarContainer, 
@@ -13,10 +14,12 @@ import {
   Logo, 
   NavLinks, 
   CartLink, 
+  CartIndicator,
   MobileNav, 
   MobileLogo, 
   MenuIcon,
   CartIcon, 
+  CartIconIndicator,
   MobileMenu, 
   MobileMenuLink, 
   MobileMenuLinks,
@@ -30,6 +33,20 @@ const NavBar: React.FC = memo(() => {
   const { prefetchGallery } = useGallery();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { openCart } = useContext(CartModalContext);
+  const { items, totalItems } = useCart();
+  const [cartPulse, setCartPulse] = useState(false);
+
+  // Add effect to track changes in cart items and trigger pulse
+  useEffect(() => {
+    if (totalItems > 0) {
+      setCartPulse(true);
+      const timer = setTimeout(() => {
+        setCartPulse(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [items]); // Only trigger on items changes
+  
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => {
@@ -95,8 +112,10 @@ const NavBar: React.FC = memo(() => {
           </StyledNavLink>
         </NavLinks>
 
-        {/* Updated to use onClick instead of navigation */}
-        <CartLink onClick={handleCartClick} as="button">CART</CartLink>
+        <CartLink onClick={handleCartClick} as="button">
+          CART
+          {totalItems > 0 && <CartIndicator pulse={cartPulse} />}
+        </CartLink>
       </DesktopNav>
 
       <MobileNav> 
@@ -141,6 +160,7 @@ const NavBar: React.FC = memo(() => {
         {/* Updated CartIcon to use onClick */}
         <CartIcon onClick={handleCartClick} as="button">
           <FiShoppingBag size={20} strokeWidth={1} />
+          {totalItems > 0 && <CartIconIndicator pulse={cartPulse} />}
         </CartIcon>
       </MobileNav>
 

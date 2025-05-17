@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useCart } from '../../contexts/CartContext';
 import { useLocation, Navigate, useParams } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import PageWrapper from '../../components/PageWrapper';
@@ -28,28 +29,51 @@ import {
   BreadcrumbContainer,
   BreadcrumbLink,
   BreadcrumbArrow,
-  BreadcrumbCurrent
+  BreadcrumbCurrent,
+  FeedbackMessage
 } from '../../styles/ProductDetailsStyles';
 import { fetchSingleProduct } from '../../middleware/Product';
+
+
+
 
 interface LocationState {
   product: ProductItem;
 }
 
+interface AddToCartStatus {
+  loading: boolean;
+  error: string | null;
+  success: boolean;
+}
+
 const ProductDetail: React.FC = () => {
-  const location = useLocation();
   const { productId } = useParams<{ productId: string }>();
-  const state = location.state as LocationState;
   const { width } = useWindowDimensions();
+  const location = useLocation();
+  const isMobile = width <= 768;
+  const state = location.state as LocationState;
   const imageRef = React.useRef<HTMLDivElement>(null);
   const summaryRef = React.useRef<HTMLDivElement>(null);
-  const isMobile = width <= 768;
   
   const [product, setProduct] = useState<ProductItem | null>(state?.product || null);
   const [loading, setLoading] = useState(!state?.product && !!productId);
   const [error, setError] = useState(false);
   const [fetchAttempted, setFetchAttempted] = useState(false);
-  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedSize, setSelectedSize] = useState<string>('None');
+  const [showAddedText, setShowAddedText] = useState(false);
+  
+  // cart logic
+  const { addItem } = useCart();
+  const [cartStatus, setCartStatus] = useState<AddToCartStatus>({
+    loading: false,
+    error: null,
+    success: false
+  });
+
+
+
+
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -102,6 +126,89 @@ const ProductDetail: React.FC = () => {
     };
   }, [isMobile]);
 
+
+
+  const deriveDescriptionQueues = () => {
+    const description = product?.fields.description;
+    // Split by dash but keep the dash in the result
+    const items = description?.split(/(?=-)/).filter(item => item.trim().length > 0);
+    return items?.map(item => item.trim());
+  };
+
+  const handleSizeSelection = (size: string) => {
+    setCartStatus({
+      loading: false,
+      error: null,
+      success: false
+    });
+
+    setSelectedSize(size)
+  }
+
+  const sortSizes = (sizes: string[]) => {
+    const sizeOrder: Record<string, number> = { 'xxs': 0, 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6 };
+    return sizes.sort((a, b) => sizeOrder[a] - sizeOrder[b]);
+  };
+
+  // Add this new function
+  const handleAddToCart = async () => {
+    // Reset states
+    setCartStatus({ loading: true, error: null, success: false });
+    setShowAddedText(false);
+  
+    // Validation
+    if (!selectedSize || selectedSize == 'None') {
+      setCartStatus({
+        loading: false,
+        error: "Please select a size",
+        success: false
+      });
+      return;
+    }
+  
+    if (!product) {
+      setCartStatus({
+        loading: false,
+        error: "Product data is missing",
+        success: false
+      });
+      return;
+    }
+  
+    try {
+      // Prepare cart item
+      const cartItem = {
+        id: `${product.sys.id}-${selectedSize}`,
+        name: product.fields.name,
+        price: product.fields.price,
+        quantity: 1,
+        image: `https:${product.fields.image[0].fields.file.url}`,
+        size: selectedSize,
+      };
+  
+      // Add to cart
+      await addItem(cartItem);
+  
+      // Only show success if we got here (no error was thrown)
+      setTimeout(() => {
+        setCartStatus({ loading: false, error: null, success: true });
+        setShowAddedText(true);
+        
+        // Reset "Added to cart" text after 3.5 seconds
+        setTimeout(() => {
+          setShowAddedText(false);
+        }, 3500);
+      }, 900);
+  
+    } catch (error) {
+      setCartStatus({
+        loading: false,
+        error: "Failed to add item to cart",
+        success: false
+      });
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -112,24 +219,11 @@ const ProductDetail: React.FC = () => {
 
   const shippingWeeks = product?.fields.shipingInWeeks || '4';
 
-
+  // mapping images
   const allImages = [
     product?.fields.image[0],
     ...(product?.fields.altImages || [])
   ];
-
-
-  const deriveDescriptionQueues = () => {
-    const description = product?.fields.description;
-    // Split by dash but keep the dash in the result
-    const items = description?.split(/(?=-)/).filter(item => item.trim().length > 0);
-    return items?.map(item => item.trim());
-  };
-
-  const sortSizes = (sizes: string[]) => {
-    const sizeOrder: Record<string, number> = { 'xxs': 0, 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6 };
-    return sizes.sort((a, b) => sizeOrder[a] - sizeOrder[b]);
-  };
 
   // Convert sizes string to array
   const sizeOptions = sortSizes(
@@ -205,17 +299,26 @@ const ProductDetail: React.FC = () => {
                   <SizeButton 
                     key={`size-${index}`}
                     isSelected={selectedSize === size}
-                    onClick={() => setSelectedSize(size)}
+                    onClick={() => handleSizeSelection(size)}
                   >
                     {size}
                   </SizeButton>
                 ))}
 
               </SizesContainer>
-
-              <AddToCartButton>
-                Add to cart
+          
+              <AddToCartButton 
+                onClick={handleAddToCart}
+                disabled={cartStatus.loading || !selectedSize}
+              >
+                {cartStatus.loading ? 'Adding...' : showAddedText ? 'Added to cart' : 'Add to cart'}
               </AddToCartButton>
+
+              {cartStatus.error && (
+                <FeedbackMessage isError>
+                  {cartStatus.error}
+                </FeedbackMessage>
+              )}
 
               <ShippingContainer>
                 This product will ship in {shippingWeeks} weeks

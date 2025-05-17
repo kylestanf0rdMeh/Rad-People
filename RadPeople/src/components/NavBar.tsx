@@ -1,26 +1,30 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useContext, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { FiShoppingBag } from 'react-icons/fi'
+import { FiShoppingBag } from 'react-icons/fi';
 import { useProducts } from '../contexts/ProductsContext';
 import { usePrefetchData } from '../hooks/usePrefetchData';
 import { useEvents } from '../contexts/EventsContext';
 import { useGallery } from '../contexts/GalleryContext';
+import { useCart } from '../contexts/CartContext';
+import { CartModalContext } from '../App';
 import { 
-        NavBarContainer, 
-        DesktopNav, 
-        NavLink as StyledNavLink, 
-        Logo, 
-        NavLinks, 
-        CartLink, 
-        MobileNav, 
-        MobileLogo, 
-        MenuIcon,
-        CartIcon, 
-        MobileMenu, 
-        MobileMenuLink, 
-        MobileMenuLinks,
-        MobileMenuIcon
-       } from '../styles/NavBarStyles';
+  NavBarContainer, 
+  DesktopNav, 
+  NavLink as StyledNavLink, 
+  Logo, 
+  NavLinks, 
+  CartLink, 
+  CartIndicator,
+  MobileNav, 
+  MobileLogo, 
+  MenuIcon,
+  CartIcon, 
+  CartIconIndicator,
+  MobileMenu, 
+  MobileMenuLink, 
+  MobileMenuLinks,
+  MobileMenuIcon
+} from '../styles/NavBarStyles';
 
 const NavBar: React.FC = memo(() => {
   const { prefetchProducts } = useProducts();
@@ -28,6 +32,21 @@ const NavBar: React.FC = memo(() => {
   const { prefetchEvents } = useEvents();
   const { prefetchGallery } = useGallery();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { openCart } = useContext(CartModalContext);
+  const { items, totalItems } = useCart();
+  const [cartPulse, setCartPulse] = useState(false);
+
+  // Add effect to track changes in cart items and trigger pulse
+  useEffect(() => {
+    if (totalItems > 0) {
+      setCartPulse(true);
+      const timer = setTimeout(() => {
+        setCartPulse(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [items]); // Only trigger on items changes
+  
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => {
@@ -51,14 +70,22 @@ const NavBar: React.FC = memo(() => {
     prefetchEvents();
   }, [prefetchEvents]);
 
+  const handleClientsInteraction = useCallback(() => {
+    prefetchEvents();
+  }, [prefetchEvents]);
+
   const handleGalleryInteraction = useCallback(() => {
     prefetchGallery();
   }, [prefetchGallery]);
 
+  // Handle cart click
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    openCart();
+  };
+
   return (
     <NavBarContainer>
-
-
       <DesktopNav>
         <Logo to='/' as={Link}>RADPEOPLE</Logo>
 
@@ -87,11 +114,22 @@ const NavBar: React.FC = memo(() => {
           >
             EVENTS
           </StyledNavLink>
+
+          <StyledNavLink 
+            to="/clients" 
+            as={NavLink} 
+            end={false}
+            onMouseEnter={handleClientsInteraction}
+          >
+            CLIENTS
+          </StyledNavLink>
         </NavLinks>
 
-        <CartLink to="/cart" as={Link}>CART</CartLink>
+        <CartLink onClick={handleCartClick} as="button">
+          CART
+          {totalItems > 0 && <CartIndicator pulse={cartPulse} />}
+        </CartLink>
       </DesktopNav>
-
 
       <MobileNav> 
         <MenuIcon onClick={() => {
@@ -132,11 +170,12 @@ const NavBar: React.FC = memo(() => {
 
         <MobileLogo as={Link} to='/'>RADPEOPLE</MobileLogo>
         
-        <CartIcon as={Link} to="/cart">
+        {/* Updated CartIcon to use onClick */}
+        <CartIcon onClick={handleCartClick} as="button">
           <FiShoppingBag size={20} strokeWidth={1} />
+          {totalItems > 0 && <CartIconIndicator pulse={cartPulse} />}
         </CartIcon>
       </MobileNav>
-
 
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
@@ -151,6 +190,9 @@ const NavBar: React.FC = memo(() => {
           </MobileMenuLink>
           <MobileMenuLink as={Link} to="/events" onClick={closeMobileMenu}>
             <span>EVENTS</span> <MobileMenuIcon/>
+          </MobileMenuLink>
+          <MobileMenuLink as={Link} to="/clients" onClick={closeMobileMenu}>
+            <span>CLIENTS</span> <MobileMenuIcon/>
           </MobileMenuLink>
         </MobileMenuLinks>
       </MobileMenu>

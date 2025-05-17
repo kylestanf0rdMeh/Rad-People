@@ -59,10 +59,10 @@ export const NavLinks = styled.div`
 `;
 
 export const NavLink = styled(RouterNavLink)`
-  font-family: 'MotoyaExCedar', sans-serif;
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.9rem;
   text-decoration: none;
   color: black;
-  font-size: 0.8rem;
   position: relative;
   transition: color 0.3s ease;
   padding: 2px 5px;
@@ -96,32 +96,50 @@ export const NavLink = styled(RouterNavLink)`
   }
 `;
 
-export const CartLink = styled(RouterNavLink)`
-  font-family: 'MotoyaExCedar', sans-serif;
-  text-decoration: none;
+export const CartLink = styled.button`
+  font-family: 'Sequel Sans Regular';
+  font-size: 0.9rem;
   color: black;
-  font-size: 0.8rem;
-  position: relative;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-transform: uppercase;
   transition: color 0.3s ease;
+  position: relative;
   
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: -2px; // Adjusted to be closer to the text
-    left: 0;
-    background-color: ${BLUE_COLOR};
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
+  &:hover {
+    color: #1404FB;
   }
+  
+  &:focus {
+    outline: none;
+  }
+`;
 
-  &:hover, &.active {
-    color: ${BLUE_COLOR};
-
-    &::after {
-      transform: scaleX(1);
+export const CartIndicator = styled.div<{ pulse: boolean }>`
+  position: absolute;
+  top: -7px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  background-color: #1404FB;
+  border-radius: 0;
+  animation: ${({ pulse }) => pulse ? 'pulse 1.5s ease-in-out' : 'none'};
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.3);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 `;
@@ -173,14 +191,51 @@ export const MobileLogo = styled.h1`
   }
 `;
 
-export const CartIcon = styled.div`
-  font-size: 1.2rem;
-  color: #000000; // Changed to black
+export const CartIcon = styled.button`
+  background: transparent;
+  border: none;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-touch-callout: none;
-  margin-right: -18px; // Negative margin to offset the padding and hug the right border
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  position: relative;
+  color: black;
+  
+  &:focus {
+    outline: none;
+  }
+
+  @media (max-width: 767px) {
+    padding-right: 0.2rem; /* Reduce right padding on mobile */
+    margin-right: -1.4rem; /* Shift slightly to the right */
+  }
+`;
+
+export const CartIconIndicator = styled.div<{ pulse: boolean }>`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  background-color: #1404FB;
+  border-radius: 0;
+  animation: ${({ pulse }) => pulse ? 'pulse 1.5s ease-in-out' : 'none'};
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 `;
 
 export const MobileMenu = styled.div<{ open: boolean }>`
@@ -212,7 +267,7 @@ export const MobileMenuLinks = styled.div`
 `;
 
 export const MobileMenuLink = styled.div`
-  font-family: 'MotoyaExCedar', sans-serif;
+  font-family: 'Sequel Sans Regular';
   font-size: 12px;
   text-decoration: none;
   color: black;

@@ -341,6 +341,15 @@ export const AddToCartButton = styled.button`
   }
 `;
 
+export const FeedbackMessage = styled.div<{ isError?: boolean }>`
+  font-size: 0.8rem;
+  color: ${props => props.isError ? '#dc3545' : '#28a745'};
+  margin-top: 0.5rem;
+  text-align: center;
+  font-family: 'Sequel Sans Regular';
+  margin-right: 1.7rem;
+`;
+
 export const ShippingContainer = styled.div`
   width: calc(100% - 30px);
   padding: 15px 0;

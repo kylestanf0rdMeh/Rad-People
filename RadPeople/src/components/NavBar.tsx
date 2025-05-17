@@ -70,6 +70,10 @@ const NavBar: React.FC = memo(() => {
     prefetchEvents();
   }, [prefetchEvents]);
 
+  const handleClientsInteraction = useCallback(() => {
+    prefetchEvents();
+  }, [prefetchEvents]);
+
   const handleGalleryInteraction = useCallback(() => {
     prefetchGallery();
   }, [prefetchGallery]);
@@ -109,6 +113,15 @@ const NavBar: React.FC = memo(() => {
             onMouseEnter={handleEventsInteraction}
           >
             EVENTS
+          </StyledNavLink>
+
+          <StyledNavLink 
+            to="/clients" 
+            as={NavLink} 
+            end={false}
+            onMouseEnter={handleClientsInteraction}
+          >
+            CLIENTS
           </StyledNavLink>
         </NavLinks>
 
@@ -177,6 +190,9 @@ const NavBar: React.FC = memo(() => {
           </MobileMenuLink>
           <MobileMenuLink as={Link} to="/events" onClick={closeMobileMenu}>
             <span>EVENTS</span> <MobileMenuIcon/>
+          </MobileMenuLink>
+          <MobileMenuLink as={Link} to="/clients" onClick={closeMobileMenu}>
+            <span>CLIENTS</span> <MobileMenuIcon/>
           </MobileMenuLink>
         </MobileMenuLinks>
       </MobileMenu>

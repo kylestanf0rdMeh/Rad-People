@@ -5,13 +5,14 @@ import {
     ClientDescription,
     ClientCompany,
     ClientStatus,
-    ClientNumber
+    ClientNumber,
+    StatusCircle
   } from '../styles/ClientsStyles';
 
 
 // Dummy data
 const clientsData = [
-  { id: 'client1', name: 'Calvin Klein', description: 'Calvin Klein & Nensi Dojaka Selfridges Retail Installation', status: '2020 Complete', companyType: 'Concept, Design, Creative, Production' },
+  { id: 'client1', name: 'Calvin Klein', description: 'Calvin Klein & Nensi Dojaka Selfridges Retail Installation', status: '2020 In Progress', companyType: 'Concept, Design, Creative, Production' },
   { id: 'client2', name: 'Globex Inc', description: 'Innovators in tech solutions.', status: '2020 Complete', companyType: 'Strategy and Creative' },
   { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
   { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
@@ -103,8 +104,11 @@ const ClientSlideShow = ({ clients }: { clients: typeof clientsData }) => {
                     <ClientStatus>
                         {client.status.split(' ')[0]}
                     </ClientStatus>
-                    <ClientStatus style={{ fontWeight: 'normal' }}>
+                    <ClientStatus style={{ fontWeight: 'normal', display: 'flex', alignItems: 'center', gap: '0.5em' }}>
                         {client.status.split(' ').slice(1).join(' ')}
+                        <StatusCircle
+                        filled={client.status.toLowerCase().includes('complete')}
+                        />
                     </ClientStatus>
                     </td>
               </tr>

@@ -33,10 +33,11 @@ export const ClientName = styled.div`
   margin-top: -5px;
   margin-bottom: 0;
   -webkit-text-stroke: 3px black;
-  max-width: 70%;
-  word-break: break-word;
-  overflow-wrap: break-word;
+  max-width: 72%;
+  overflow-wrap: normal;      // Only break at spaces
+  word-break: keep-all;       // Never break inside words
   white-space: normal;
+  hyphens: none;              // No hyphenation
 
   @media (min-width: 1251px) {
     font-size: 7rem;
@@ -47,11 +48,13 @@ export const ClientName = styled.div`
   @media (min-width: 991px) and (max-width: 1250px) {
     font-size: 7rem;
     line-height: 95px;
+    margin-bottom: 5px;
   }
 
   @media (min-width: 768px) and (max-width: 990px) {
     font-size: 4rem;
     line-height: 60px;
+    margin-bottom: 5px;
   }
 
   @media (max-width: 767px) {
@@ -68,9 +71,11 @@ export const ClientDescription = styled.div`
   text-transform: uppercase;
   margin-bottom: -8px;
   font-size: 0.8rem;
+  line-height: 1.1;
 
   @media (min-width: 600px) {
     font-size: 1.2rem;
+    margin-bottom: -2px;
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
@@ -107,5 +112,28 @@ export const ClientStatus = styled.div`
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
+  }
+`;
+
+export const StatusCircle = styled.span<{ filled?: boolean }>`
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.1rem;
+  border-radius: 50%;
+  background: ${({ filled }) => (filled ? '#1404FB' : 'transparent')};
+  border: 2px solid #1404FB;
+  margin-bottom: 0.2rem;
+
+  /* Default size matches font-size of status */
+  width: 0.1rem;
+  height: 0.1rem;
+
+  @media (min-width: 600px) {
+    width: 0.3rem;
+    height: 0.3rem;
+  }
+  @media (min-width: 1200px) {
+    width: 0.7rem;
+    height: 0.7rem;
   }
 `;

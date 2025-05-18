@@ -42,7 +42,7 @@ export const ClientName = styled.div`
   @media (min-width: 1251px) {
     font-size: 7rem;
     line-height: 95px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 
   @media (min-width: 991px) and (max-width: 1250px) {
@@ -60,7 +60,7 @@ export const ClientName = styled.div`
   @media (max-width: 767px) {
     font-size: 3rem;
     line-height: 45px;
-    margin-top: -2px;
+    margin-bottom: 7px;
   }
 `;
 
@@ -74,8 +74,8 @@ export const ClientDescription = styled.div`
   line-height: 1.1;
 
   @media (min-width: 600px) {
-    font-size: 1.2rem;
-    margin-bottom: -2px;
+    font-size: 1.1rem;
+    margin-bottom: -6px;
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
@@ -91,7 +91,7 @@ export const ClientCompany = styled.div`
   font-size: 0.8rem;
 
   @media (min-width: 600px) {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;

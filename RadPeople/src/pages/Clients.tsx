@@ -18,6 +18,18 @@ const clientsData = [
   { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
   { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
   { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client1', name: 'Calvin Klein', description: 'Calvin Klein & Nensi Dojaka Selfridges Retail Installation', status: '2020 In Progress', companyType: 'Concept, Design, Creative, Production' },
+  { id: 'client2', name: 'Globex Inc', description: 'Innovators in tech solutions.', status: '2020 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client1', name: 'Calvin Klein', description: 'Calvin Klein & Nensi Dojaka Selfridges Retail Installation', status: '2020 In Progress', companyType: 'Concept, Design, Creative, Production' },
+  { id: 'client2', name: 'Globex Inc', description: 'Innovators in tech solutions.', status: '2020 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
+  { id: 'client3', name: 'Soylent Corp', description: 'Pioneers in food engineering.', status: '2024 Complete', companyType: 'Strategy and Creative' },
 ];
 
 const ClientSlideShow = ({ clients }: { clients: typeof clientsData }) => {
@@ -51,7 +63,7 @@ const ClientSlideShow = ({ clients }: { clients: typeof clientsData }) => {
           width: '100vw',
           overflowY: 'auto',
           margin: '0 auto',
-          maxHeight: '60vh',
+          maxHeight: '65vh',
           scrollBehavior: 'smooth',
         }}
         onWheel={handleWheel}
@@ -64,7 +76,7 @@ const ClientSlideShow = ({ clients }: { clients: typeof clientsData }) => {
                 key={client.id + idx}
                 ref={el => (rowRefs.current[idx] = el)}
                 style={{
-                  height: '60vh',
+                  height: '65vh',
                   transition: 'height 0.3s',
                 }}
               >
@@ -101,7 +113,7 @@ const ClientSlideShow = ({ clients }: { clients: typeof clientsData }) => {
                     paddingLeft: '8vw',
                     paddingTop: 0
                     }}>
-                    <ClientStatus>
+                    <ClientStatus style={{marginTop:'1rem'}}>
                         {client.status.split(' ')[0]}
                     </ClientStatus>
                     <ClientStatus style={{ fontWeight: 'normal', display: 'flex', alignItems: 'center', gap: '0.5em' }}>
@@ -119,28 +131,149 @@ const ClientSlideShow = ({ clients }: { clients: typeof clientsData }) => {
     );
   };
 
-const ClientTable = ({ clients }: { clients: typeof clientsData }) => (
-    <table style={{ margin: '2rem auto', width: '80%', color: 'black' }}>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        {clients.map(client => (
-          <tr key={client.id}>
-            <td>{client.name}</td>
-            <td>{client.description}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+  const ClientTable = ({ clients }: { clients: typeof clientsData }) => (
+    <div style={{ width: '80%', margin: '0rem auto' }}>
+      <div
+        style={{
+          border: '1px solid black',
+          maxHeight: '14rem',
+          overflow: 'hidden',
+        }}
+      >
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+          <thead style={{ display: 'table', width: '100%', tableLayout: 'fixed' }}>
+            <tr>
+              <th
+                style={{
+                  width: '30%',
+                  textAlign: 'left',
+                  padding: '0.3rem 1rem',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  color: 'black',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid black', // <-- Add this
+                  fontFamily: "'Helvetica Neue LT Com', sans-serif",
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Name
+              </th>
+              <th
+                style={{
+                  width: '45%',
+                  textAlign: 'left',
+                  padding: '0.3rem 1rem',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  color: 'black',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid black', // <-- Add this
+                  fontFamily: "'Helvetica Neue LT Com', sans-serif",
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Description
+              </th>
+              <th
+                style={{
+                  width: '25%',
+                  textAlign: 'left',
+                  padding: '0.3rem 1rem',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  color: 'black',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid black', // <-- Add this
+                  fontFamily: "'Helvetica Neue LT Com', sans-serif",
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            style={{
+              display: 'block',
+              maxHeight: '11.5rem',
+              overflowY: 'auto',
+              width: '100%',
+            }}
+          >
+            {clients.map((client, idx) => (
+              <tr key={client.id} style={{ display: 'table', tableLayout: 'fixed', width: '100%' }}>
+                <td
+                  style={{
+                    width: '30%',
+                    padding: '3px 1rem',
+                    color: 'black',
+                    background: 'white',
+                    textAlign: 'left',
+                    fontSize: '15px',
+                    lineHeight: 1,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    border: 'none',
+                  }}
+                >
+                  {client.name}
+                </td>
+                <td
+                  style={{
+                    width: '45%',
+                    padding: '3px 1rem',
+                    color: 'black',
+                    background: 'white',
+                    textAlign: 'left',
+                    fontSize: '15px',
+                    lineHeight: 1,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    borderLeft: '1px solid black',
+                    borderRight: 'none',
+                    borderTop: 'none',
+                    borderBottom: 'none',
+                  }}
+                >
+                  {client.description}
+                </td>
+                <td
+                  style={{
+                    width: '25%',
+                    padding: '3px 1rem',
+                    color: 'black',
+                    background: 'white',
+                    textAlign: 'left',
+                    fontSize: '15px',
+                    lineHeight: 1,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    borderLeft: '1px solid black',
+                    borderRight: 'none',
+                    borderTop: 'none',
+                    borderBottom: 'none',
+                  }}
+                >
+                  {client.status}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
   
   const Clients: React.FC = () => {
     return (
-      <div style={{ padding: '1rem', textAlign: 'center', color: 'black' }}>
+      <div style={{ textAlign: 'center', color: 'black' }}>
         <ClientSlideShow clients={clientsData} />
         <ClientTable clients={clientsData} />
       </div>

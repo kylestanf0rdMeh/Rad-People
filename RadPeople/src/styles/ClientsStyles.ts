@@ -11,7 +11,7 @@ export const ClientNumber = styled.div`
   padding-right: 0;
   padding-top: 0;
   margin: 0;
-  margin-top: 3px;
+  margin-top: 1rem;
   margin-right: 4vh;
   margin-left: 1.2vh;
 
@@ -30,7 +30,7 @@ export const ClientName = styled.div`
   text-transform: uppercase;
   margin: 0;
   line-height: 1.2;
-  margin-top: -5px;
+  margin-top: 0.45rem;
   margin-bottom: 0;
   -webkit-text-stroke: 3px black;
   max-width: 72%;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ControlBar, OverlayButton } from './GalleryStyles';
+import { ControlBar } from './GalleryStyles';
 import { motion } from 'framer-motion';
 
 export const OverlayContainer = styled(motion.div)<{ isOpen: boolean }>`

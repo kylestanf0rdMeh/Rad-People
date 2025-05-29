@@ -24,7 +24,6 @@ const GalleryOverlay: React.FC<GalleryOverlayProps> = ({
   images, 
   onClose, 
   onImageClick,
-  currentIndex = 0 // Default to 0 if not provided
 }) => {
   return (
     <OverlayContainer

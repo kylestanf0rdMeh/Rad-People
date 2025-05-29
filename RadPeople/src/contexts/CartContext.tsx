@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { validateCartItem, validateCart, createPaymentIntent } from '../middleware/Cart';
+import { validateCartItem, validateCart } from '../middleware/Cart';
 
 interface ValidatedPrice {
   itemId: string;

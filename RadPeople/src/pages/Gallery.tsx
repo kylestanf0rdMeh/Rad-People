@@ -1,11 +1,11 @@
-import { FiArrowLeft, FiArrowRight, FiGrid } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import useIsMobile from '../hooks/useIsMobile';
 import PageWrapper from '../components/PageWrapper';
 import { AnimatePresence } from 'framer-motion';
 import GalleryOverlay from '../components/GalleryOverlay';
 import React, { useState, useEffect, useCallback } from 'react';
 import useGalleryNavigation from '../hooks/useGalleryNavigation';
-import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, OverlayButton, ControlBar, ControlsGroup, ControlBarButton, RightArrowButton, LeftArrowButton } from '../styles/GalleryStyles';
+import { GalleryPageContainer, GalleryContainer, GalleryImage, ContactRectangle, ControlBar, ControlsGroup, ControlBarButton, RightArrowButton, LeftArrowButton } from '../styles/GalleryStyles';
 import { useGallery } from '../contexts/GalleryContext';
 
 const Gallery: React.FC = () => {

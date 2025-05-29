@@ -11,7 +11,7 @@ const stripePromise = loadStripe('pk_test_51QG9NlKYMzfsK7Ec0EIgWAal2Wsk7WwMxcFXY
 
 const Checkout: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import playboiCartiMp3 from './assets/Playboi_Carti-24_Songs_feat.KanyeWest_Original.mp3';
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
@@ -51,6 +52,14 @@ function AnimatedRoutes() {
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    // Try to play audio on mount (may be blocked by browser)
+    audioRef.current?.play().catch(() => {
+      // Optionally handle autoplay block here
+    });
+  }, []);
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
@@ -64,6 +73,7 @@ function App() {
               <CartProvider>
                 <ClientsProvider>
                   <CartModalContext.Provider value={{ isCartOpen, openCart, closeCart }}>
+                    <audio ref={audioRef} src={playboiCartiMp3} autoPlay />
                     <GlobalStyles />
                     <NavBar />
                     <AnimatedRoutes />

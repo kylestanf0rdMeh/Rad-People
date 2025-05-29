@@ -55,10 +55,19 @@ function App() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    // Try to play audio on mount (may be blocked by browser)
-    audioRef.current?.play().catch(() => {
-      // Optionally handle autoplay block here
-    });
+    const handleUserGesture = () => {
+      audioRef.current?.play();
+      // Remove the event listener after first play
+      window.removeEventListener('pointerdown', handleUserGesture);
+    };
+
+    // Listen for any pointer (mouse, touch, etc) interaction
+    window.addEventListener('pointerdown', handleUserGesture);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener('pointerdown', handleUserGesture);
+    };
   }, []);
 
   const openCart = () => setIsCartOpen(true);
@@ -73,7 +82,7 @@ function App() {
               <CartProvider>
                 <ClientsProvider>
                   <CartModalContext.Provider value={{ isCartOpen, openCart, closeCart }}>
-                    <audio ref={audioRef} src={playboiCartiMp3} autoPlay />
+                    <audio ref={audioRef} src={playboiCartiMp3} loop />
                     <GlobalStyles />
                     <NavBar />
                     <AnimatedRoutes />

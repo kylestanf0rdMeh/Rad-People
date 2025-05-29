@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Cart from './pages/Cart';
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
@@ -7,6 +6,7 @@ import EventDetails from './pages/Events/EventDetails';
 import Gallery from './pages/Gallery';
 import Clients from './pages/Clients';
 import NavBar from './components/NavBar';
+import Checkout from './pages/Checkout'
 import CartModal from './components/CartModal';
 import ProductList from './pages/Products/ProductList';
 import GlobalStyles from './styles/GlobalStyles';
@@ -18,6 +18,8 @@ import { GalleryProvider } from './contexts/GalleryContext';
 import FontLoader from './components/FontLoader';
 import { EventsProvider } from './contexts/EventsContext';
 import { CartProvider } from './contexts/CartContext';
+import { ClientsProvider } from './contexts/ClientsContext';
+
 
 // Create a context for cart modal state
 export const CartModalContext = React.createContext({
@@ -41,7 +43,7 @@ function AnimatedRoutes() {
         <Route path="/events" element={<Events />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/events/:eventId/:name" element={<EventDetails />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path='/checkout' element={<Checkout />} />
       </Routes>
     </AnimatePresence>
   );
@@ -60,12 +62,14 @@ function App() {
           <GalleryProvider>
             <EventsProvider>
               <CartProvider>
-                <CartModalContext.Provider value={{ isCartOpen, openCart, closeCart }}>
-                  <GlobalStyles />
-                  <NavBar />
-                  <AnimatedRoutes />
-                  <CartModal isOpen={isCartOpen} onClose={closeCart} />
-                </CartModalContext.Provider>
+                <ClientsProvider>
+                  <CartModalContext.Provider value={{ isCartOpen, openCart, closeCart }}>
+                    <GlobalStyles />
+                    <NavBar />
+                    <AnimatedRoutes />
+                    <CartModal isOpen={isCartOpen} onClose={closeCart} />
+                  </CartModalContext.Provider>
+                </ClientsProvider>
               </CartProvider>
             </EventsProvider>
           </GalleryProvider>

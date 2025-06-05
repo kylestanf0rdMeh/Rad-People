@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import playboiCartiMp3 from './assets/Playboi_Carti-24_Songs_feat.KanyeWest_Original.mp3';
+import React, { useState } from 'react';
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
@@ -52,23 +51,6 @@ function AnimatedRoutes() {
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  useEffect(() => {
-    const handleUserGesture = () => {
-      audioRef.current?.play();
-      // Remove the event listener after first play
-      window.removeEventListener('pointerdown', handleUserGesture);
-    };
-
-    // Listen for any pointer (mouse, touch, etc) interaction
-    window.addEventListener('pointerdown', handleUserGesture);
-
-    // Cleanup on unmount
-    return () => {
-      window.removeEventListener('pointerdown', handleUserGesture);
-    };
-  }, []);
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
@@ -82,7 +64,6 @@ function App() {
               <CartProvider>
                 <ClientsProvider>
                   <CartModalContext.Provider value={{ isCartOpen, openCart, closeCart }}>
-                    <audio ref={audioRef} src={playboiCartiMp3} loop />
                     <GlobalStyles />
                     <NavBar />
                     <AnimatedRoutes />

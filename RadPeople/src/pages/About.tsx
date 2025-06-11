@@ -6,21 +6,15 @@ import { fetchAbout } from '../middleware/About';
 import { TalentItem } from '../models/Talent.model';
 import { AboutItem } from '../models/About.model';
 import { useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import PageWrapper from '../components/PageWrapper';
-import useWindowDimensions from '../hooks/useWindowDimensions';
+import TalentCardList from '../components/TalentCard';
 
 const Container = styled.div`
   display: flex;
   align-items: flex-start;
   margin-left: -2rem;
   margin-top: -1rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding-top: 2rem;
-    gap: 1rem;
-    align-items: stretch;
-  }
 `;
 
 const InfoBox = styled.div`
@@ -58,87 +52,87 @@ const NameItem = styled.li<{ selected?: boolean }>`
   border-radius: 4px;
 `;
 
-const ProfileWrapper = styled.div<{ imgWidth: number; imgHeight: number }>`
+const ProfileWrapper = styled.div`
   position: fixed;
   top: 2.55rem;
   right: 0rem;
-  width: ${({ imgWidth }) => `${imgWidth}px`};
-  max-width: 350px;
+  width: min(20vw, 350px);   // 20% of viewport width, max 350px
   z-index: 1000;
   pointer-events: none;
 `;
 
-const ProfilePreview = styled.img<{ imgHeight: number }>`
+const ProfilePreview = styled.img`
   display: block;
   width: 100%;
+  height: auto;
   object-fit: contain;
   border: none;
 `;
 
-const ProfileBio = styled.div<{ imgWidth: number }>`
+const ProfileBio = styled.div`
   width: 100%;
   color: black;
   background: white;
   font-family: 'Helvetica Neue LT Com', sans-serif;
-  font-size: ${({ imgWidth }) => `clamp(0.7rem, ${imgWidth / 18}px, 0.9rem)`};
+  font-size: clamp(0.7rem, 2vw, 0.8rem); // Responsive font size
   line-height: 1.3;
   border: none;
-  padding: 0.5rem 0 0 0;
+  padding: 0.5rem 0rem 0 0rem;  // <-- 1rem left and right padding
   text-transform: none;
-  margin-left: 0.1rem;
-  margin-right:0.1rem;
 `;
 
 const About: React.FC = () => {
   const { data: talent } = useDataFetching<TalentItem[]>('talent', fetchTalent);
   const { data: about } = useDataFetching<AboutItem[]>('about', fetchAbout);
-  const { width: windowWidth } = useWindowDimensions();
   const [hoveredTalent, setHoveredTalent] = useState<TalentItem | null>(null);
   const [selectedTalentId, setSelectedTalentId] = useState<string | null>(null);
   const selectedTalent = talent?.find(t => t.sys.id === selectedTalentId) || null;
   const profileToShow = hoveredTalent || selectedTalent;
 
-  const imgWidth = Math.min(windowWidth * 0.2, 350);
-  const imgHeight = imgWidth;
+  const isMobile = useMediaQuery({ maxWidth: 840 });
+
 
 
   return (
     <PageWrapper>
-      <Container>
-        <InfoBox>
-          {about && about[0]?.fields.aboutUs}
-        </InfoBox>
-        <NamesList>
-          TEAM
-          <br />
-          <br />
-          {talent && talent.map((person) => (
-            <NameItem
-              key={person.sys.id}
-              selected={selectedTalentId === person.sys.id}
-              onClick={() => {
-                setSelectedTalentId(selectedTalentId === person.sys.id ? null : person.sys.id);
-              }}
-              onMouseEnter={() => setHoveredTalent(person)}
-              onMouseLeave={() => setHoveredTalent(null)}
-            >
-              {person.fields.firstName} {person.fields.lastName}
-            </NameItem>
-          ))}
-        </NamesList>
-        {profileToShow && profileToShow.fields.profilePicture?.fields?.file?.url && (
-          <ProfileWrapper imgWidth={imgWidth} imgHeight={imgHeight}>
-            <ProfilePreview
-              src={profileToShow.fields.profilePicture.fields.file.url}
-              alt={`${profileToShow.fields.firstName} ${profileToShow.fields.lastName}`}
-              imgHeight={imgHeight}
-            />
-            <ProfileBio imgWidth={imgWidth}>
-              {profileToShow.fields.bio}
-            </ProfileBio>
-          </ProfileWrapper>
-        )}
-      </Container>
+      {isMobile ? (
+        <TalentCardList talents={talent || []} />
+      ) : (
+        <Container>
+          <InfoBox>
+            {about && about[0]?.fields.aboutUs}
+          </InfoBox>
+          <NamesList>
+            TEAM
+            <br />
+            <br />
+            {talent && talent.map((person) => (
+              <NameItem
+                key={person.sys.id}
+                selected={selectedTalentId === person.sys.id}
+                onClick={() => {
+                  setSelectedTalentId(selectedTalentId === person.sys.id ? null : person.sys.id);
+                }}
+                onMouseEnter={() => setHoveredTalent(person)}
+                onMouseLeave={() => setHoveredTalent(null)}
+              >
+                {person.fields.firstName} {person.fields.lastName}
+              </NameItem>
+            ))}
+          </NamesList>
+          {profileToShow && profileToShow.fields.profilePicture?.fields?.file?.url && (
+            <ProfileWrapper>
+              <ProfilePreview
+                src={profileToShow.fields.profilePicture.fields.file.url}
+                alt={`${profileToShow.fields.firstName} ${profileToShow.fields.lastName}`}
+              />
+              <ProfileBio>
+                {profileToShow.fields.bio}
+              </ProfileBio>
+            </ProfileWrapper>
+          )}
+        </Container>
+      )}
     </PageWrapper>
   );
 };

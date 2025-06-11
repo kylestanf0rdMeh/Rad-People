@@ -1,26 +1,21 @@
 import styled from 'styled-components';
 
-// Dummy data for names
-const dummyNames = [
-  "Alex Smith",
-  "Jordan Lee",
-  "Taylor Kim",
-  "Morgan Ray",
-  "Casey Drew"
-];
+import { useDataFetching } from '../hooks/useDataFetching';
+import { fetchTalent } from '../middleware/Talent';
+import { fetchAbout } from '../middleware/About';
+import { TalentItem } from '../models/Talent.model';
+import { AboutItem } from '../models/About.model';
+import { useState } from 'react';
+import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  min-height: 80vh;
-  padding-left: 5rem;
-  padding-top: 5rem;
-  gap: 2rem;
+  margin-left: -2rem;
+  margin-top: -1rem;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding-left: 1rem;
     padding-top: 2rem;
     gap: 1rem;
     align-items: stretch;
@@ -28,46 +23,122 @@ const Container = styled.div`
 `;
 
 const InfoBox = styled.div`
-  border: 1px solid black;
   background: white;
   color: black;
   padding: 2rem;
-  min-width: 100vh;
-  max-width: 150vh;
-  font-family: 'Sequel Sans Regular', sans-serif;
-  font-size: 1.3rem;
-  line-height: 1.6;
+  margin-left: 0.5rem; // Small margin from the left
+  width: 52%; // Always 60% of the page width
+  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4; // Tighter line spacing
+  text-transform: uppercase;
 `;
 
 const NamesList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
-  font-family: 'Sequel Sans Regular', sans-serif;
+  font-family: 'Helvetica Neue LT Com', sans-serif;
   color: black;
-  margin-top: 2rem;
-  margin-left: 0;
+  margin-top: 30vh;
+  margin-left: 6vh;
   display: flex;
   flex-direction: column;
-  font-size: 1rem;
+  font-size: 0.9rem;
   gap: 0.1rem;
+  line-height: 1.05;
   text-transform: uppercase;
 `;
 
+const NameItem = styled.li`
+  transition: color 0.2s;
+  cursor: pointer;
+`;
+
+const ProfileWrapper = styled.div<{ imgWidth: number; imgHeight: number }>`
+  position: fixed;
+  top: 2.55rem;
+  right: 0rem;
+  margin-right: -2.25rem;
+  width: ${({ imgWidth }) => `${imgWidth}px`};
+  z-index: 1000;
+  pointer-events: none;
+`;
+const ProfilePreview = styled.img<{ imgWidth: number; imgHeight: number }>`
+  position: fixed;
+  top: 2.55rem;
+  right: 0rem;
+  margin-right: -2.25rem;
+  width: ${({ imgWidth }) => imgWidth}px;
+  height: ${({ imgHeight }) => imgHeight}px;
+  max-width: 350px;
+  max-height: 350px;
+  object-fit: contain;
+  z-index: 1000;
+  border: none;
+  pointer-events: none;
+`;
+
+const ProfileBio = styled.div<{ imgWidth: number; imgHeight: number }>`
+  position: fixed;
+  top: ${({ imgHeight }) => `calc(1.5rem + ${imgHeight}px + 1rem)`};
+  right: 0.5rem;
+  width: ${({ imgWidth }) => `${imgWidth * 0.7}px`}; // 92% of image width, scales with image
+  /* Remove max-width so it always matches the image width */
+  color: black;
+  background: white;
+  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-size: ${({ imgWidth }) => `clamp(0.7rem, ${imgWidth / 18}px, 0.8rem)`};
+  line-height: 1.3;
+  z-index: 1000;
+  border: none;
+  pointer-events: none;
+  padding: 0.5rem 0 0 0;
+  text-transform: none;
+`;
+
 const About: React.FC = () => {
+  const { data: talent } = useDataFetching<TalentItem[]>('talent', fetchTalent);
+  const { data: about } = useDataFetching<AboutItem[]>('about', fetchAbout);
+  const { width: windowWidth } = useWindowDimensions();
+
+  const imgWidth = Math.min(windowWidth * 0.2, 350);
+  const imgHeight = imgWidth;
+
+  const [hoveredTalent, setHoveredTalent] = useState<TalentItem | null>(null);
+
   return (
     <Container>
       <InfoBox>
-        RADPEOPLE is a creative agency and cultural studio based in Austin, TX.<br /><br />
-        We concept, produce, and activate work at the intersection of fashion, art, music, and experience. From immersive events to brand collaborations, we build moments that move with culture.<br /><br />
-        Our practice is multidisciplinary. We operate across event production, creative direction, brand strategy, PR, and design—guided by narrative, precision, and point of view.<br /><br />
-        We collaborate with artists, brands, and communities to create work that feels present, intentional, and alive.
+        {about && about[0]?.fields.aboutUs}
       </InfoBox>
       <NamesList>
-        {dummyNames.map((name, idx) => (
-          <li key={idx}>{name}</li>
+        TEAM
+        <br />
+        <br />
+        {talent && talent.map((person) => (
+          <NameItem
+            key={person.sys.id}
+            onMouseEnter={() => setHoveredTalent(person)}
+            onMouseLeave={() => setHoveredTalent(null)}
+          >
+            {person.fields.firstName} {person.fields.lastName}
+          </NameItem>
         ))}
       </NamesList>
+      {hoveredTalent && hoveredTalent.fields.profilePicture?.fields?.file?.url && (
+        <>
+          <ProfilePreview
+            src={hoveredTalent.fields.profilePicture.fields.file.url}
+            alt={`${hoveredTalent.fields.firstName} ${hoveredTalent.fields.lastName}`}
+            imgWidth={imgWidth}
+            imgHeight={imgHeight}
+          />
+          <ProfileBio imgWidth={imgWidth} imgHeight={imgHeight}>
+            {hoveredTalent.fields.bio}
+          </ProfileBio>
+        </>
+      )}
     </Container>
   );
 };

@@ -59,7 +59,7 @@ export const NavLinks = styled.div`
 `;
 
 export const NavLink = styled(RouterNavLink)`
-  font-family: 'Sequel Sans Regular';
+  font-family: 'Helvetica Neue LT Com';
   font-size: 0.9rem;
   text-decoration: none;
   color: black;
@@ -97,7 +97,7 @@ export const NavLink = styled(RouterNavLink)`
 `;
 
 export const CartLink = styled.button`
-  font-family: 'Sequel Sans Regular';
+  font-family: 'Helvetica Neue LT Com';
   font-size: 0.9rem;
   color: black;
   text-decoration: none;
@@ -267,7 +267,7 @@ export const MobileMenuLinks = styled.div`
 `;
 
 export const MobileMenuLink = styled.div`
-  font-family: 'Sequel Sans Regular';
+  font-family: 'Helvetica Neue LT Com';
   font-size: 12px;
   text-decoration: none;
   color: black;

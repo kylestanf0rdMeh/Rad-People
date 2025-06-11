@@ -59,42 +59,31 @@ const ProfileWrapper = styled.div<{ imgWidth: number; imgHeight: number }>`
   position: fixed;
   top: 2.55rem;
   right: 0rem;
-  margin-right: -2.25rem;
   width: ${({ imgWidth }) => `${imgWidth}px`};
-  z-index: 1000;
-  pointer-events: none;
-`;
-const ProfilePreview = styled.img<{ imgWidth: number; imgHeight: number }>`
-  position: fixed;
-  top: 2.55rem;
-  right: 0rem;
-  margin-right: -2.25rem;
-  width: ${({ imgWidth }) => imgWidth}px;
-  height: ${({ imgHeight }) => imgHeight}px;
   max-width: 350px;
-  max-height: 350px;
-  object-fit: contain;
   z-index: 1000;
-  border: none;
   pointer-events: none;
 `;
 
-const ProfileBio = styled.div<{ imgWidth: number; imgHeight: number }>`
-  position: fixed;
-  top: ${({ imgHeight }) => `calc(1.5rem + ${imgHeight}px + 1rem)`};
-  right: 0.5rem;
-  width: ${({ imgWidth }) => `${imgWidth * 0.7}px`}; // 92% of image width, scales with image
-  /* Remove max-width so it always matches the image width */
+const ProfilePreview = styled.img<{ imgHeight: number }>`
+  display: block;
+  width: 100%;
+  object-fit: contain;
+  border: none;
+`;
+
+const ProfileBio = styled.div<{ imgWidth: number }>`
+  width: 100%;
   color: black;
   background: white;
   font-family: 'Helvetica Neue LT Com', sans-serif;
-  font-size: ${({ imgWidth }) => `clamp(0.7rem, ${imgWidth / 18}px, 0.8rem)`};
+  font-size: ${({ imgWidth }) => `clamp(0.7rem, ${imgWidth / 18}px, 0.9rem)`};
   line-height: 1.3;
-  z-index: 1000;
   border: none;
-  pointer-events: none;
   padding: 0.5rem 0 0 0;
   text-transform: none;
+  margin-left: 0.1rem;
+  margin-right:0.1rem;
 `;
 
 const About: React.FC = () => {
@@ -127,17 +116,16 @@ const About: React.FC = () => {
         ))}
       </NamesList>
       {hoveredTalent && hoveredTalent.fields.profilePicture?.fields?.file?.url && (
-        <>
+        <ProfileWrapper imgWidth={imgWidth} imgHeight={imgHeight}>
           <ProfilePreview
             src={hoveredTalent.fields.profilePicture.fields.file.url}
             alt={`${hoveredTalent.fields.firstName} ${hoveredTalent.fields.lastName}`}
-            imgWidth={imgWidth}
             imgHeight={imgHeight}
           />
-          <ProfileBio imgWidth={imgWidth} imgHeight={imgHeight}>
+          <ProfileBio imgWidth={imgWidth}>
             {hoveredTalent.fields.bio}
           </ProfileBio>
-        </>
+        </ProfileWrapper>
       )}
     </Container>
   );

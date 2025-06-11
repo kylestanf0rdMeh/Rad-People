@@ -2,23 +2,23 @@ import { useState, useEffect } from 'react';
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height
-  };
+  return { width, height };
 }
 
-export default function useWindowDimensions() {
+export default function useWindowDimensions(debounceMs = 100) {
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
     function handleResize() {
-      setWindowDimensions(getWindowDimensions());
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setWindowDimensions(getWindowDimensions());
+      }, debounceMs);
     }
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [debounceMs]);
 
   return windowDimensions;
 }

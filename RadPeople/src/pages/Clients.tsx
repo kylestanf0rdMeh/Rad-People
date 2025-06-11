@@ -7,6 +7,7 @@ import {
   ClientNumber,
   StatusCircle
 } from '../styles/ClientsStyles';
+import PageWrapper from '../components/PageWrapper';
 import { useClients } from '../contexts/ClientsContext';
 
 
@@ -332,19 +333,21 @@ const Clients: React.FC = () => {
   }));
 
   return (
-    <div style={{ textAlign: 'center', color: 'black' }}>
-      <ClientSlideShow
-        clients={clientsData}
-        currentIdx={selectedIdx}
-        setCurrentIdx={setSelectedIdx}
-      />
-      <ClientTable
-        clients={clientsData}
-        selectedIdx={selectedIdx}
-        setSelectedIdx={setSelectedIdx}
-        setSlideshowIdx={setSelectedIdx}
-      />
-    </div>
+    <PageWrapper>
+      <div style={{ textAlign: 'center', color: 'black' }}>
+        <ClientSlideShow
+          clients={clientsData}
+          currentIdx={selectedIdx}
+          setCurrentIdx={setSelectedIdx}
+        />
+        <ClientTable
+          clients={clientsData}
+          selectedIdx={selectedIdx}
+          setSelectedIdx={setSelectedIdx}
+          setSlideshowIdx={setSelectedIdx}
+        />
+      </div>
+    </PageWrapper>
   );
 };
 

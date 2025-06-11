@@ -6,6 +6,7 @@ import { fetchAbout } from '../middleware/About';
 import { TalentItem } from '../models/Talent.model';
 import { AboutItem } from '../models/About.model';
 import { useState } from 'react';
+import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const Container = styled.div`
@@ -50,9 +51,11 @@ const NamesList = styled.ul`
   text-transform: uppercase;
 `;
 
-const NameItem = styled.li`
-  transition: color 0.2s;
+const NameItem = styled.li<{ selected?: boolean }>`
+  transition: color 0.2s, background 0.2s;
   cursor: pointer;
+  color: ${({ selected }) => (selected ? '#1404fb' : 'inherit')};
+  border-radius: 4px;
 `;
 
 const ProfileWrapper = styled.div<{ imgWidth: number; imgHeight: number }>`
@@ -90,44 +93,53 @@ const About: React.FC = () => {
   const { data: talent } = useDataFetching<TalentItem[]>('talent', fetchTalent);
   const { data: about } = useDataFetching<AboutItem[]>('about', fetchAbout);
   const { width: windowWidth } = useWindowDimensions();
+  const [hoveredTalent, setHoveredTalent] = useState<TalentItem | null>(null);
+  const [selectedTalentId, setSelectedTalentId] = useState<string | null>(null);
+  const selectedTalent = talent?.find(t => t.sys.id === selectedTalentId) || null;
+  const profileToShow = hoveredTalent || selectedTalent;
 
   const imgWidth = Math.min(windowWidth * 0.2, 350);
   const imgHeight = imgWidth;
 
-  const [hoveredTalent, setHoveredTalent] = useState<TalentItem | null>(null);
 
   return (
-    <Container>
-      <InfoBox>
-        {about && about[0]?.fields.aboutUs}
-      </InfoBox>
-      <NamesList>
-        TEAM
-        <br />
-        <br />
-        {talent && talent.map((person) => (
-          <NameItem
-            key={person.sys.id}
-            onMouseEnter={() => setHoveredTalent(person)}
-            onMouseLeave={() => setHoveredTalent(null)}
-          >
-            {person.fields.firstName} {person.fields.lastName}
-          </NameItem>
-        ))}
-      </NamesList>
-      {hoveredTalent && hoveredTalent.fields.profilePicture?.fields?.file?.url && (
-        <ProfileWrapper imgWidth={imgWidth} imgHeight={imgHeight}>
-          <ProfilePreview
-            src={hoveredTalent.fields.profilePicture.fields.file.url}
-            alt={`${hoveredTalent.fields.firstName} ${hoveredTalent.fields.lastName}`}
-            imgHeight={imgHeight}
-          />
-          <ProfileBio imgWidth={imgWidth}>
-            {hoveredTalent.fields.bio}
-          </ProfileBio>
-        </ProfileWrapper>
-      )}
-    </Container>
+    <PageWrapper>
+      <Container>
+        <InfoBox>
+          {about && about[0]?.fields.aboutUs}
+        </InfoBox>
+        <NamesList>
+          TEAM
+          <br />
+          <br />
+          {talent && talent.map((person) => (
+            <NameItem
+              key={person.sys.id}
+              selected={selectedTalentId === person.sys.id}
+              onClick={() => {
+                setSelectedTalentId(selectedTalentId === person.sys.id ? null : person.sys.id);
+              }}
+              onMouseEnter={() => setHoveredTalent(person)}
+              onMouseLeave={() => setHoveredTalent(null)}
+            >
+              {person.fields.firstName} {person.fields.lastName}
+            </NameItem>
+          ))}
+        </NamesList>
+        {profileToShow && profileToShow.fields.profilePicture?.fields?.file?.url && (
+          <ProfileWrapper imgWidth={imgWidth} imgHeight={imgHeight}>
+            <ProfilePreview
+              src={profileToShow.fields.profilePicture.fields.file.url}
+              alt={`${profileToShow.fields.firstName} ${profileToShow.fields.lastName}`}
+              imgHeight={imgHeight}
+            />
+            <ProfileBio imgWidth={imgWidth}>
+              {profileToShow.fields.bio}
+            </ProfileBio>
+          </ProfileWrapper>
+        )}
+      </Container>
+    </PageWrapper>
   );
 };
 

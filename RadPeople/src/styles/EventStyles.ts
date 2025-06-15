@@ -262,7 +262,12 @@ export const EventContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 80vh; // Ensure full width
+  width: 80vh; // desktop
+
+  @media (max-width: 767px) {
+    width: 100%;
+    min-width: 0; // allow shrinking
+  }
 `;
 
 export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: number }>`
@@ -320,12 +325,14 @@ export const EventName = styled.h3`
   margin: 0;
   text-transform: uppercase;
   line-height: 1.2;
-  
+
   @media (max-width: 767px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     white-space: normal;
-    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
     width: 100%;
+    /* Remove any ellipsis or nowrap for mobile */
   }
 
   @media (min-width: 768px) {
@@ -339,7 +346,7 @@ export const EventName = styled.h3`
   }
 
   @media (min-width: 768px) and (max-width: 1250px) {
-    ${fluidTypography(0.9, 1.2, 320, 1500)}  /* Further reduced size range */
+    ${fluidTypography(0.9, 1.2, 320, 1500)}
   }
 `;
 
@@ -388,20 +395,21 @@ export const EventLocation = styled.div`
   position: relative;
   line-height: 1.2;
   text-transform: uppercase;
-  
+
   @media (max-width: 767px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     max-width: 90vw;
     margin-top: 0px;
     padding-right: 20px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    /* Remove ellipsis and nowrap for mobile */
   }
-  
+
   @media (min-width: 768px) {
     max-width: 350px;
-    white-space: normal; // Allow wrapping
+    white-space: normal;
     ${fluidTypography(1.2, 1.9, 320, 1500)}
   }
 
@@ -410,9 +418,8 @@ export const EventLocation = styled.div`
   }
 
   @media (min-width: 769px) and (max-width: 1250px) {
-    ${fluidTypography(0.8, 1.4, 320, 1500)}  /* Reduced size range */
+    ${fluidTypography(0.8, 1.4, 320, 1500)}
   }
-
 `;
 
 export const LocationFirstLine = styled.span`
@@ -549,6 +556,16 @@ export const ViewOverlay = styled.div`
     color: white;
     border-color: transparent;
     transition: background 0.3s ease-in-out;
+  }
+
+  // Remove hover effect on mobile
+  @media (max-width: 767px) {
+    &:hover {
+      background: white;
+      color: black;
+      border: 1px solid black;
+      transition: none;
+    }
   }
 `;
 

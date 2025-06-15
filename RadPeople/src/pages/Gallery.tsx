@@ -130,20 +130,32 @@ const Gallery: React.FC = () => {
         <GalleryContainer>
           <AnimatePresence mode="wait">
             {currentImage && (
-              <GalleryImage
-                key={currentImage.src}
-                src={currentImage.src}
-                alt={images[currentIndex].fields.descriptions || 'Gallery image'}
-                fillScreen={currentImage.fillScreen}
-                isWide={currentImage.isWide}
-                initial={{ opacity: 0.3 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0.3 }}
-                transition={{
-                  duration: 0.1,
-                  ease: "easeInOut"
-                }}
-              />
+              isMobile ? (
+                <GalleryImage
+                  as="img" // disables motion
+                  key={currentImage.src}
+                  src={currentImage.src}
+                  alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+                  fillScreen={currentImage.fillScreen}
+                  isWide={currentImage.isWide}
+                  // No motion props!
+                />
+              ) : (
+                <GalleryImage
+                  key={currentImage.src}
+                  src={currentImage.src}
+                  alt={images[currentIndex].fields.descriptions || 'Gallery image'}
+                  fillScreen={currentImage.fillScreen}
+                  isWide={currentImage.isWide}
+                  initial={{ opacity: 0.3 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0.3 }}
+                  transition={{
+                    duration: 0.1,
+                    ease: "easeInOut"
+                  }}
+                />
+              )
             )}
           </AnimatePresence>
         </GalleryContainer>

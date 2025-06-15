@@ -424,28 +424,28 @@ const Events: React.FC = () => {
 
       {/* PAST EVENTS */}
       <PastEventsTitle>PAST</PastEventsTitle>
-        <PastEventsList>
-          {pastEvents.map((event) => (
-            <PastEventCard 
-              key={event.sys.id} 
-              as={Link} 
-              to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
-              state={{ event }}
-            >
-              <ImageContainer>
-                <img 
-                  src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
-                  alt={event.fields.name}
-                />
-                <ViewOverlay>VIEW</ViewOverlay>
-              </ImageContainer>
-              <PastEventName>{event.fields.name}</PastEventName>
-              <PastEventDescription>
-                {event.fields.description?.split('\n')[0] || ''}
-              </PastEventDescription>
-            </PastEventCard>
-          ))}
-        </PastEventsList>
+      <PastEventsList>
+        {pastEvents.map((event) => (
+          <PastEventCard 
+            key={event.sys.id} 
+            as={Link} 
+            to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+            state={{ event }}
+          >
+            <ImageContainer>
+              <img 
+                src={event.fields.thumbnailImage?.[0]?.fields.file.url} 
+                alt={event.fields.name}
+              />
+              <ViewOverlay>VIEW</ViewOverlay>
+            </ImageContainer>
+            <PastEventName>{event.fields.name}</PastEventName>
+            <PastEventDescription>
+              {event.fields.description?.split('\n')[0] || ''}
+            </PastEventDescription>
+          </PastEventCard>
+        ))}
+      </PastEventsList>
       </Layout>
     </PageWrapper>
   );

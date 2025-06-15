@@ -96,8 +96,7 @@ const About: React.FC = () => {
   return (
     <PageWrapper>
       {isMobile ? (
-        <TalentCardList talents={talent || []} />
-      ) : (
+        <TalentCardList talents={talent || []} aboutUs={about && about[0]?.fields.aboutUs || undefined} />      ) : (
         <Container>
           <InfoBox>
             {about && about[0]?.fields.aboutUs}

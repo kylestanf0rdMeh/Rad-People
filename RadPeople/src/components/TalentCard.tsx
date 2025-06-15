@@ -1,6 +1,58 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+
+const TopMenuContainer = styled.div<{ clickable?: boolean }>`
+  width: 100vw;
+  height: 40px;
+  background: #fff;
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.4rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+  cursor: ${props => props.clickable ? 'pointer' : 'default'};
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+`;
+
+const TopMenuLabel = styled.div`
+  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #000;
+  margin-top: 0.2rem;
+`;
+
+const DropdownIcon = styled.span`
+  font-size: 0.6rem;
+  display: flex;
+  align-items: center;
+  color: #000;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  margin-top: 0.2rem;
+`;
+
+const DropdownContent = styled.div<{ open: boolean }>`
+  width: 100vw;
+  background: #fff;
+  border-bottom: ${props => props.open ? '1px solid #000' : 'none'};
+  box-sizing: border-box;
+  padding: ${props => props.open ? '1rem 1.5rem' : '0 1.5rem'};
+  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-size: 0.95rem;
+  color: #222;
+  max-height: ${props => props.open ? '500px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1), padding 0.3s cubic-bezier(0.4,0,0.2,1), border-bottom 0.3s;
+`;
+
 
 const TalentGrid = styled.div`
   display: grid;
@@ -51,7 +103,7 @@ const TalentBio = styled(motion.div)`
   color: black;
   background: white;
   font-family: 'Helvetica Neue LT Com', sans-serif;
-  font-size: 0.5rem;
+  font-size: clamp(0.4rem, 1.7vw, 0.6rem); /* Responsive font size */
   line-height: 1.3;
   text-align: center;
   display: flex;
@@ -60,6 +112,9 @@ const TalentBio = styled(motion.div)`
   padding: 1.2rem 1rem 0 1rem; /* top, right, bottom, left */
   box-sizing: border-box;
   cursor: pointer;
+  overflow-wrap: break-word; /* Ensures long words break */
+  word-break: break-word;    /* Extra safety for word breaking */
+  overflow-y: auto;          /* Allows scrolling if content still overflows */
 `;
 
 const TalentInfo = styled.div`
@@ -108,7 +163,42 @@ interface TalentCardProps {
       role: string;
     };
   }[];
+  aboutUs?: string;
 }
+
+
+const TopMenu: React.FC<{ aboutUs?: string }> = ({ aboutUs }) => {
+  const [open, setOpen] = useState(false);
+
+  // For accessibility: handle Enter/Space key
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      setOpen(o => !o);
+    }
+  };
+
+  return (
+    <>
+      <TopMenuContainer
+        clickable
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        aria-label="Expand About Us"
+        onClick={() => setOpen(o => !o)}
+        onKeyDown={handleKeyDown}
+      >
+        <TopMenuLabel>About Us</TopMenuLabel>
+        <DropdownIcon>
+          {open ? <FaChevronUp /> : <FaChevronDown />}
+        </DropdownIcon>
+      </TopMenuContainer>
+      <DropdownContent open={open}>
+        {aboutUs}
+      </DropdownContent>
+    </>
+  );
+};
 
 const fadeVariants = {
   initial: { opacity: 0 },
@@ -116,13 +206,18 @@ const fadeVariants = {
   exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" } }
 };
 
-const TalentCardList: React.FC<TalentCardProps> = ({ talents }) => (
-  <TalentGrid>
-    {talents.map((talent) => (
-      <TalentCardWithBio key={talent.sys.id} talent={talent} />
-    ))}
-  </TalentGrid>
-);
+const TalentCardList: React.FC<TalentCardProps> = ({ talents, aboutUs }) => {
+  return (
+    <>
+      <TopMenu aboutUs={aboutUs} />
+      <TalentGrid>
+        {talents.map((talent) => (
+          <TalentCardWithBio key={talent.sys.id} talent={talent} />
+        ))}
+      </TalentGrid>
+    </>
+  );
+};
 
 const TalentCardWithBio: React.FC<{ talent: TalentCardProps['talents'][0] }> = ({ talent }) => {
   const [showBio, setShowBio] = useState(false);

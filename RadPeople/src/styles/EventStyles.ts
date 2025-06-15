@@ -262,11 +262,12 @@ export const EventContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 80vh; // desktop
+  width: 110%;   
+  min-width: 0;  
 
   @media (max-width: 767px) {
     width: 100%;
-    min-width: 0; // allow shrinking
+    min-width: 0;
   }
 `;
 
@@ -274,6 +275,7 @@ export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: n
   opacity: ${props => props.isActive ? 1 : 0.4};
   transition: all 0.5s ease-in-out;
   margin-top: ${props => Math.min(props.screenWidth * 0.06, 24)}px;
+  min-width: 0;
   
   @media (min-width: 768px) {
     max-width: ${props => Math.min(props.screenWidth * 0.2, 350)}px;
@@ -336,9 +338,9 @@ export const EventName = styled.h3`
   }
 
   @media (min-width: 768px) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   @media (min-width: 1251px) {

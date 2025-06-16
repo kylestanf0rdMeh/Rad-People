@@ -105,35 +105,12 @@ export const ClientStatus = styled.div`
   line-height: 0.9;
   margin: 0;
   padding: 0;
-  margin-top: 3px;
+  margin-top: 1rem;
 
   @media (min-width: 600px) {
     font-size: 1.2rem;
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
-  }
-`;
-
-export const StatusCircle = styled.span<{ filled?: boolean }>`
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0.1rem;
-  border-radius: 50%;
-  background: ${({ filled }) => (filled ? '#1404FB' : 'transparent')};
-  border: 2px solid #1404FB;
-  margin-bottom: 0.2rem;
-
-  /* Default size matches font-size of status */
-  width: 0.1rem;
-  height: 0.1rem;
-
-  @media (min-width: 600px) {
-    width: 0.3rem;
-    height: 0.3rem;
-  }
-  @media (min-width: 1200px) {
-    width: 0.7rem;
-    height: 0.7rem;
   }
 `;

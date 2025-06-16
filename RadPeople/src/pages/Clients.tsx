@@ -5,7 +5,6 @@ import {
   ClientCompany,
   ClientStatus,
   ClientNumber,
-  StatusCircle
 } from '../styles/ClientsStyles';
 import PageWrapper from '../components/PageWrapper';
 import { useClients } from '../contexts/ClientsContext';
@@ -103,7 +102,7 @@ const ClientSlideShow = ({
                   {client.description}
                 </ClientDescription>
                 <ClientCompany>
-                  - {client.companyType}
+                  - {client.companyType}, {client.status.year}
                 </ClientCompany>
               </td>
               {/* STATUS */}
@@ -116,12 +115,8 @@ const ClientSlideShow = ({
                 paddingLeft: '8vw',
                 paddingTop: 0
               }}>
-                <ClientStatus style={{ marginTop: '1rem' }}>
-                  {client.status.year}
-                </ClientStatus>
                 <ClientStatus style={{ fontWeight: 'normal', display: 'flex', alignItems: 'center', gap: '0.5em' }}>
                   {client.status.completed ? 'Complete' : 'In Progress'}
-                  <StatusCircle filled={client.status.completed} />
                 </ClientStatus>
               </td>
             </tr>

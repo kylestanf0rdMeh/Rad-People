@@ -4,7 +4,7 @@ import { EventItem } from '../models/Event.model';
 import PageWrapper from '../components/PageWrapper';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import { useEvents } from '../contexts/EventsContext';
-import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber, MobileEventButton } from '../styles/EventStyles';
+import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber, MobileEventButton } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

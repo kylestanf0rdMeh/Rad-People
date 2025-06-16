@@ -390,43 +390,33 @@ export const LocationIcon = styled.div`
 
 
 export const EventLocation = styled.div`
+  display: inline-flex;
+  align-items: center;
   font-family: 'Sequel Sans Regular';
   color: white;
   margin: 0;
   margin-top: 5px;
-  position: relative;
   line-height: 1.2;
   text-transform: uppercase;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 
   @media (max-width: 767px) {
     font-size: 1.2rem;
     max-width: 90vw;
     margin-top: 0px;
-    padding-right: 20px;
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    /* Remove ellipsis and nowrap for mobile */
   }
 
   @media (min-width: 768px) {
     max-width: 350px;
-    white-space: normal;
     ${fluidTypography(1.2, 1.9, 320, 1500)}
-  }
-
-  @media (min-width: 1251px) {
-    ${fluidTypography(1.2, 1.9, 320, 1500)}
-  }
-
-  @media (min-width: 769px) and (max-width: 1250px) {
-    ${fluidTypography(0.8, 1.4, 320, 1500)}
   }
 `;
 
 export const LocationFirstLine = styled.span`
   display: block;
-  padding-left: 25px;  // Padding only for first line
 `;
 
 export const LocationWrappedLine = styled.span`
@@ -472,7 +462,7 @@ export const EventDescription = styled.p`
 
 export const MobileEventButton = styled.button`
   width: 90vw;  // Match description's max-width
-  margin: 10px 10px 0;  // Match description's margins
+  margin: 10px 3px 0;  // Match description's margins
   padding: 0.3rem 0;
   border: 1px solid black;
   background: white;
@@ -558,16 +548,12 @@ export const ViewOverlay = styled.div`
     color: white;
     border-color: transparent;
     transition: background 0.3s ease-in-out;
+    opacity: 1;
   }
 
-  // Remove hover effect on mobile
+  // Completely hide on mobile
   @media (max-width: 767px) {
-    &:hover {
-      background: white;
-      color: black;
-      border: 1px solid black;
-      transition: none;
-    }
+    display: none !important;
   }
 `;
 

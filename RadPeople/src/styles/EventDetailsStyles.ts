@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-// Create a new container for the event content
+
 export const EventContentContainer = styled.div`
   position: relative;
   min-height: 100vh;
@@ -170,16 +170,16 @@ export const RightColumnOverlay = styled.div`
   top: 0;
   right: 0;
   width: 22%;
-  min-height: 100%; // Use min-height instead of height
+  height: 100%; // <-- Use height, not min-height
   background-color: white;
   z-index: 10;
   border-left: 1px solid #e5e7eb;
-  overflow-y: auto;
+  overflow-y: auto; // <-- Enable vertical scrolling
   padding: 20px;
   color: black;
   flex-direction: column;
   box-sizing: border-box;
-  
+
   @media (prefers-color-scheme: dark) {
     background-color: white;
     border-left: 1px solid #374151;
@@ -187,7 +187,6 @@ export const RightColumnOverlay = styled.div`
   }
 `;
 
-// New styled components for the right column content
 export const OverlayBackButton = styled.h2`
   font-size: 0.8rem;
   margin-top: 1rem;
@@ -366,11 +365,14 @@ export const MobileEventInfoOverlay = styled.div`
 `;
 
 export const MobileDetailsSection = styled.div`
+  border-top: 1px solid black;
   padding: 1rem;
   background-color: white;
   color: black;
   width: 100%;
   box-sizing: border-box;
+  max-height: 50vh;   
+  overflow-y: auto;   
 `;
 
 export const MobileEventDetailTitle = styled.h2`

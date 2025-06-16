@@ -7,6 +7,9 @@ import { useEvents } from '../contexts/EventsContext';
 import { BackgroundImage, VideoWrapper, EventBackground, EventContentWrapper, EventDate, EventDescription, EventItemContainer, EventLink, EventLocation, EventName, EventNamesContainer, EventsContainer, EventTitle, EventTitleText, LocationFirstLine, LocationIcon, LocationWrappedLine, PastEventsTitle, PastEventsList, PastEventCard, PastEventName, PastEventDescription, ViewOverlay, ImageContainer, MobileEventNav, EventNumber, MobileEventButton } from '../styles/EventStyles';
 import { Link } from 'react-router-dom';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapPin } from '@fortawesome/free-solid-svg-icons'; // or free-regular-svg-icons if you prefer
+
 
 declare global {
   interface Window {
@@ -336,8 +339,10 @@ const Events: React.FC = () => {
 
                             <EventName>{event.fields.name}</EventName>
                             <EventLocation>
-                              <LocationIcon />
-                              <LocationFirstLine>{event.fields.location}</LocationFirstLine>
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4em' }}>
+                                <FontAwesomeIcon icon={faMapPin} style={{ color: '#1404FB', fontSize: '0.7em', verticalAlign: 'middle', marginLeft: '0.3rem' }} />
+                                <LocationFirstLine>{event.fields.location}</LocationFirstLine>
+                              </span>
                             </EventLocation>
                             <EventDescription>
                               {(() => {
@@ -383,20 +388,19 @@ const Events: React.FC = () => {
 
                             <EventName>{upcomingEvents[activeIndex].fields.name}</EventName>
                             <EventLocation>
-                              <LocationIcon />
-                              {screenWidth > 767 ? (
-                                // Desktop: Split into lines
-                                splitIntoLines(upcomingEvents[activeIndex].fields.location || '').map((line, i) => (
-                                  i === 0 ? (
-                                    <LocationFirstLine key="first">{line}</LocationFirstLine>
-                                  ) : (
-                                    <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
-                                  )
-                                ))
-                              ) : (
-                                // Mobile: Single line
-                                <LocationFirstLine>{upcomingEvents[activeIndex].fields.location}</LocationFirstLine>
-                              )}
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4em' }}>
+                                <FontAwesomeIcon icon={faMapPin} style={{ color: '#1404FB', fontSize: '0.7em', verticalAlign: 'middle', marginLeft: '0.3rem' }} />
+                                {screenWidth > 767
+                                  ? splitIntoLines(upcomingEvents[activeIndex].fields.location || '').map((line, i) =>
+                                      i === 0 ? (
+                                        <LocationFirstLine key="first">{line}</LocationFirstLine>
+                                      ) : (
+                                        <LocationWrappedLine key={i}>{line}</LocationWrappedLine>
+                                      )
+                                    )
+                                  : <LocationFirstLine>{upcomingEvents[activeIndex].fields.location}</LocationFirstLine>
+                                }
+                              </span>
                             </EventLocation>
                             <EventDescription>
                               {(upcomingEvents[activeIndex].fields.description?.split('\n')[0] || '').length > 300 

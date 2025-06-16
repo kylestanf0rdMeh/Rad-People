@@ -9,6 +9,7 @@ import { WistiaPlayer } from '@wistia/wistia-player-react';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { IoArrowBack } from 'react-icons/io5'; // Import back arrow icon
 import { EventContentWrapper, EventDate, EventItemContainer, EventName, LocationIcon } from '../../styles/EventStyles';
+import { FaChevronDown } from 'react-icons/fa';
 import { EventContentContainer, FixedBackgroundContainer, VideoContainer, FixedBackgroundImage, EventTitle, EventDetailsInfoOverlay, EventDetailLocation, EventDetailLocationText, DetailEventDescription, RightColumnOverlay, BackNavigation, OverlayBackButton, OverlayTItle, AlternateDescription, OverlayDate, OverlayTime, LocationText, RightColumnDescription, MobileViewContainer, MobileBackNavigation, MobileBackButton, MobileEventContent, MobileEventTitle, MobileEventInfoOverlay, MobileDetailsSection, MobileEventDetailTitle, MobileAlternateDescription, MobileEventDate, MobileEventTime, MobileLocationText, MobileEventDescription } from '../../styles/EventDetailsStyles';
 
 interface LocationState {
@@ -21,15 +22,17 @@ const EventDetails: React.FC = () => {
   const { eventId } = useParams<{ eventId: string; name: string }>();
   const state = location.state as LocationState;
   const wistiaContainerRef = useRef<HTMLDivElement>(null);
+  const mobileDetailsRef = useRef<HTMLDivElement>(null);
   const { width: screenWidth } = useWindowDimensions();
-  const navigate = useNavigate(); // Add this hook to handle navigation
-
+  const navigate = useNavigate();
 
   // Add all state hooks at the top
   const [event, setEvent] = useState<EventItem | null>(state?.event || null);
   const [loading, setLoading] = useState(!state?.event && !!eventId);
   const [error, setError] = useState(false);
   const [fetchAttempted, setFetchAttempted] = useState(false);
+  const [showScrollDown, setShowScrollDown] = useState(false);
+
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -53,6 +56,28 @@ const EventDetails: React.FC = () => {
   
     loadEvent();
   }, [eventId, event]);
+
+
+  // Scroll down for mobile icon
+  useEffect(() => {
+    const el = mobileDetailsRef.current;
+    if (!el) return;
+  
+    // Show indicator only if content is scrollable and at the top
+    const checkScroll = () => {
+      setShowScrollDown(el.scrollTop === 0 && el.scrollHeight > el.clientHeight);
+    };
+  
+    checkScroll(); // Initial check
+  
+    el.addEventListener('scroll', checkScroll);
+    window.addEventListener('resize', checkScroll);
+  
+    return () => {
+      el.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, []);
 
   // Helper function to get video ID or image URL
   const getEventMedia = () => {
@@ -265,7 +290,7 @@ const EventDetails: React.FC = () => {
               </MobileEventContent>
 
               {/* Content from RightColumnOverlay */}
-              <MobileDetailsSection>
+              <MobileDetailsSection ref={mobileDetailsRef}>
                 {/* Event details */}
                 <MobileEventDetailTitle>
                   {event?.fields.name}
@@ -301,6 +326,26 @@ const EventDetails: React.FC = () => {
                   </MobileEventDescription>
                 )}
               </MobileDetailsSection>
+              {showScrollDown && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '95%',
+                    bottom: '0.4rem',
+                    transform: 'translateX(-50%)',
+                    zIndex: 20,
+                    background: 'transparent',
+                    border: '1px solid black',
+                    borderRadius: '0px',
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <FaChevronDown color="#1404fb" size={7} />
+                </div>
+              )}
             </MobileViewContainer>
           )}
         </EventContentContainer>

@@ -114,3 +114,39 @@ export const ClientStatus = styled.div`
     font-size: 1.4rem;
   }
 `;
+
+
+export const ClientTableWrapper = styled.div`
+  @media (max-width: 767px) {
+    display: none !important;
+  }
+`;
+
+export const ClientNumberNavWrapper = styled.div`
+  display: none;
+  @media (max-width: 767px) {
+    display: flex !important;
+  }
+`;
+
+export const ClientSlideMobile = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+  margin-bottom: 2vh;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  scroll-snap-align: start;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  & > * {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    text-align: left;
+  }
+`;

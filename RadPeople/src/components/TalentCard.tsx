@@ -170,7 +170,7 @@ interface TalentCardProps {
 
 
 const TopMenu: React.FC<{ aboutUs?: string }> = ({ aboutUs }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   // For accessibility: handle Enter/Space key
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {

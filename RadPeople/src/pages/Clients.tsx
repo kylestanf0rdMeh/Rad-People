@@ -187,10 +187,17 @@ const ClientSlideShowMobile = ({
       scrollToIdx !== null &&
       slideRefs.current[scrollToIdx]
     ) {
-      slideRefs.current[scrollToIdx]!.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+      const container = containerRef.current;
+      const slide = slideRefs.current[scrollToIdx];
+      if (container && slide) {
+        // Get the top padding in px (e.g., 1rem = 16px, or use getComputedStyle)
+        const paddingTop = 16; // or whatever your padding is in px
+        const slideTop = slide.offsetTop;
+        container.scrollTo({
+          top: slideTop - paddingTop,
+          behavior: 'smooth',
+        });
+      }
     }
   }, [scrollToIdx]);
 
@@ -239,6 +246,7 @@ const ClientSlideShowMobile = ({
         overflowY: 'auto',
         scrollSnapType: 'y mandatory',
         WebkitOverflowScrolling: 'touch',
+        minHeight: '100vh',
       }}
     >
       {clients.map((client, idx) => (
@@ -246,8 +254,8 @@ const ClientSlideShowMobile = ({
           <ClientNumber>{String(idx + 1).padStart(2, '0')}</ClientNumber>
           <ClientName>{client.name}</ClientName>
           <ClientDescription>{client.description}</ClientDescription>
-          <ClientCompany>{client.companyType}</ClientCompany>
-          <div style={{ fontFamily: 'Helvetica Neue LT Com, sans-serif', fontSize: '1.1rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          <ClientCompany>- {client.companyType}</ClientCompany>
+          <div style={{ fontFamily: 'Helvetica Neue LT Com, sans-serif', fontSize: '1.3rem', textTransform: 'uppercase', marginTop: '0', marginLeft: '0.1rem' }}>
             {client.status.year}
           </div>
           <ClientStatus>{client.status.completed ? 'Complete' : 'In Progress'}</ClientStatus>

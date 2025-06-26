@@ -10,17 +10,21 @@ export const ClientNumber = styled.div`
   line-height: 1.1;
   padding-right: 0;
   padding-top: 0;
-  margin: 0;
-  margin-top: 1rem;
   margin-right: 4vh;
   margin-left: 1.2vh;
 
   @media (min-width: 600px) {
     font-size: 1.2rem;
+    margin-top: 0.9rem;
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
     margin-right: 10vh;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 1.3rem; /* Increased for mobile */
+    margin-left: 0.3rem;
   }
 `;
 
@@ -61,6 +65,7 @@ export const ClientName = styled.div`
     font-size: 3rem;
     line-height: 45px;
     margin-bottom: 7px;
+    margin-top: -0.5rem;
   }
 `;
 
@@ -80,6 +85,11 @@ export const ClientDescription = styled.div`
   @media (min-width: 1200px) {
     font-size: 1.4rem;
   }
+
+  @media (max-width: 767px) {
+    font-size: 1.3rem;
+    margin-bottom: -1rem;
+  }
 `;
 
 export const ClientCompany = styled.div`
@@ -95,6 +105,11 @@ export const ClientCompany = styled.div`
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 1.3rem;
+    margin-top: -8px;
   }
 `;
 
@@ -112,6 +127,12 @@ export const ClientStatus = styled.div`
   }
   @media (min-width: 1200px) {
     font-size: 1.4rem;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 1.3rem;
+    margin-top: -8px;
+    margin-left: 0.1rem;
   }
 `;
 
@@ -133,12 +154,14 @@ export const ClientSlideMobile = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 1.2rem 1.2rem 1.2rem 1.2rem;
-  margin-bottom: 2vh;
+  padding: 1rem 1.2rem 1.2rem 1.2rem; /* Add top padding here */
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: 0;
   scroll-snap-align: start;
+  height: 100vh;
+  box-sizing: border-box; /* Ensures padding is included in height */
 
   @media (min-width: 768px) {
     display: none;

@@ -36,7 +36,7 @@ const DropdownIcon = styled.span`
   padding: 0;
   outline: none;
   -webkit-tap-highlight-color: transparent;
-  margin-top: 0.2rem;
+  margin-top: 0.1rem;
 `;
 
 const DropdownContent = styled.div<{ open: boolean }>`
@@ -99,22 +99,24 @@ const TalentImage = styled(motion.img)`
 
 const TalentBio = styled(motion.div)`
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: 100%;
   color: black;
   background: white;
   font-family: 'Helvetica Neue LT Com', sans-serif;
-  font-size: clamp(0.4rem, 1.7vw, 0.6rem); /* Responsive font size */
+  font-size: clamp(0.4rem, 1.7vw, 0.6rem);
   line-height: 1.3;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.2rem 1rem 0 1rem; /* top, right, bottom, left */
+  padding: 1.2rem 1rem 0 1rem;
   box-sizing: border-box;
   cursor: pointer;
-  overflow-wrap: break-word; /* Ensures long words break */
-  word-break: break-word;    /* Extra safety for word breaking */
-  overflow-y: auto;          /* Allows scrolling if content still overflows */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow-y: auto;
 `;
 
 const TalentInfo = styled.div`

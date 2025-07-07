@@ -96,6 +96,42 @@ export const NavLink = styled(RouterNavLink)`
   }
 `;
 
+export const StyledDesktopLink = styled.a`
+  font-family: 'Helvetica Neue LT Com';
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: black;
+  position: relative;
+  transition: color 0.3s ease;
+  padding: 2px 5px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: ${BLUE_COLOR};
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &.active {
+    color: ${BLUE_COLOR};
+    &::after {
+      transform: scaleX(1);
+    }
+  }
+
+  &:hover {
+    color: ${BLUE_COLOR};
+    &::after {
+      transform: scaleX(1);
+    }
+  }
+`;
+
 export const CartLink = styled.button`
   font-family: 'Helvetica Neue LT Com';
   font-size: 0.9rem;

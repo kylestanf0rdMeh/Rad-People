@@ -1,10 +1,6 @@
 import React, { useState, useCallback, memo, useContext, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi';
-import { useProducts } from '../contexts/ProductsContext';
-import { usePrefetchData } from '../hooks/usePrefetchData';
-import { useEvents } from '../contexts/EventsContext';
-import { useGallery } from '../contexts/GalleryContext';
 import { useCart } from '../contexts/CartContext';
 import { CartModalContext } from '../App';
 import { 
@@ -23,18 +19,18 @@ import {
   MobileMenu, 
   MobileMenuLink, 
   MobileMenuLinks,
-  MobileMenuIcon
+  MobileMenuIcon,
+  StyledDesktopLink
 } from '../styles/NavBarStyles';
 
 const NavBar: React.FC = memo(() => {
-  const { prefetchProducts } = useProducts();
-  const { prefetchAllData } = usePrefetchData();
-  const { prefetchEvents } = useEvents();
-  const { prefetchGallery } = useGallery();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
   const { openCart } = useContext(CartModalContext);
   const { items, totalItems } = useCart();
   const [cartPulse, setCartPulse] = useState(false);
+
+  console.log('Navbar Rendered')
 
   // Add effect to track changes in cart items and trigger pulse
   useEffect(() => {
@@ -50,33 +46,13 @@ const NavBar: React.FC = memo(() => {
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => {
-      // If we're opening the menu, trigger prefetch
-      if (!prev) {
-        prefetchAllData();
-      }
       return !prev;
     });
-  }, [prefetchAllData]);
+  }, []);
 
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
   }, []);
-
-  const handleShopInteraction = useCallback(() => {
-    prefetchProducts();
-  }, [prefetchProducts]);
-
-  const handleEventsInteraction = useCallback(() => {
-    prefetchEvents();
-  }, [prefetchEvents]);
-
-  const handleClientsInteraction = useCallback(() => {
-    prefetchEvents();
-  }, [prefetchEvents]);
-
-  const handleGalleryInteraction = useCallback(() => {
-    prefetchGallery();
-  }, [prefetchGallery]);
 
   // Handle cart click
   const handleCartClick = (e: React.MouseEvent) => {
@@ -90,39 +66,36 @@ const NavBar: React.FC = memo(() => {
         <Logo to='/' as={Link}>RADPEOPLE</Logo>
 
         <NavLinks>
-          <StyledNavLink to="/about" as={NavLink}>ABOUT</StyledNavLink>
-          <StyledNavLink 
-            to="/gallery" 
-            as={NavLink}
-            onMouseEnter={handleGalleryInteraction}
+          <StyledDesktopLink
+            href="/about"
+            className={location.pathname === '/about' ? 'active' : ''}
+          >
+            ABOUT
+          </StyledDesktopLink>
+          <StyledDesktopLink
+            href="/gallery"
+            className={location.pathname === '/gallery' ? 'active' : ''}
           >
             GALLERY
-          </StyledNavLink>
-          <StyledNavLink 
-            to="/shop" 
-            as={NavLink} 
-            end={false}
-            onMouseEnter={handleShopInteraction}
+          </StyledDesktopLink>
+          <StyledDesktopLink
+            href="/shop"
+            className={location.pathname === '/shop' ? 'active' : ''}
           >
             SHOP
-          </StyledNavLink>
-          <StyledNavLink 
-            to="/events" 
-            as={NavLink} 
-            end={false}
-            onMouseEnter={handleEventsInteraction}
+          </StyledDesktopLink>
+          <StyledDesktopLink
+            href="/events"
+            className={location.pathname === '/events' ? 'active' : ''}
           >
             EVENTS
-          </StyledNavLink>
-
-          <StyledNavLink 
-            to="/clients" 
-            as={NavLink} 
-            end={false}
-            onMouseEnter={handleClientsInteraction}
+          </StyledDesktopLink>
+          <StyledDesktopLink
+            href="/clients"
+            className={location.pathname === '/clients' ? 'active' : ''}
           >
             CLIENTS
-          </StyledNavLink>
+          </StyledDesktopLink>
         </NavLinks>
 
         <CartLink onClick={handleCartClick} as="button">
@@ -134,7 +107,6 @@ const NavBar: React.FC = memo(() => {
       <MobileNav> 
         <MenuIcon onClick={() => {
           toggleMobileMenu();
-          handleShopInteraction();
         }}>
           {mobileMenuOpen ? (
             // X icon

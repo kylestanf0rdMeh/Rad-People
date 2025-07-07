@@ -20,7 +20,6 @@ import { EventsProvider } from './contexts/EventsContext';
 import { CartProvider } from './contexts/CartContext';
 import { ClientsProvider } from './contexts/ClientsContext';
 import AppPrefetcher from './components/AppPrefetcher';
-import NavBar from './components/NavBar';
 
 
 

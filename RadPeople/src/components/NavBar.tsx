@@ -1,12 +1,11 @@
 import React, { useState, useCallback, memo, useContext, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '../contexts/CartContext';
 import { CartModalContext } from '../App';
 import { 
   NavBarContainer, 
   DesktopNav, 
-  NavLink as StyledNavLink, 
   Logo, 
   NavLinks, 
   CartLink, 
@@ -30,7 +29,6 @@ const NavBar: React.FC = memo(() => {
   const { items, totalItems } = useCart();
   const [cartPulse, setCartPulse] = useState(false);
 
-  console.log('Navbar Rendered')
 
   // Add effect to track changes in cart items and trigger pulse
   useEffect(() => {

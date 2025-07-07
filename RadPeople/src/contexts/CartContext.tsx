@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { validateCartItem, validateCart } from '../middleware/Cart';
 
 interface ValidatedPrice {
@@ -46,10 +46,17 @@ interface CartProviderProps {
   children: ReactNode;
 }
 
+const CART_STORAGE_KEY = 'radpeople_cart';
+const CART_EXPIRY_HOURS = 36;
+
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => loadCartFromStorage());
   const [isValidating, setIsValidating] = useState(false);
   const [checkoutToken, setCheckoutToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    saveCartToStorage(items);
+  }, [items]);
 
   // Helper function to check if a price validation is still valid
   const isPriceValidationValid = (validation?: ValidatedPrice) => {
@@ -61,6 +68,34 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     
     return isRecent;
   };
+
+  function saveCartToStorage(items: CartItem[]) {
+    const data = {
+      items,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(data));
+  }
+  
+  function loadCartFromStorage(): CartItem[] {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    try {
+      const { items, timestamp } = JSON.parse(raw);
+      if (
+        !Array.isArray(items) ||
+        typeof timestamp !== 'number' ||
+        Date.now() - timestamp > CART_EXPIRY_HOURS * 60 * 60 * 1000
+      ) {
+        localStorage.removeItem(CART_STORAGE_KEY);
+        return [];
+      }
+      return items;
+    } catch {
+      localStorage.removeItem(CART_STORAGE_KEY);
+      return [];
+    }
+  }
 
   const addItem = async(item: CartItem): Promise<void> => {
     setIsValidating(true);
@@ -151,6 +186,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const clearCart = () => {
     setItems([]);
     setCheckoutToken(null);
+    localStorage.removeItem(CART_STORAGE_KEY);
   };
 
   // New function to validate the entire cart before checkout

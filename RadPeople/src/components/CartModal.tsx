@@ -71,7 +71,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
       
       if (token) {
         // Navigate to checkout page with the token
-        navigate('/checkout', { state: { checkoutToken: token } });
+        navigate('/checkout', { state: { checkoutToken: token, cartItems: items } });
         onClose(); // Close the cart modal
       } else {
         setCheckoutError('Unable to proceed to checkout. Please try again.');

@@ -5,7 +5,7 @@ import Events from './pages/Events';
 import EventDetails from './pages/Events/EventDetails';
 import Gallery from './pages/Gallery';
 import Clients from './pages/Clients';
-import NavBar from './components/NavBar';
+import NavBarPortal from './components/NavBarPortal'; // <-- import the portal
 import Checkout from './pages/Checkout'
 import CartModal from './components/CartModal';
 import ProductList from './pages/Products/ProductList';
@@ -19,6 +19,9 @@ import FontLoader from './components/FontLoader';
 import { EventsProvider } from './contexts/EventsContext';
 import { CartProvider } from './contexts/CartContext';
 import { ClientsProvider } from './contexts/ClientsContext';
+import AppPrefetcher from './components/AppPrefetcher';
+import NavBar from './components/NavBar';
+
 
 
 // Create a context for cart modal state
@@ -55,6 +58,7 @@ function App() {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
+
   return (
     <Router>
       <FontLoader>
@@ -65,7 +69,8 @@ function App() {
                 <ClientsProvider>
                   <CartModalContext.Provider value={{ isCartOpen, openCart, closeCart }}>
                     <GlobalStyles />
-                    <NavBar />
+                    <NavBarPortal />
+                    <AppPrefetcher />
                     <AnimatedRoutes />
                     <CartModal isOpen={isCartOpen} onClose={closeCart} />
                   </CartModalContext.Provider>

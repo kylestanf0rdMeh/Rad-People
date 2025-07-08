@@ -132,6 +132,7 @@ export const VideoWrapper = styled.div<{ screenWidth: number }>`
     width: 100%;
     height: 100%;
     overflow: hidden;
+    object-fit: contain;
     
     wistia-player {
       position: absolute;
@@ -563,6 +564,7 @@ export const PastEventCard = styled.div`
   position: relative;
   cursor: pointer;
   padding-bottom: 3rem;
+  background: white; /* Optional: helps with overflow visuals */
 
   img {
     width: 100%;
@@ -579,7 +581,9 @@ export const PastEventCard = styled.div`
   }
 
   @media (max-width: 767px) {
-    max-height: 90vh;  // Optional, reinforces the static height
+    max-height: 90vh;      // Cap the card's height to 90% of viewport
+    min-height: 0;         // Prevent min-height from causing growth
+    flex-shrink: 1;        // Allow shrinking if needed
   }
 `;
 

@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { VideoWrapper, StyledVideo } from '../styles/HomeStyles';
 import landingVideo1 from '../assets/radpeople-landingPage.mp4';
 import landingVideoMobile from '../assets/landingVideo-mobile.mp4';
 
 const VideoBackground: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      // Try to play the video programmatically
+      videoRef.current.play().catch(() => {
+        // Some browsers will still block it, but this helps in many cases
+      });
+    }
+  }, []);
+
+
   return (
     <VideoWrapper>
       <StyledVideo autoPlay loop muted playsInline>

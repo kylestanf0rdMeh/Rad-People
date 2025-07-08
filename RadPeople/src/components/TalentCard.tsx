@@ -107,10 +107,7 @@ const TalentBio = styled(motion.div)`
   font-family: 'Helvetica Neue LT Com', sans-serif;
   font-size: clamp(0.4rem, 1.7vw, 0.6rem);
   line-height: 1.3;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center; /* or center if you prefer */
   padding: 1.2rem 1rem 0 1rem;
   box-sizing: border-box;
   cursor: pointer;

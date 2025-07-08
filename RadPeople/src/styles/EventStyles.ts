@@ -577,6 +577,10 @@ export const PastEventCard = styled.div`
       opacity: 1;
     }
   }
+
+  @media (max-width: 767px) {
+    max-height: 90vh;  // Optional, reinforces the static height
+  }
 `;
 
 export const PastEventsList = styled.div`

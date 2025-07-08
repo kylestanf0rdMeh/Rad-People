@@ -40,16 +40,20 @@ const NavBar: React.FC = memo(() => {
       return () => clearTimeout(timer);
     }
   }, [items]); // Only trigger on items changes
+
+  // Delays the disappearance of the mobile menu
+  const handleMobileMenuLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setTimeout(() => {
+      window.location.href = href;
+    }, 200); // or 1000 for a full second
+  };
   
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => {
       return !prev;
     });
-  }, []);
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false);
   }, []);
 
   // Handle cart click
@@ -149,19 +153,19 @@ const NavBar: React.FC = memo(() => {
 
       <MobileMenu open={mobileMenuOpen}>
         <MobileMenuLinks>
-          <MobileMenuLink as={Link} to="/about" onClick={closeMobileMenu}>
+          <MobileMenuLink as="a" href="/about" onClick={e => handleMobileMenuLinkClick(e, "/about")}>
             <span>ABOUT</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={Link} to="/gallery" onClick={closeMobileMenu}>
+          <MobileMenuLink as="a" href="/gallery" onClick={e => handleMobileMenuLinkClick(e, "/gallery")}>
             <span>GALLERY</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={Link} to="/shop" onClick={closeMobileMenu}>
+          <MobileMenuLink as="a" href="/shop" onClick={e => handleMobileMenuLinkClick(e, "/shop")}>
             <span>SHOP</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={Link} to="/events" onClick={closeMobileMenu}>
+          <MobileMenuLink as="a" href="/events" onClick={e => handleMobileMenuLinkClick(e, "/events")}>
             <span>EVENTS</span> <MobileMenuIcon/>
           </MobileMenuLink>
-          <MobileMenuLink as={Link} to="/clients" onClick={closeMobileMenu}>
+          <MobileMenuLink as="a" href="/clients" onClick={e => handleMobileMenuLinkClick(e, "/clients")}>
             <span>CLIENTS</span> <MobileMenuIcon/>
           </MobileMenuLink>
         </MobileMenuLinks>

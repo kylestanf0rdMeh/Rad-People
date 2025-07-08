@@ -281,7 +281,7 @@ export const MobileMenu = styled.div<{ open: boolean }>`
   width: 100%;
   height: calc(100% - ${NAVBAR_HEIGHT});
   background-color: white;
-  transition: left 0.3s ease-in-out;
+  transition: ${({ open }) => open ? 'left 0.3s ease-in-out' : 'none'};
   z-index: 1001;
   overflow-y: auto;
   border-top: ${BORDER_THICKNESS} solid black; // Add the border back

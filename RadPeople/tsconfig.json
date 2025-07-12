@@ -5,6 +5,10 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "types": ["vite/client", "@google/model-viewer"]
+    "types": ["vite/client", "@google/model-viewer"],
+    "baseUrl": ".",
+    "paths": {
+      "*": ["src/components/reactbits/*"]
+    }
   }
 }

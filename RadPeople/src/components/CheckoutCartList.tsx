@@ -18,6 +18,9 @@ interface CheckoutCartListProps {
   setProcessing: (b: boolean) => void;
   setError: (e: string | null) => void;
   setSuccess: (b: boolean) => void;
+  clientSecret: string;
+  setFieldErrors: React.Dispatch<React.SetStateAction<Partial<Record<keyof ShippingInfo, string>>>>;
+  setPaymentError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const SHIPPING_COST = 5.0;
@@ -35,6 +38,9 @@ const CheckoutCartList: React.FC<CheckoutCartListProps> = ({
   setProcessing,
   setError,
   setSuccess,
+  clientSecret,
+  setFieldErrors,
+  setPaymentError
 }) => {
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const estimatedTaxes = calculateTaxes(items);
@@ -115,6 +121,9 @@ const CheckoutCartList: React.FC<CheckoutCartListProps> = ({
         setProcessing={setProcessing}
         setError={setError}
         setSuccess={setSuccess}
+        clientSecret={clientSecret}
+        setFieldErrors={setFieldErrors}
+        setPaymentError={setPaymentError}
       />
     </div>
   );

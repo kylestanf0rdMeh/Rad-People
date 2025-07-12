@@ -25,6 +25,7 @@ export const GalleryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setShouldFetch(true);
   };
 
+
   return (
     <GalleryContext.Provider value={{
       images: data || [],

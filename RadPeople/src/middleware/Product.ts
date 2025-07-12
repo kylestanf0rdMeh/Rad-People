@@ -2,6 +2,21 @@ import { EntryCollection } from 'contentful';
 import contentfulClient from '../services/contentful';
 import { ProductItem } from '../models/Product.model';
 import { StripeProduct } from '../models/StripeProduct.model';
+import { Order } from '../models/Order.model';
+import axios from 'axios';
+
+// Get API URL from environment variables
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'https://localhost:6996';
+
+// Create axios instance with base configuration
+const api = axios.create({
+  baseURL: BACKEND_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+
 
 export const fetchProducts = async (): Promise<ProductItem[]> => {
     try {
@@ -56,5 +71,22 @@ export const fetchSingleProduct = async (productId: any): Promise<ProductItem> =
   } catch (error) {
     console.error('Error fetching single product:', error);
     throw error;
+  }
+};
+
+
+/**
+ * Validates a single cart item with the backend
+ * @param item The cart item to validate
+ * @returns nothing
+ */
+
+export const storeOrder = async (order: Order) => {
+  try {
+    const response = await api.post('/api/payment/order-fulfillment', order);
+    return response.data;
+  } catch (e) {
+    console.error('Error writing to backend:', e);
+    throw e;
   }
 };

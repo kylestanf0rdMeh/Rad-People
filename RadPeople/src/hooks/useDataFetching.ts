@@ -79,3 +79,15 @@ export function useDataFetching<T>(
 
   return { data, loading, error };
 }
+
+export function isCacheValid(key: string, maxAge: number): boolean {
+  const cached = localStorage.getItem(key);
+  if (!cached) return false;
+  try {
+    const { timestamp } = JSON.parse(cached);
+    const age = Date.now() - timestamp;
+    return age < maxAge;
+  } catch {
+    return false;
+  }
+}

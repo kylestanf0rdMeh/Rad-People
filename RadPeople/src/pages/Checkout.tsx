@@ -180,7 +180,14 @@ const Checkout: React.FC = () => {
     <PopupModal
       open={showErrorModal}
       onClose={() => setShowErrorModal(false)}
-      text={paymentError || "There was an error processing your payment, please try again later"}
+      text={
+        [
+          Object.values(fieldErrors).some(Boolean) && "Your shipping information is incomplete.",
+          paymentError
+        ]
+          .filter(Boolean)
+          .join('\n')
+      }
       width={350}
       height={150}
       color="red"

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import type { ShippingInfo } from './ShippingInformationForm';
 
@@ -10,85 +10,32 @@ interface CheckoutPayButtonProps {
   setProcessing: (b: boolean) => void;
   setError: (e: string | null) => void;
   setSuccess: (b: boolean) => void;
-  clientSecret: string;
-  setFieldErrors: React.Dispatch<React.SetStateAction<Partial<Record<keyof ShippingInfo, string>>>>;
-  setPaymentError: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-function validateShipping(shipping: ShippingInfo) {
-  const errors: Partial<Record<keyof ShippingInfo, string>> = {};
-  if (!shipping.name) errors.name = "Name is required.";
-  if (!shipping.email) errors.email = "Email is required.";
-  if (!shipping.address1) errors.address1 = "Address is required.";
-  if (!shipping.city) errors.city = "City is required.";
-  if (!shipping.state) errors.state = "State is required.";
-  if (!shipping.zip) errors.zip = "ZIP is required.";
-  // country is always US, so skip
-  return errors;
 }
 
 const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
-  shipping, processing, setProcessing, setError, setSuccess, clientSecret, setFieldErrors, setPaymentError
+  shipping, processing, setProcessing, setError, setSuccess
 }) => {
-  const [pressed, setPressed] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const stripe = useStripe();
   const elements = useElements();
 
-  // Press button effects
-  const handleMouseDown = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setPressed(true);
-  };
-
-  const handleMouseUp = () => {
-    timeoutRef.current = setTimeout(() => {
-      setPressed(false);
-    }, 200); // 200ms, adjust as desired
-  };
-
-  const handleMouseLeave = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setPressed(false);
-  };
-
   const handleSubmit = async () => {
     setError(null);
-    setPaymentError(null);
 
-    // 1. Validate shipping fields
-    const errors = validateShipping(shipping);
-    setFieldErrors(errors);
-  
-    // 2. Submit PaymentElement first (required for deferred payment methods)
-    if (elements) {
-      const { error: submitError } = await elements.submit();
-      if (submitError) {
-        setPaymentError(submitError.message || 'Payment details are incomplete.');
-        setProcessing(false);
-        return;
-      }
-    }
-  
-    if (Object.keys(errors).length > 0) {
-      setProcessing(false);
-      return;
-    }
-  
     if (!stripe || !elements) {
       setError('Stripe has not loaded yet.');
-      setProcessing(false);
       return;
     }
-  
+
+    if (!shipping.name || !shipping.address1 || !shipping.city || !shipping.state || !shipping.zip || !shipping.email) {
+      setError('Please fill out all required shipping fields.');
+      return;
+    }
+
     setProcessing(true);
-  
-    // 3. Confirm payment
+
     const result = await stripe.confirmPayment({
       elements,
-      clientSecret,
       confirmParams: {
-        return_url: window.location.origin + '/checkout',
         shipping: {
           name: shipping.name,
           address: {
@@ -97,21 +44,19 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
             city: shipping.city,
             state: shipping.state,
             postal_code: shipping.zip,
-            country: "US",
+            country: shipping.country,
           },
         },
         receipt_email: shipping.email,
       },
       redirect: 'if_required',
     });
-  
+
     if (result.error) {
-      setPaymentError(result.error.message || 'Payment failed');
-      setProcessing(false);
-    } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
-      setSuccess(true);
+      setError(result.error.message || 'Payment failed');
       setProcessing(false);
     } else {
+      setSuccess(true);
       setProcessing(false);
     }
   };
@@ -119,13 +64,10 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
   return (
     <button
       onClick={handleSubmit}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
       disabled={processing}
       style={{
         width: '100%',
-        background: BLUE_COLOR,
+        background: BLUE_COLOR, // Use your blue color
         color: '#fff',
         fontWeight: 600,
         fontSize: 16,
@@ -135,9 +77,7 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
         marginTop: 24,
         marginBottom: 50,
         cursor: processing ? 'not-allowed' : 'pointer',
-        transition: 'background 0.2s, opacity 0.2s',
-        outline: 'none',
-        opacity: pressed ? 0.7 : 1
+        transition: 'background 0.2s',
       }}
     >
       {processing ? 'Processing...' : 'Pay Now'}

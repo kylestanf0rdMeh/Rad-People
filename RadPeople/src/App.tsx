@@ -11,7 +11,6 @@ import CartModal from './components/CartModal';
 import ProductList from './pages/Products/ProductList';
 import GlobalStyles from './styles/GlobalStyles';
 import ProductDetail from './pages/Products/ProductDetails';
-import OrderConfirmed from './pages/OrderConfirmed';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ProductsProvider } from './contexts/ProductsContext';
@@ -47,7 +46,6 @@ function AnimatedRoutes() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/events/:eventId/:name" element={<EventDetails />} />
         <Route path='/checkout' element={<Checkout />} />
-        <Route path="/order-confirmed" element={<OrderConfirmed />} />
       </Routes>
     </AnimatePresence>
   );

@@ -6,7 +6,6 @@ import { Elements, PaymentElement } from '@stripe/react-stripe-js';
 import { createPaymentIntent } from '../middleware/Payment';
 import CheckoutCartList from '../components/CheckoutCartList';
 import ShippingInformationForm, { ShippingInfo } from '../components/ShippingInformationForm';
-import Stepper, { Step } from '../components/reactbits/src/components/reactbits/Components/Stepper/Stepper';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string);
 
@@ -36,9 +35,6 @@ const Checkout: React.FC = () => {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ShippingInfo, string>>>({});
-  const [step, setStep] = useState(1);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [shipping, setShipping] = useState<ShippingInfo>({
     name: '',
     address1: '',
@@ -54,12 +50,6 @@ const Checkout: React.FC = () => {
 
   const checkoutToken = (location.state as any)?.checkoutToken;
   const cartItems = (location.state as any)?.cartItems || [];
-
-  // We remove the orderstored flag for each new checkout session
-  useEffect(() => {
-    sessionStorage.removeItem('orderStored');
-    sessionStorage.removeItem('orderConfirmedData');
-  }, []);
 
   useEffect(() => {
     if (!checkoutToken) {
@@ -84,108 +74,68 @@ const Checkout: React.FC = () => {
       });
   }, [checkoutToken, clientSecret]);
 
-  useEffect(() => {
-    if (success) {
-      // Store order data in sessionStorage
-      sessionStorage.setItem(
-        'orderConfirmedData',
-        JSON.stringify({ cartItems, shipping })
-      );
-      // Redirect with a natural link
-      window.location.href = '/order-confirmed';
-    }
-  }, [success, cartItems, shipping]);
-
   if (loading) return <div>Loading payment...</div>;
+  if (error) return <div style={{ color: 'red' }}>{error}</div>;
   if (!clientSecret) return null;
+  if (success) return <div>Payment successful! Thank you for your order.</div>;
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
-    <div
-      style={{
-        minHeight: '100vh',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
       <div
         style={{
-          width: '95vw',
-          maxWidth: 480,
-          background: '#fff',
-          borderRadius: 8,
-          padding: 16,
-          margin: 0,
+          minHeight: '100vh',
+          width: '100vw',
           display: 'flex',
           flexDirection: 'column',
-          gap: 32,
-          boxSizing: 'border-box',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <Stepper
-          initialStep={1}
-          onStepChange={setStep}
-          onFinalStepCompleted={() => console.log("All steps completed!")}
-          backButtonText="Back"
-          nextButtonText="Next"
+        <div
+          style={{
+            width: '95vw',           // Responsive width for mobile
+            maxWidth: 480,           // Desktop/tablet max width
+            background: '#fff',
+            borderRadius: 8,
+            padding: 16,             // Slightly smaller padding for mobile
+            margin: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 32,
+            boxSizing: 'border-box',
+          }}
         >
-          {/* Step 1: Shipping Form */}
-          <Step>
-            <ShippingInformationForm
-              shipping={shipping}
-              onChange={(field, value) => {
-                setShipping(prev => ({ ...prev, [field]: value }));
-                setFieldErrors(prev => ({ ...prev, [field]: undefined }));
-              }}
-              fieldErrors={fieldErrors}
-            />
-          </Step>
-          {/* Step 2: Payment Element */}
-          <Step>
-            {clientSecret ? (
-                <div>
-                  <h3 style={{ fontWeight: 600, fontSize: 18, marginBottom: 10, color: '#222' }}>
-                    Card Details
-                  </h3>
-                  <PaymentElement />
-                </div>
-            ) : (
-              <div>Fill out shipping info and proceed to payment.</div>
-            )}
-          </Step>
-        </Stepper>
-
-        {/* Always show the cart overview after the stepper */}
-        <CheckoutCartList
-          items={cartItems}
-          clientSecret={clientSecret}
-          shipping={shipping}
-          processing={processing}
-          setProcessing={setProcessing}
-          setError={setError}
-          setSuccess={setSuccess}
-          setFieldErrors={setFieldErrors}
-          setPaymentError={setPaymentError}
-        />
-
-        {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
-        {success && <div style={{ color: 'green', marginTop: 10 }}>Order submitted!</div>}
-      </div>
-      {/* Responsive font size for Stripe and native inputs */}
-      <style>
-        {`
-          @media (max-width: 762px) {
-            .StripeElement,
-            input, select {
-              font-size: 16px !important;
+          <ShippingInformationForm
+            shipping={shipping}
+            onChange={(field, value) => setShipping(prev => ({ ...prev, [field]: value }))}
+          />
+          <div>
+            <h3 style={{ fontWeight: 600, fontSize: 18, marginBottom: 10, color: '#222' }}>Card Details</h3>
+            <PaymentElement />
+          </div>
+          <CheckoutCartList
+            items={cartItems}
+            shipping={shipping}
+            processing={processing}
+            setProcessing={setProcessing}
+            setError={setError}
+            setSuccess={setSuccess}
+          />
+          {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
+          {success && <div style={{ color: 'green', marginTop: 10 }}>Order submitted!</div>}
+        </div>
+        {/* Responsive font size for Stripe and native inputs */}
+        <style>
+          {`
+            @media (max-width: 762px) {
+              .StripeElement,
+              input, select {
+                font-size: 16px !important;
+              }
             }
-          }
-        `}
-      </style>
-    </div>
+          `}
+        </style>
+      </div>
     </Elements>
   );
 };

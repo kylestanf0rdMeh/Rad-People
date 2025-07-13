@@ -8,9 +8,10 @@ import { fetchSingleEvent } from '../../middleware/Events';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { IoArrowBack } from 'react-icons/io5'; // Import back arrow icon
-import { EventContentWrapper, EventDate, EventItemContainer, EventName, LocationIcon } from '../../styles/EventStyles';
+import { DetailEventName, EventContentWrapper, EventDate, EventItemContainer, EventName, LocationIcon } from '../../styles/EventStyles';
 import { FaChevronDown } from 'react-icons/fa';
 import { EventContentContainer, FixedBackgroundContainer, VideoContainer, FixedBackgroundImage, EventTitle, EventDetailsInfoOverlay, EventDetailLocation, EventDetailLocationText, DetailEventDescription, RightColumnOverlay, BackNavigation, OverlayBackButton, OverlayTItle, AlternateDescription, OverlayDate, OverlayTime, LocationText, RightColumnDescription, MobileViewContainer, MobileBackNavigation, MobileBackButton, MobileEventContent, MobileEventTitle, MobileEventInfoOverlay, MobileDetailsSection, MobileEventDetailTitle, MobileAlternateDescription, MobileEventDate, MobileEventTime, MobileLocationText, MobileEventDescription } from '../../styles/EventDetailsStyles';
+import { TextScramble } from '../../components/motion-primitives/text-scramble';
 
 interface LocationState {
   event: EventItem;
@@ -278,7 +279,7 @@ const EventDetails: React.FC = () => {
                       </EventDate>
                     )}
 
-                    <EventName>{event?.fields.name}</EventName>
+                    <DetailEventName>{event?.fields.name}</DetailEventName>
                     
                     {event?.fields.location && (
                     <EventDetailLocation>

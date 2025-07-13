@@ -352,6 +352,42 @@ export const EventName = styled.h3`
   }
 `;
 
+export const DetailEventName = styled.h3`
+  font-family: 'Sequel Sans Regular';
+  padding-left: 6px;
+  color: white;
+  cursor: pointer;
+  margin: 0;
+  text-transform: uppercase;
+  line-height: 1.2;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+
+  @media (max-width: 767px) {
+    font-size: 1.2rem;
+    width: 70vw;
+    max-width: 70vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 600px;
+    width: 100%;
+  }
+
+  @media (min-width: 1251px) {
+    ${fluidTypography(1.4, 2.2, 320, 1500)}
+  }
+
+  @media (min-width: 768px) and (max-width: 1250px) {
+    ${fluidTypography(0.9, 1.2, 320, 1500)}
+  }
+`;
+
 
 
 export const LocationIcon = styled.div`

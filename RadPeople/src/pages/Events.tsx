@@ -392,11 +392,13 @@ const Events: React.FC = () => {
                         >
                           <EventContentWrapper>
                             <EventDate>
-                              {new Date(upcomingEvents[activeIndex].fields.date).toLocaleDateString('en-US', {
-                                month: '2-digit',
-                                day: '2-digit',
-                                year: '2-digit'
-                              }).replace(/\//g, '.')}
+                              <TextScramble as="span">
+                                {new Date(upcomingEvents[activeIndex].fields.date).toLocaleDateString('en-US', {
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  year: '2-digit'
+                                }).replace(/\//g, '.')}
+                              </TextScramble>
                             </EventDate>
 
                             <EventName>{upcomingEvents[activeIndex].fields.name}</EventName>

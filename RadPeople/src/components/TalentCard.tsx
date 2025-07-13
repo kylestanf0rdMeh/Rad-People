@@ -118,6 +118,12 @@ const TalentBio = styled(motion.div)`
   overflow-wrap: break-word;
   word-break: break-word;
   overflow-y: auto;
+  a {
+       text-decoration: none !important;
+       color: inherit !important;
+       pointer-events: none;
+       cursor: default;
+  }
 `;
 
 const TalentInfo = styled.div`

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 export const ProductContainer = styled.div`
   display: flex;
@@ -59,7 +58,7 @@ export const BreadcrumbContainer = styled.div`
   border-bottom: 1px solid #000000;
 `;
 
-export const BreadcrumbLink = styled(Link)`
+export const BreadcrumbLink = styled.a`
   color: #000000;
   text-decoration: underline;
   

@@ -71,31 +71,32 @@ const ProductDetail: React.FC = () => {
     success: false
   });
 
-
-
-
-
+  // If we have a poroduct in the session storage, we will use it. If not, we will fetch it via the the middleware. We will also remove it from session storage.
   useEffect(() => {
     const loadProduct = async () => {
-      if (!product) {
-        try {
-          setLoading(true);
-          const fetchedProduct = await fetchSingleProduct(productId);
-          setProduct(fetchedProduct);
-        } catch (err) {
-          console.error('Error loading product:', err);
-          setError(true);
-        } finally {
-          setLoading(false);
-          setFetchAttempted(true);
-        }
-      } else {
+      const stored = sessionStorage.getItem('selectedProduct');
+      if (stored) {
+        setProduct(JSON.parse(stored));
+        sessionStorage.removeItem('selectedProduct');
+        setFetchAttempted(true);
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        const fetchedProduct = await fetchSingleProduct(productId);
+        setProduct(fetchedProduct);
+      } catch (err) {
+        console.error('Error loading product:', err);
+        setError(true);
+      } finally {
+        setLoading(false);
         setFetchAttempted(true);
       }
     };
-
+  
     loadProduct();
-  }, [productId, state?.product]);
+  }, [productId]);
 
   useEffect(() => {
     if (isMobile) return;
@@ -234,7 +235,7 @@ const ProductDetail: React.FC = () => {
     <PageWrapper>
       <Layout>
         <BreadcrumbContainer>
-          <BreadcrumbLink to="/shop">Product List</BreadcrumbLink>
+          <BreadcrumbLink href="/shop">Product List</BreadcrumbLink>
           <BreadcrumbArrow>→</BreadcrumbArrow>
           <BreadcrumbCurrent>{product?.fields.name}</BreadcrumbCurrent>
         </BreadcrumbContainer>

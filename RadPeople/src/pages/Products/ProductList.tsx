@@ -100,6 +100,10 @@ const ProductList: React.FC = () => {
     }
   }, [sortedProducts]);
 
+  const handleProductClick = (product: any) => {
+    sessionStorage.setItem('selectedProduct', JSON.stringify(product));
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -181,11 +185,11 @@ const ProductList: React.FC = () => {
           {/* PRODUCTS ARE LISTED IN THIS SECTION */}
           <ProductGrid columns={activeGrid}>
             {displayProducts.map((product) => (
-              <ProductLink 
+              <ProductLink
                 key={product.sys.id}
-                to={`/shop/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
-                state={{ product }}
+                href={`/shop/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
                 columns={activeGrid}
+                onClick={() => handleProductClick(product)}
               >
                 <ProductCard>
                   <ImageWrapper columns = {activeGrid}>

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 const NAVBAR_HEIGHT = '40px'; // Add this constant
 
@@ -12,7 +11,7 @@ export const ProductListContainer = styled.div`
   height: fit-content;
 `;
 
-export const ProductLink = styled(Link)<{ columns: number }>`
+export const ProductLink = styled.a<{ columns: number }>`
   text-decoration: none;
   color: inherit;
   display: block;

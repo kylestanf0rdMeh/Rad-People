@@ -1,6 +1,7 @@
 // RadPeople/src/middleware/Payment.ts
 import axios from 'axios';
 import { CartItem } from '../contexts/CartContext';
+import { ShippingInfo } from '../components/ShippingInformationForm';
 
 // Get API URL from environment variables
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:2000';
@@ -22,7 +23,7 @@ const api = axios.create({
 export const createPaymentIntent = async (
   cartItems: CartItem[],
   checkoutToken: string
-): Promise<{ clientSecret: string }> => {
+): Promise<{ clientSecret: string, paymentIntentId: string }> => {
   try {
     const response = await api.post('/api/payment/create-intent', {
       items: cartItems,
@@ -34,3 +35,20 @@ export const createPaymentIntent = async (
     throw error;
   }
 };
+
+
+export const updatePaymentIntent = async(
+  shipping: ShippingInfo,
+  paymentIntentId: string | null
+): Promise<{ something: any }> => {
+  try {
+    const response = await api.post('/api/payment/update-intent', {
+      shipping: shipping,
+      paymentIntentId: paymentIntentId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating payment intent:', error);
+    throw error;
+  }
+}

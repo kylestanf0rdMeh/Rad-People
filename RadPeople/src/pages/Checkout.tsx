@@ -6,6 +6,7 @@ import { Elements, PaymentElement } from '@stripe/react-stripe-js';
 import { createPaymentIntent } from '../middleware/Payment';
 import CheckoutCartList from '../components/CheckoutCartList';
 import ShippingInformationForm, { ShippingInfo } from '../components/ShippingInformationForm';
+import PopupModal from '../components/PopupModal';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string);
 
@@ -33,11 +34,12 @@ const appearance: Appearance = {
 const Checkout: React.FC = () => {
   const location = useLocation();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ShippingInfo, string>>>({});
-  const [step, setStep] = useState(1);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [shipping, setShipping] = useState<ShippingInfo>({
     name: '',
     address1: '',
@@ -72,6 +74,7 @@ const Checkout: React.FC = () => {
       .then(data => {
         if (data.clientSecret && !clientSecret) {
           setClientSecret(data.clientSecret);
+          setPaymentIntentId(data.paymentIntentId)
         } else {
           setError('Failed to initialize payment.');
         }
@@ -95,8 +98,14 @@ const Checkout: React.FC = () => {
     }
   }, [success, cartItems, shipping]);
 
+  // When you catch a payment error (e.g. in setPaymentError or setError):
+  useEffect(() => {
+    if (paymentError) setShowErrorModal(true);
+  }, [paymentError]);
+
   if (loading) return <div>Loading payment...</div>;
   if (!clientSecret) return null;
+  
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
@@ -150,6 +159,7 @@ const Checkout: React.FC = () => {
           setSuccess={setSuccess}
           setFieldErrors={setFieldErrors}
           setPaymentError={setPaymentError}
+          paymentIntentId={paymentIntentId}
         />
 
         {error && <div style={{ color: 'red', marginTop: 10 }}>{error}</div>}
@@ -167,6 +177,14 @@ const Checkout: React.FC = () => {
         `}
       </style>
     </div>
+    <PopupModal
+      open={showErrorModal}
+      onClose={() => setShowErrorModal(false)}
+      text="There was an error processing your payment, please try again later"
+      width={350}
+      height={150}
+      color="red"
+    />
     </Elements>
   );
 };

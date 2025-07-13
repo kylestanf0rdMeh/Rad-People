@@ -19,6 +19,7 @@ interface CheckoutCartListProps {
   setError: (e: string | null) => void;
   setSuccess: (b: boolean) => void;
   clientSecret: string;
+  paymentIntentId: string | null;
   setFieldErrors: React.Dispatch<React.SetStateAction<Partial<Record<keyof ShippingInfo, string>>>>;
   setPaymentError: React.Dispatch<React.SetStateAction<string | null>>;
 }
@@ -39,6 +40,7 @@ const CheckoutCartList: React.FC<CheckoutCartListProps> = ({
   setError,
   setSuccess,
   clientSecret,
+  paymentIntentId,
   setFieldErrors,
   setPaymentError
 }) => {
@@ -122,6 +124,7 @@ const CheckoutCartList: React.FC<CheckoutCartListProps> = ({
         setError={setError}
         setSuccess={setSuccess}
         clientSecret={clientSecret}
+        paymentIntentId={paymentIntentId}
         setFieldErrors={setFieldErrors}
         setPaymentError={setPaymentError}
       />

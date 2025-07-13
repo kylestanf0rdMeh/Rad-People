@@ -29,6 +29,11 @@ const GlobalStyles = createGlobalStyle`
     transition: background-color 9999s ease-in-out 0s;
   }
 
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   @font-face {
     font-family: 'Helvetica Neue LT Com';
     src: url(${HelveticaNeueLTCom77BoldCondensed}) format('truetype');

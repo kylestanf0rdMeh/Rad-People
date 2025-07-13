@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useStripe, useElements } from '@stripe/react-stripe-js';
 import type { ShippingInfo } from './ShippingInformationForm';
+import { updatePaymentIntent } from '../middleware/Payment';
 
 const BLUE_COLOR = '#1404FB';
 
@@ -11,11 +12,12 @@ interface CheckoutPayButtonProps {
   setError: (e: string | null) => void;
   setSuccess: (b: boolean) => void;
   clientSecret: string;
+  paymentIntentId: string | null;
   setFieldErrors: React.Dispatch<React.SetStateAction<Partial<Record<keyof ShippingInfo, string>>>>;
   setPaymentError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-function validateShipping(shipping: ShippingInfo) {
+export function validateShipping(shipping: ShippingInfo) {
   const errors: Partial<Record<keyof ShippingInfo, string>> = {};
   if (!shipping.name) errors.name = "Name is required.";
   if (!shipping.email) errors.email = "Email is required.";
@@ -28,7 +30,7 @@ function validateShipping(shipping: ShippingInfo) {
 }
 
 const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
-  shipping, processing, setProcessing, setError, setSuccess, clientSecret, setFieldErrors, setPaymentError
+  shipping, processing, setProcessing, setError, setSuccess, clientSecret, paymentIntentId, setFieldErrors, setPaymentError
 }) => {
   const [pressed, setPressed] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,7 +61,12 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
     // 1. Validate shipping fields
     const errors = validateShipping(shipping);
     setFieldErrors(errors);
-  
+
+    if (Object.keys(errors).length > 0) {
+      setProcessing(false);
+      return; // Don't update intent or proceed
+    }
+
     // 2. Submit PaymentElement first (required for deferred payment methods)
     if (elements) {
       const { error: submitError } = await elements.submit();
@@ -69,19 +76,23 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
         return;
       }
     }
-  
-    if (Object.keys(errors).length > 0) {
-      setProcessing(false);
-      return;
-    }
-  
+
     if (!stripe || !elements) {
       setError('Stripe has not loaded yet.');
       setProcessing(false);
       return;
     }
-  
+
     setProcessing(true);
+
+    // 3. Only update payment intent if no errors
+    try {
+      await updatePaymentIntent(shipping, paymentIntentId);
+    } catch (err) {
+      setError('Failed to update payment intent.');
+      setProcessing(false);
+      return;
+    }
   
     // 3. Confirm payment
     const result = await stripe.confirmPayment({

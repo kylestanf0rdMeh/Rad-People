@@ -6,7 +6,6 @@ import { Elements, PaymentElement } from '@stripe/react-stripe-js';
 import { createPaymentIntent } from '../middleware/Payment';
 import CheckoutCartList from '../components/CheckoutCartList';
 import ShippingInformationForm, { ShippingInfo } from '../components/ShippingInformationForm';
-import Stepper, { Step } from '../components/reactbits/src/components/reactbits/Components/Stepper/Stepper';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string);
 
@@ -125,38 +124,20 @@ const Checkout: React.FC = () => {
           boxSizing: 'border-box',
         }}
       >
-        <Stepper
-          initialStep={1}
-          onStepChange={setStep}
-          onFinalStepCompleted={() => console.log("All steps completed!")}
-          backButtonText="Back"
-          nextButtonText="Next"
-        >
-          {/* Step 1: Shipping Form */}
-          <Step>
-            <ShippingInformationForm
-              shipping={shipping}
-              onChange={(field, value) => {
-                setShipping(prev => ({ ...prev, [field]: value }));
-                setFieldErrors(prev => ({ ...prev, [field]: undefined }));
-              }}
-              fieldErrors={fieldErrors}
-            />
-          </Step>
-          {/* Step 2: Payment Element */}
-          <Step>
-            {clientSecret ? (
-                <div>
-                  <h3 style={{ fontWeight: 600, fontSize: 18, marginBottom: 10, color: '#222' }}>
-                    Card Details
-                  </h3>
-                  <PaymentElement />
-                </div>
-            ) : (
-              <div>Fill out shipping info and proceed to payment.</div>
-            )}
-          </Step>
-        </Stepper>
+      <ShippingInformationForm
+        shipping={shipping}
+        onChange={(field, value) => {
+          setShipping(prev => ({ ...prev, [field]: value }));
+          setFieldErrors(prev => ({ ...prev, [field]: undefined }));
+        }}
+        fieldErrors={fieldErrors}
+      />
+      <div>
+        <h3 style={{ fontWeight: 600, fontSize: 18, marginBottom: 10, color: '#222' }}>
+          Card Details
+        </h3>
+        <PaymentElement />
+      </div>
 
         {/* Always show the cart overview after the stepper */}
         <CheckoutCartList

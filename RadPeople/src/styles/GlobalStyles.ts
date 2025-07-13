@@ -14,6 +14,21 @@ const GlobalStyles = createGlobalStyle`
     font-display: block;
   }
 
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:active,
+  select:-webkit-autofill,
+  select:-webkit-autofill:focus,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #fafbfc inset !important;
+    box-shadow: 0 0 0 1000px #fafbfc inset !important;
+    -webkit-text-fill-color: #222 !important;
+    caret-color: #222 !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
   @font-face {
     font-family: 'Helvetica Neue LT Com';
     src: url(${HelveticaNeueLTCom77BoldCondensed}) format('truetype');
@@ -118,5 +133,9 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 `;
+
+
+
+
 
 export default GlobalStyles;

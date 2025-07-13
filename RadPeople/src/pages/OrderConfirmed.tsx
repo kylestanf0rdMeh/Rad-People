@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useCart, CartItem } from '../contexts/CartContext';
 import { ShippingInfo } from '../components/ShippingInformationForm';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { storeOrder } from '../middleware/Product';
 
 import NFUltraRegular from '../assets/NFUltra-Regular.otf'; // adjust path if needed

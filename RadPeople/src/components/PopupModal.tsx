@@ -14,7 +14,6 @@ const PopupModal: React.FC<PopupModalProps> = ({
   onClose,
   text,
   width = 320,
-  height, // not used for the modal box, let it grow
   color = 'black',
 }) => {
   if (!open) return null;

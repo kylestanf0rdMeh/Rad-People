@@ -205,8 +205,8 @@ const TopMenu: React.FC<{ aboutUs?: string }> = ({ aboutUs }) => {
 
 const fadeVariants = {
   initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" } },
-  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" } }
+  animate: { opacity: 1, transition: { duration: 0.2, ease: [0.42, 0, 0.58, 1] } },
+  exit: { opacity: 0, transition: { duration: 0.2, ease: [0.42, 0, 0.58, 1] } }
 };
 
 const TalentCardList: React.FC<TalentCardProps> = ({ talents, aboutUs }) => {
@@ -237,7 +237,7 @@ const TalentCardWithBio: React.FC<{ talent: TalentCardProps['talents'][0] }> = (
               initial="initial"
               animate="animate"
               exit="exit"
-              variants={fadeVariants}
+              variants={fadeVariants as any}
               onClick={() => setShowBio(true)}
             />
           ) : (
@@ -246,7 +246,7 @@ const TalentCardWithBio: React.FC<{ talent: TalentCardProps['talents'][0] }> = (
               initial="initial"
               animate="animate"
               exit="exit"
-              variants={fadeVariants}
+              variants={fadeVariants as any}
               onClick={() => setShowBio(false)}
             >
               {talent.fields.bio}

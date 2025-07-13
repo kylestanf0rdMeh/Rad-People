@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 // Utility function
@@ -296,7 +295,7 @@ export const EventItemContainer = styled.div<{ isActive: boolean; screenWidth: n
   }
 `;
 
-export const EventLink = styled(Link)`
+export const EventLink = styled.a`
   text-decoration: none;
   color: inherit;
 `;
@@ -558,7 +557,7 @@ export const ViewOverlay = styled.div`
   }
 `;
 
-export const PastEventCard = styled.div`
+export const PastEventCard = styled.a`
   display: flex;
   flex-direction: column;
   position: relative;

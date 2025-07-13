@@ -36,8 +36,15 @@ const EventDetails: React.FC = () => {
 
   useEffect(() => {
     const loadEvent = async () => {
-      // Only fetch if we don't already have the event and we have an eventId
-      if ((!event || Object.keys(event).length === 0) && eventId) {
+      const stored = sessionStorage.getItem('selectedEvent');
+      if (stored) {
+        setEvent(JSON.parse(stored));
+        sessionStorage.removeItem('selectedEvent');
+        setFetchAttempted(true);
+        setLoading(false);
+        return;
+      }
+      if (eventId) {
         try {
           setLoading(true);
           const fetchedEvent = await fetchSingleEvent(eventId);
@@ -55,7 +62,7 @@ const EventDetails: React.FC = () => {
     };
   
     loadEvent();
-  }, [eventId, event]);
+  }, [eventId]);
 
 
   // Scroll down for mobile icon
@@ -207,10 +214,10 @@ const EventDetails: React.FC = () => {
               
               {/* Right column information panel */}
               <RightColumnOverlay>
-                <BackNavigation onClick={handleBackClick}>
-                  <IoArrowBack size={16} color="black" />
-                  <OverlayBackButton>BACK TO EVENTS</OverlayBackButton>
-                </BackNavigation>
+              <BackNavigation as="a" href="/events" style={{ cursor: 'pointer' }}>
+                <IoArrowBack size={16} color="black" />
+                <OverlayBackButton>BACK TO EVENTS</OverlayBackButton>
+              </BackNavigation>
 
                 {/* Further event details */}
                 <OverlayTItle>

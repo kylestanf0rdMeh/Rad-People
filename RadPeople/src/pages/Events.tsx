@@ -325,10 +325,10 @@ const Events: React.FC = () => {
                       onMouseEnter={() => handleEventHover(event)}
                       >
                         <EventContentWrapper>
-                          <EventLink 
-                            to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
-                            state={{ event }}
-                          >
+                        <EventLink
+                          href={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+                          onClick={() => sessionStorage.setItem('selectedEvent', JSON.stringify(event))}
+                        >
                             <EventDate>
                               {new Date(event.fields.date).toLocaleDateString('en-US', {
                                 month: '2-digit',
@@ -373,9 +373,9 @@ const Events: React.FC = () => {
                         isActive={true}
                         screenWidth={screenWidth}
                       >
-                        <EventLink 
-                          to={`/events/${upcomingEvents[activeIndex].sys.id}/${encodeURIComponent(upcomingEvents[activeIndex].fields.name)}`}
-                          state={{ event: upcomingEvents[activeIndex] }}
+                        <EventLink
+                          href={`/events/${upcomingEvents[activeIndex].sys.id}/${encodeURIComponent(upcomingEvents[activeIndex].fields.name)}`}
+                          onClick={() => sessionStorage.setItem('selectedEvent', JSON.stringify(upcomingEvents[activeIndex]))}
                         >
                           <EventContentWrapper>
                             <EventDate>
@@ -430,11 +430,11 @@ const Events: React.FC = () => {
       <PastEventsTitle>PAST</PastEventsTitle>
       <PastEventsList>
         {pastEvents.map((event) => (
-          <PastEventCard 
-            key={event.sys.id} 
-            as={Link} 
-            to={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
-            state={{ event }}
+          <PastEventCard
+            key={event.sys.id}
+            as="a"
+            href={`/events/${event.sys.id}/${encodeURIComponent(event.fields.name)}`}
+            onClick={() => sessionStorage.setItem('selectedEvent', JSON.stringify(event))}
           >
             <ImageContainer>
               <img 

@@ -180,7 +180,7 @@ const Checkout: React.FC = () => {
     <PopupModal
       open={showErrorModal}
       onClose={() => setShowErrorModal(false)}
-      text="There was an error processing your payment, please try again later"
+      text={paymentError || "There was an error processing your payment, please try again later"}
       width={350}
       height={150}
       color="red"

@@ -62,10 +62,8 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
     const errors = validateShipping(shipping);
     setFieldErrors(errors);
 
-    if (Object.keys(errors).length > 0) {
-      setProcessing(false);
-      return; // Don't update intent or proceed
-    }
+    const hasShippingErrors = Object.keys(errors).length > 0;
+
 
     // 2. Submit PaymentElement first (required for deferred payment methods)
     if (elements) {
@@ -75,6 +73,11 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
         setProcessing(false);
         return;
       }
+    }
+
+    if (hasShippingErrors) {
+      setProcessing(false);
+      return;
     }
 
     if (!stripe || !elements) {
@@ -100,18 +103,6 @@ const CheckoutPayButton: React.FC<CheckoutPayButtonProps> = ({
       clientSecret,
       confirmParams: {
         return_url: window.location.origin + '/checkout',
-        shipping: {
-          name: shipping.name,
-          address: {
-            line1: shipping.address1,
-            line2: shipping.address2,
-            city: shipping.city,
-            state: shipping.state,
-            postal_code: shipping.zip,
-            country: "US",
-          },
-        },
-        receipt_email: shipping.email,
       },
       redirect: 'if_required',
     });

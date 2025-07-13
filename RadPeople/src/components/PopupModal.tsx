@@ -14,7 +14,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
   onClose,
   text,
   width = 320,
-  height = 180,
+  height, // not used for the modal box, let it grow
   color = 'black',
 }) => {
   if (!open) return null;
@@ -39,11 +39,14 @@ const PopupModal: React.FC<PopupModalProps> = ({
           border: '1px solid #000',
           borderRadius: 0,
           width,
-          height,
+          minHeight: 100,
+          maxWidth: '90vw',
+          maxHeight: '80vh',
           position: 'relative',
           boxShadow: '0 2px 16px rgba(0,0,0,0.12)',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'auto', // allow scrolling if content is too tall
         }}
       >
         <button
@@ -83,6 +86,8 @@ const PopupModal: React.FC<PopupModalProps> = ({
             padding: 24,
             fontFamily: 'Sequel Sans Regular',
             textAlign: 'center',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
           }}
         >
           {text}

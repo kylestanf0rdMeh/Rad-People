@@ -56,6 +56,12 @@ const Checkout: React.FC = () => {
   const checkoutToken = (location.state as any)?.checkoutToken;
   const cartItems = (location.state as any)?.cartItems || [];
 
+  // We remove the orderstored flag for each new checkout session
+  useEffect(() => {
+    sessionStorage.removeItem('orderStored');
+    sessionStorage.removeItem('orderConfirmedData');
+  }, []);
+
   useEffect(() => {
     if (!checkoutToken) {
       setError(`No checkout token found. Please return to cart.`);
@@ -134,7 +140,6 @@ const Checkout: React.FC = () => {
           setShipping(prev => ({ ...prev, [field]: value }));
           setFieldErrors(prev => ({ ...prev, [field]: undefined }));
         }}
-        fieldErrors={fieldErrors}
       />
       <div>
         <h3 style={{ fontWeight: 600, fontSize: 18, marginBottom: 10, color: '#222' }}>

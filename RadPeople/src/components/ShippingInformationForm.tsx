@@ -42,20 +42,14 @@ export interface ShippingInfo {
 interface ShippingInformationFormProps {
   shipping: ShippingInfo;
   onChange: (field: keyof ShippingInfo, value: string) => void;
-  fieldErrors?: Partial<Record<keyof ShippingInfo, string>>;
 }
 
-const errorInputStyle: React.CSSProperties = {
-  ...inputStyle,
-  border: '2px solid #e00',
-};
-
-const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipping, onChange, fieldErrors = {} }) => (
+const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipping, onChange }) => (
   <div>
     <h3 style={{ fontWeight: 600, fontSize: 18, marginBottom: 12, color: '#222' }}>Shipping Information</h3>
     <label style={labelStyle}>Full Name</label>
     <input
-      style={fieldErrors.name ? errorInputStyle : inputStyle}
+      style={inputStyle}
       name="name"
       type="text"
       autoComplete="name"
@@ -63,11 +57,10 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
       onChange={e => onChange('name', e.target.value)}
       required
     />
-    {fieldErrors.name && <div style={{ color: '#e00', fontSize: 14, fontWeight: 500, marginTop: -15, marginBottom: 10 }}>{fieldErrors.name}</div>}
 
     <label style={labelStyle}>Email</label>
     <input
-      style={fieldErrors.email ? errorInputStyle : inputStyle}
+      style={inputStyle}
       name="email"
       type="email"
       autoComplete="email"
@@ -75,11 +68,10 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
       onChange={e => onChange('email', e.target.value)}
       required
     />
-    {fieldErrors.email && <div style={{ color: '#e00', fontSize: 14, fontWeight: 500, marginTop: -15, marginBottom: 10 }}>{fieldErrors.email}</div>}
 
     <label style={labelStyle}>Address Line 1</label>
     <input
-      style={fieldErrors.address1 ? errorInputStyle : inputStyle}
+      style={inputStyle}
       name="address1"
       type="text"
       autoComplete="address-line1"
@@ -87,8 +79,6 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
       onChange={e => onChange('address1', e.target.value)}
       required
     />
-    {fieldErrors.address1 && <div style={{ color: '#e00', fontSize: 14, fontWeight: 500, marginTop: -15, marginBottom: 10 }}>{fieldErrors.address1}</div>}
-
 
     <label style={labelStyle}>Address Line 2</label>
     <input
@@ -104,7 +94,7 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
       <div style={{ flex: 2 }}>
         <label style={labelStyle}>City</label>
         <input
-          style={fieldErrors.city ? errorInputStyle : inputStyle}
+          style={inputStyle}
           name="city"
           type="text"
           autoComplete="address-level2"
@@ -112,12 +102,11 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
           onChange={e => onChange('city', e.target.value)}
           required
         />
-        {fieldErrors.city && <div style={{ color: '#e00', fontSize: 14, fontWeight: 500, marginTop: -15, marginBottom: 10 }}>{fieldErrors.city}</div>}
       </div>
       <div style={{ flex: 1 }}>
         <label style={labelStyle}>State</label>
         <select
-          style={fieldErrors.state ? { ...inputStyle, border: '2px solid #e00',  paddingRight: 24 } : { ...inputStyle, paddingRight: 24 }}
+          style={{ ...inputStyle, paddingRight: 24 }}
           name="state"
           value={shipping.state}
           onChange={e => onChange('state', e.target.value)}
@@ -128,12 +117,11 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
             <option key={st} value={st}>{st}</option>
           ))}
         </select>
-        {fieldErrors.state && <div style={{ color: '#e00', fontSize: 14, fontWeight: 500, marginTop: -15, marginBottom: 10 }}>{fieldErrors.state}</div>}
       </div>
       <div style={{ flex: 1 }}>
         <label style={labelStyle}>ZIP</label>
         <input
-          style={fieldErrors.zip ? errorInputStyle : inputStyle}
+          style={inputStyle}
           name="zip"
           type="text"
           autoComplete="postal-code"
@@ -141,7 +129,6 @@ const ShippingInformationForm: React.FC<ShippingInformationFormProps> = ({ shipp
           onChange={e => onChange('zip', e.target.value)}
           required
         />
-        {fieldErrors.zip && <div style={{ color: '#e00', fontSize: 14, fontWeight: 500, marginTop: -15, marginBottom: 10 }}>{fieldErrors.zip}</div>}
       </div>
     </div>
   </div>

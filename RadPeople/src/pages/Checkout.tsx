@@ -56,12 +56,6 @@ const Checkout: React.FC = () => {
   const checkoutToken = (location.state as any)?.checkoutToken;
   const cartItems = (location.state as any)?.cartItems || [];
 
-  // We remove the orderstored flag for each new checkout session
-  useEffect(() => {
-    sessionStorage.removeItem('orderStored');
-    sessionStorage.removeItem('orderConfirmedData');
-  }, []);
-
   useEffect(() => {
     if (!checkoutToken) {
       setError(`No checkout token found. Please return to cart.`);
@@ -104,6 +98,7 @@ const Checkout: React.FC = () => {
   }, [paymentError]);
 
   if (loading) return <div>Loading payment...</div>;
+  if (error) return <div style={{ color: 'red' }}>{error}</div>;
   if (!clientSecret) return null;
   
 

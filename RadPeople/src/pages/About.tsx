@@ -7,7 +7,6 @@ import { TalentItem } from '../models/Talent.model';
 import { AboutItem } from '../models/About.model';
 import { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import CircularTextCustom from '../components/CircularText';
 import PageWrapper from '../components/PageWrapper';
 import TalentCardList from '../components/TalentCard';
 
@@ -82,14 +81,6 @@ const ProfileBio = styled.div`
   text-transform: none;
 `;
 
-const BottomLeftWrapper = styled.div`
-  position: fixed;
-  left: -2vw;
-  bottom: -10vh;
-  z-index: 100;
-  pointer-events: auto;
-`;
-
 const About: React.FC = () => {
   const { data: talent } = useDataFetching<TalentItem[]>('talent', fetchTalent);
   const { data: about } = useDataFetching<AboutItem[]>('about', fetchAbout);
@@ -110,9 +101,6 @@ const About: React.FC = () => {
           <InfoBox>
             {about && about[0]?.fields.aboutUs}
           </InfoBox>
-          <BottomLeftWrapper>
-            <CircularTextCustom text="Rad*People*Austin*" spinDuration={10}/>
-          </BottomLeftWrapper>
           <NamesList>
             TEAM
             <br />

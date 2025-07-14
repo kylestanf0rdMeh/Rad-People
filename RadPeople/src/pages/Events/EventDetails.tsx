@@ -1,6 +1,6 @@
 // ... existing code ...
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, Navigate, useParams, useNavigate } from 'react-router-dom';
+import { useLocation, Navigate, useParams } from 'react-router-dom';
 import { EventItem } from '../../models/Event.model';
 import Layout from '../../components/Layout';
 import PageWrapper from '../../components/PageWrapper';
@@ -23,7 +23,6 @@ const EventDetails: React.FC = () => {
   const wistiaContainerRef = useRef<HTMLDivElement>(null);
   const mobileDetailsRef = useRef<HTMLDivElement>(null);
   const { width: screenWidth } = useWindowDimensions();
-  const navigate = useNavigate();
 
   // Add all state hooks at the top
   const [event, setEvent] = useState<EventItem | null>(state?.event || null);
@@ -71,11 +70,6 @@ const EventDetails: React.FC = () => {
     const imageUrl = event.fields.thumbnailImage?.[0]?.fields?.file?.url || '';
     
     return { hasVideo, videoId, imageUrl };
-  };
-
-  // Handler for back navigation
-  const handleBackClick = () => {
-    navigate('/events');
   };
 
 

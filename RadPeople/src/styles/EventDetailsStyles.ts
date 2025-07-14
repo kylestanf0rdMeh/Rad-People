@@ -24,11 +24,13 @@ export const FixedBackgroundContainer = styled.div`
   border-radius: 0;
   
   @media (max-width: 767px) {
-    position: absolute; 
-    height: 70%;  // Fill the container
+    position: fixed;      
     top: 0;
     left: 0;
+    width: 100vw;
+    height: 70vh;         
     z-index: 1;
+    pointer-events: none; // Prevent accidental interaction
   }
 `;
 
@@ -293,13 +295,14 @@ export const LocationText = styled.p`
 
 export const MobileViewContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   z-index: 5;
 `;
 
-export const MobileBackNavigation = styled.div`
+export const MobileBackNavigation = styled.a`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -307,8 +310,10 @@ export const MobileBackNavigation = styled.div`
   padding: 0.5rem;
   border-top: none;
   border-bottom: 1px solid black;
-  z-index: 10;
+  z-index: 100; // Make sure it's above other content
   cursor: pointer;
+  position: sticky;
+  top: 0;
 `;
 
 export const MobileBackButton = styled.h2`
@@ -321,11 +326,11 @@ export const MobileBackButton = styled.h2`
 export const MobileEventContent = styled.div`
   position: relative;
   width: 100%;
-  height: 60vh; // Fixed height for mobile
+  height: 60vh; // or whatever fixed height you want
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  overflow: hidden; // Ensure content stays within bounds
+  overflow: hidden;
   
   /* This ensures the FixedBackgroundContainer appears within this container */
   & > ${FixedBackgroundContainer} {
@@ -365,14 +370,16 @@ export const MobileEventInfoOverlay = styled.div`
 `;
 
 export const MobileDetailsSection = styled.div`
-  border-top: 1px solid black;
-  padding: 1rem;
+  flex: 1 1 auto;
+  min-height: 60vh; // or your preferred minimum
   background-color: white;
   color: black;
-  width: 100%;
   box-sizing: border-box;
-  max-height: 50vh;   
-  overflow-y: auto;   
+  overflow-y: auto;
+  z-index: 20;
+  border-top: 1px solid black;
+  padding: 1rem;
+  width: 100vw;
 `;
 
 export const MobileEventDetailTitle = styled.h2`

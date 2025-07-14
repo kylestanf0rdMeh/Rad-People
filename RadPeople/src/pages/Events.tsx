@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { WistiaPlayer } from '@wistia/wistia-player-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapPin } from '@fortawesome/free-solid-svg-icons'; // or free-regular-svg-icons if you prefer
+import { TextScramble } from '../components/motion-primitives/text-scramble';
 
 
 declare global {
@@ -308,8 +309,18 @@ const Events: React.FC = () => {
               )}
 
               <EventTitle>
-                <EventTitleText>EVENT</EventTitleText>
-                <EventTitleText>CALENDAR</EventTitleText>
+                <TextScramble
+                  as={EventTitleText} // This will render as your styled component
+                  className={EventTitleText.styledComponentId} // If needed
+                >
+                  EVENT
+                </TextScramble>
+                <TextScramble
+                  as={EventTitleText}
+                  className={EventTitleText.styledComponentId}
+                >
+                  CALENDAR
+                </TextScramble>
               </EventTitle>
             </EventBackground>
 
@@ -330,11 +341,13 @@ const Events: React.FC = () => {
                           onClick={() => sessionStorage.setItem('selectedEvent', JSON.stringify(event))}
                         >
                             <EventDate>
-                              {new Date(event.fields.date).toLocaleDateString('en-US', {
-                                month: '2-digit',
-                                day: '2-digit',
-                                year: '2-digit'
-                              }).replace(/\//g, '.')}
+                              <TextScramble as="span">
+                                {new Date(event.fields.date).toLocaleDateString('en-US', {
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  year: '2-digit'
+                                }).replace(/\//g, '.')}
+                              </TextScramble>
                             </EventDate>
 
                             <EventName>{event.fields.name}</EventName>
@@ -379,11 +392,13 @@ const Events: React.FC = () => {
                         >
                           <EventContentWrapper>
                             <EventDate>
-                              {new Date(upcomingEvents[activeIndex].fields.date).toLocaleDateString('en-US', {
-                                month: '2-digit',
-                                day: '2-digit',
-                                year: '2-digit'
-                              }).replace(/\//g, '.')}
+                              <TextScramble as="span">
+                                {new Date(upcomingEvents[activeIndex].fields.date).toLocaleDateString('en-US', {
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  year: '2-digit'
+                                }).replace(/\//g, '.')}
+                              </TextScramble>
                             </EventDate>
 
                             <EventName>{upcomingEvents[activeIndex].fields.name}</EventName>

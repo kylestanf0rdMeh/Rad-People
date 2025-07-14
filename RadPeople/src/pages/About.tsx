@@ -84,8 +84,8 @@ const ProfileBio = styled.div`
 
 const BottomLeftWrapper = styled.div`
   position: fixed;
-  left: -2vw;
-  bottom: -10vh;
+  left: -4rem;
+  bottom: -9rem;
   z-index: 100;
   pointer-events: auto;
 `;

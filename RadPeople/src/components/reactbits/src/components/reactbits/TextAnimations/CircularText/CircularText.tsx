@@ -17,6 +17,8 @@ interface CircularTextProps {
   spinDuration?: number;
   onHover?: "slowDown" | "speedUp" | "pause" | "goBonkers";
   className?: string;
+  onMouseEnter?: React.MouseEventHandler<HTMLDivElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const getRotationTransition = (
@@ -46,6 +48,8 @@ const CircularText: React.FC<CircularTextProps> = ({
   spinDuration = 20,
   onHover = "speedUp",
   className = "",
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   const letters = Array.from(text);
   const controls = useAnimation();
@@ -111,8 +115,14 @@ const CircularText: React.FC<CircularTextProps> = ({
       style={{ rotate: rotation }}
       initial={{ rotate: 0 }}
       animate={controls}
-      onMouseEnter={handleHoverStart}
-      onMouseLeave={handleHoverEnd}
+      onMouseEnter={event => {
+        handleHoverStart();
+        onMouseEnter?.(event); // CALL PROP IF PROVIDED
+      }}
+      onMouseLeave={event => {
+        handleHoverEnd();
+        onMouseLeave?.(event); // CALL PROP IF PROVIDED
+      }}
     >
       {letters.map((letter, i) => {
         const rotationDeg = (360 / letters.length) * i;

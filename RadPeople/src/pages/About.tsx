@@ -10,6 +10,7 @@ import { useMediaQuery } from 'react-responsive';
 import CircularTextCustom from '../components/CircularText';
 import PageWrapper from '../components/PageWrapper';
 import TalentCardList from '../components/TalentCard';
+import { TextScramble } from '../components/motion-primitives/text-scramble';
 
 const Container = styled.div`
   display: flex;
@@ -25,7 +26,7 @@ const InfoBox = styled.div`
   margin-left: 0.5rem; // Small margin from the left
   width: 52%; // Always 60% of the page width
   font-family: 'Helvetica Neue LT Com', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   line-height: 1.4; // Tighter line spacing
   text-transform: uppercase;
 `;
@@ -40,7 +41,7 @@ const NamesList = styled.ul`
   margin-left: 6vh;
   display: flex;
   flex-direction: column;
-  font-size: 0.9rem;
+  font-size: 1.3rem;
   gap: 0.1rem;
   line-height: 1.05;
   text-transform: uppercase;
@@ -51,6 +52,14 @@ const NameItem = styled.li<{ selected?: boolean }>`
   cursor: pointer;
   color: ${({ selected }) => (selected ? '#1404fb' : 'inherit')};
   border-radius: 4px;
+`;
+
+const ScrambledName = styled(TextScramble)`
+  display: inline;
+  line-height: 1.05;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
 `;
 
 const ProfileWrapper = styled.div`
@@ -75,31 +84,57 @@ const ProfileBio = styled.div`
   color: black;
   background: white;
   font-family: 'Helvetica Neue LT Com', sans-serif;
-  font-size: clamp(0.7rem, 2vw, 0.8rem); // Responsive font size
+  font-size: clamp(0.9rem, 2vw, 0.8rem); // Responsive font size
   line-height: 1.3;
   border: none;
   padding: 0.5rem 0rem 0 0rem;  // <-- 1rem left and right padding
   text-transform: none;
 `;
 
-const BottomLeftWrapper = styled.div`
+const BottomLeftContainer = styled.div`
   position: fixed;
   left: -4rem;
   bottom: -9rem;
   z-index: 100;
-  pointer-events: auto;
+  display: flex;
+  align-items: center;
 `;
+
+const ContactUsText = styled.div`
+  position: absolute;
+  left: 320px; // just to the right of the circular text (adjust as needed)
+  top: -0.7rem;
+  margin-left: -5rem;
+  transform: none;
+  color: black;
+  font-family: 'Helvetica Neue LT Com', sans-serif;
+  font-size: 1.2rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 2rem;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  opacity: 1;
+`;
+
+const CircularTextHolder = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
 
 const About: React.FC = () => {
   const { data: talent } = useDataFetching<TalentItem[]>('talent', fetchTalent);
   const { data: about } = useDataFetching<AboutItem[]>('about', fetchAbout);
   const [hoveredTalent, setHoveredTalent] = useState<TalentItem | null>(null);
   const [selectedTalentId, setSelectedTalentId] = useState<string | null>(null);
+  const [showContact, setShowContact] = useState(false);
+
   const selectedTalent = talent?.find(t => t.sys.id === selectedTalentId) || null;
   const profileToShow = hoveredTalent || selectedTalent;
 
   const isMobile = useMediaQuery({ maxWidth: 840 });
-
 
 
   return (
@@ -110,9 +145,21 @@ const About: React.FC = () => {
           <InfoBox>
             {about && about[0]?.fields.aboutUs}
           </InfoBox>
-          <BottomLeftWrapper>
-            <CircularTextCustom text="Rad*People*Austin*" spinDuration={10}/>
-          </BottomLeftWrapper>
+          <BottomLeftContainer>
+            <CircularTextHolder>
+              <CircularTextCustom
+                text="RESEARCH*AND*DEVELOPMENT*"
+                spinDuration={10}
+                onMouseEnter={() => setShowContact(true)}
+                onMouseLeave={() => setShowContact(false)}
+              />
+              {showContact && (
+                <ContactUsText>
+                  <TextScramble>Contact Us: contact@radpeople.us</TextScramble>
+                </ContactUsText>
+              )}
+            </CircularTextHolder>
+          </BottomLeftContainer>
           <NamesList>
             TEAM
             <br />
@@ -127,7 +174,9 @@ const About: React.FC = () => {
                 onMouseEnter={() => setHoveredTalent(person)}
                 onMouseLeave={() => setHoveredTalent(null)}
               >
-                {person.fields.firstName} {person.fields.lastName}
+                <ScrambledName duration={1.2}>
+                  {`${person.fields.firstName} ${person.fields.lastName}`}
+                </ScrambledName>
               </NameItem>
             ))}
           </NamesList>

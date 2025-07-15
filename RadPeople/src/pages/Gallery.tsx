@@ -161,8 +161,10 @@ const Gallery: React.FC = () => {
         </GalleryContainer>
 
         <ContactRectangle>
-          <h3>CONTACT US</h3>
+          <h3>CONTACT</h3>
           <p>contact@radpeople.us</p>
+          <p>agency@radpeople.us</p>
+          <p>support@radpeople.us</p>
         </ContactRectangle>
 
         <ControlBar>

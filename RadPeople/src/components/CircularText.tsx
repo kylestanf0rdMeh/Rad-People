@@ -11,6 +11,8 @@ interface CircularTextCustomProps {
   className?: string;
   style?: React.CSSProperties;
   color?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 // Styled wrapper to force color on all spans inside .circular-text
@@ -28,6 +30,8 @@ export default function CircularTextCustom({
   className,
   style,
   color = BLUE_COLOR,
+  onMouseEnter,
+  onMouseLeave
 }: CircularTextCustomProps) {
   return (
     <BlueCircularTextWrapper color={color} style={style} className={className}>
@@ -35,6 +39,8 @@ export default function CircularTextCustom({
         text={text}
         spinDuration={spinDuration}
         onHover='goBonkers'
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       />
     </BlueCircularTextWrapper>
   );

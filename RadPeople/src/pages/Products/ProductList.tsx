@@ -4,7 +4,8 @@ import { ProductItem } from '../../models/Product.model';
 import PageWrapper from '../../components/PageWrapper';
 
 import { useProducts } from '../../contexts/ProductsContext';
-import useWindowDimensions from '../../hooks/useWindowDimensions'
+import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { Link } from 'react-router-dom';
 import { 
   ProductCard, 
   ProductListContainer, 
@@ -187,7 +188,8 @@ const ProductList: React.FC = () => {
             {displayProducts.map((product) => (
               <ProductLink
                 key={product.sys.id}
-                href={`/shop/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
+                as={Link}
+                to={`/shop/${product.sys.id}/${encodeURIComponent(product.fields.name.toLowerCase().replace(/\s+/g, '-'))}`}
                 columns={activeGrid}
                 onClick={() => handleProductClick(product)}
               >

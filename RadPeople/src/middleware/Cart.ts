@@ -36,7 +36,7 @@ export const validateCartItem = async (item: CartItem): Promise<{
   } catch (error) {
     console.error('Error validating cart item:', error);
     // For development, fall back to mock validation
-    // if (process.env.NODE_ENV !== 'production') {
+    // if (import.meta.env.NODE_ENV !== 'production') {
     //   return mockValidatePrice(item);
     // }
     throw error;
@@ -59,7 +59,7 @@ export const validateCart = async (items: CartItem[]): Promise<{
   } catch (error) {
     console.error('Error validating cart:', error);
     // For development, fall back to mock validation
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.NODE_ENV !== 'production') {
       return mockValidateCart(items);
     }
     throw error;

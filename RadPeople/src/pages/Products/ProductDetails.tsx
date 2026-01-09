@@ -250,8 +250,8 @@ const ProductDetail: React.FC = () => {
                 {allImages.map((image, index) => (
                   <ProductImage
                     key={`product-image-${index}`}
-                    src={`https:${image?.fields.file.url}`}
-                    alt={image?.fields.title || product?.fields.name}
+                    src={`https:${image?.fields?.file?.url}`}
+                    alt={image?.fields?.title || product?.fields.name}
                   />
                 ))}
               </ImageSection>
@@ -261,8 +261,8 @@ const ProductDetail: React.FC = () => {
               {allImages.map((image, index) => (
                 <ProductImage
                   key={`product-image-${index}`}
-                  src={`https:${image?.fields.file.url}`}
-                  alt={image?.fields.title || product?.fields.name}
+                  src={`https:${image?.fields?.file?.url}`}
+                  alt={image?.fields?.title || product?.fields.name}
                 />
               ))}
             </ImageSection>

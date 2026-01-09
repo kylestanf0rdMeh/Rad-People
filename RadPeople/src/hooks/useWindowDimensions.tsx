@@ -9,7 +9,7 @@ export default function useWindowDimensions(debounceMs = 100) {
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     function handleResize() {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
